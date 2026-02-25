@@ -1,0 +1,286 @@
+{
+  "main": {
+    "id": "091f66aea1e12efd",
+    "type": "split",
+    "children": [
+      {
+        "id": "8bdcc33c676bf99c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ecbfb1442c4d42f1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "samples.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "samples"
+            }
+          },
+          {
+            "id": "46f440ccb4aad340",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Enough for a Grammar?.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Enough for a Grammar?"
+            }
+          },
+          {
+            "id": "094dbf7e62ef079b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Note 2026-02-25.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Note 2026-02-25"
+            }
+          },
+          {
+            "id": "17e319bb06fff312",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Grammar notes.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Grammar notes"
+            }
+          },
+          {
+            "id": "30dc38961251e926",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Note 2026-02-25.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Note 2026-02-25"
+            }
+          },
+          {
+            "id": "b266d4b5b72b05cc",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Start Here.md",
+                "mode": "source",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "Start Here"
+            }
+          },
+          {
+            "id": "39100ca793e35fdb",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "ignore.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ignore"
+            }
+          }
+        ],
+        "currentTab": 6
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "0971661421b51553",
+    "type": "split",
+    "children": [
+      {
+        "id": "192a5b98597160bf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "35e6b1a8c3dfa323",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "9ef1e6f94a1115c5",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "235973c5583f474f",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "59c6b51549fb53d9",
+    "type": "split",
+    "children": [
+      {
+        "id": "dc123c9960a748e2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7b7de12eb6a84af3",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "ignore.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for ignore"
+            }
+          },
+          {
+            "id": "c6130a06ccc62018",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "ignore.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from ignore"
+            }
+          },
+          {
+            "id": "b5266c6d484d5b8a",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "737435b1ffcaa63c",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "644915e135372175",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "ignore.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of ignore"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "39100ca793e35fdb",
+  "lastOpenFiles": [
+    "README.md",
+    "ignore.md",
+    "Start Here.md",
+    "Note 2026-02-25.md",
+    "Parse light test Screenshot 2026-02-25 at 8.15.41 AM.png",
+    "Screenshot 2026-02-25 at 8.15.41 AM.png",
+    "prompt.md",
+    "Enough for a Grammar?.md",
+    "Grammar notes.md",
+    "grid.ohm.md",
+    "grid.ohm",
+    "samples.md"
+  ]
+}
