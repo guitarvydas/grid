@@ -1,0 +1,4 @@
+' ---- Test 54: Named dimensions | expected: {'A1': 4}
+: Results as number dim {Dept: *, Quarter: 4} = {9, 4, 5, 1}
+Results!Quarter.Label{"Q1", "Q2", "Q3", "Q4"}
+[A1] := Results!Quarter("Q2")

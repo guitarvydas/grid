@@ -1,0 +1,2 @@
+' ---- Test 1: Basic calculation | expected: {'A1': 51}
+[A1] : a = 51
