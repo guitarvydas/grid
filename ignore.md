@@ -1,6 +1,6 @@
 I've just begun to wrap my head around what you've sent me. (Sorry for the delay).
 
-I wrote some of my thoughts and pushed the whole mess back up to github ().
+I wrote some of my thoughts and pushed the whole mess back up to github (https://github.com/guitarvydas/grid). [This is just a messy working directory containing all sorts of things.]
 
 When you have time, read the notes starting with "Start Here.md".
 

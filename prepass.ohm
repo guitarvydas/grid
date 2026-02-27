@@ -1,0 +1,39 @@
+
+  keyword =
+    | caseInsensitive<"with"> ~idletter
+    | caseInsensitive<"type"> ~idletter
+    | caseInsensitive<"to"> ~idletter
+    | caseInsensitive<"then"> ~idletter
+    | caseInsensitive<"text"> ~idletter
+    | caseInsensitive<"super"> ~idletter
+    | caseInsensitive<"subprocess"> ~idletter
+    | caseInsensitive<"step"> ~idletter
+    | caseInsensitive<"return"> ~idletter
+    | caseInsensitive<"push"> ~idletter
+    | caseInsensitive<"privatehelper"> ~idletter
+    | caseInsensitive<"output"> ~idletter
+    | caseInsensitive<"or"> ~idletter
+    | caseInsensitive<"of"> ~idletter
+    | caseInsensitive<"number"> ~idletter
+    | caseInsensitive<"not"> ~idletter
+    | caseInsensitive<"new"> ~idletter
+    | caseInsensitive<"mod"> ~idletter
+    | caseInsensitive<"let"> ~idletter
+    | caseInsensitive<"label"> ~idletter
+    | caseInsensitive<"input"> ~idletter
+    | caseInsensitive<"init"> ~idletter
+    | caseInsensitive<"index"> ~idletter
+    | caseInsensitive<"in"> ~idletter
+    | caseInsensitive<"if"> ~idletter
+    | caseInsensitive<"function"> ~idletter
+    | caseInsensitive<"for"> ~idletter
+    | caseInsensitive<"end"> ~idletter
+    | caseInsensitive<"elseif"> ~idletter
+    | caseInsensitive<"else"> ~idletter
+    | caseInsensitive<"do"> ~idletter
+    | caseInsensitive<"dim"> ~idletter
+    | caseInsensitive<"define"> ~idletter
+    | caseInsensitive<"as"> ~idletter
+    | caseInsensitive<"and"> ~idletter
+
+  idletter = alnum | "_"

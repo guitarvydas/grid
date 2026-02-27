@@ -1,0 +1,13 @@
+test {
+  main = Word+
+  Word =
+    | keyword -- kw
+    | identifier -- ident
+    | (~keyword ~ident any)+ -- other
+
+  keyword =
+    | caseInsensitive<"as">
+    | caseInsensitive<"type">
+  identifier = (letter | "_") (alnum | "_")*
+  comment = spaces "'" (~"\n" any)*
+}

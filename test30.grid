@@ -1,0 +1,3 @@
+: name = "world"
+[A1] := $"{*Loudly} I say:  
+		""Hello"", {name}!"

@@ -1,0 +1,1299 @@
+' ---- Test 1: Basic calculation | expected: {'A1': 51}
+[A1] : a = 51
+
+' ---- Test 2: Arithmetic with reference | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}
+[A1] := 51
+[A2] := ([A1] + 15) / 1.2e3
+[A3] := sum[A1:A2]
+
+' ---- Test 3: Variable in cell definition | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}
+[A1] : a = 51
+[A2] : b = (a + 15) / 1.2e3
+[A3] : c = sum([A1:A2])
+
+' ---- Test 4: Global variables and sum{} | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}
+: a = 51
+: b = (a + 15) / 1.2e3
+: c = sum{a, b}
+[A1] := a
+[A2] := b
+[A3] := c
+
+' ---- Test 5: Inline comment parsing | expected: {'AB2': 33}
+[AB2] := 33 '28th column
+
+' ---- Test 6: Horizontal array assignment from inline var | expected: {'A1': 51, 'B2': 12, 'C2': 0.055, 'D2': 52, 'E2': 8}
+[A1] : a = 51
+[^B2] := {12, (15 + a) / 1.2e3, 1+[A1], 8}
+
+' ---- Test 7: Horizontal array from variable | expected: {'A1': 51, 'B2': 12, 'C2': 0.055, 'D2': 52, 'E2': 8}
+[A1] : a = 51
+: b = {12, (15 + a) / 1.2e3, 1+[A1], 8}
+[^B2] := b
+
+' ---- Test 8: Math function - SQRT | expected: {'A1': 6.0}
+[A1] := 2*( SQRT(100) - 7 )
+
+' ---- Test 9: Interpolation with cell reference | expected: {'A2': 33, 'A3': -4.9}
+: n = 2
+[A{ n }] := 33
+[A{n + 1}] := -4.9
+
+' ---- Test 10: 2D range assign and slice | expected: {'A1': 1, 'A2': 10, 'A3': 1, 'B1': 2, 'B2': 11, 'B3': 2, 'C1': 3, 'C2': 12, 'C3': 3}
+[A1:C2] := {1, 2, 3; 10, 11, 12}
+[^A3] := [A1:C1]
+
+' ---- Test 11: Range read and vertical assignment | expected: {'A1': 1, 'A2': 2, 'A3': 3, 'B1': 2, 'B2': 3}
+[^A1] := {1; 2; 3}
+[B1:B2] := [A2:A3]
+
+' ---- Test 12: Text type assignment | expected: {'A1': 'Hello'}
+: t as text = "Hello"
+[A1] := t
+
+' ---- Test 13: Cell var definition | expected: {'A1': 3}
+[A1] : e = 3
+
+' ---- Test 14: Number type declaration | expected: {'A1': 42}
+: x as number = 42
+[A1] := x
+
+' ---- Test 15: Number declaration with scientific notation | expected: {'A1': 0.0001234}
+: num as number = 12.34e-5
+[A1] := num
+
+' ---- Test 16: Number sequence with custom step | expected: {'B1': 1.0, 'C1': 2.5, 'D1': 4.0, 'E1': 5.5}
+: seq = 1 to 6 step 1.5
+[^B1] := seq
+
+' ---- Test 17: Interpolated text | expected: {'A1': 'Hello, world!'}
+: name as text = "world"
+[A1] := $"Hello, {name}!"
+
+' ---- Test 18: Self-referential assignment (should fail) | expected: error
+: x = x
+
+' ---- Test 19: Variable before definition | expected: {'A1': 6}
+: y = x + 1
+: x as number = 5
+[A1] := y
+
+' ---- Test 20: Integer division | expected: {'A1': 3}
+[A1] := 10 \ 3
+
+' ---- Test 21: Exponentiation | expected: {'A1': 8}
+[A1] := 2 ^ 3
+
+' ---- Test 22: Modulus | expected: {'A1': 1}
+[A1] := 10 mod 3
+
+' ---- Test 23: Special value #INF | expected: {'A1': inf}
+[A1] := #INF
+
+' ---- Test 24: Special value -#INF | expected: {'A1': -inf}
+[A1] := -#INF
+
+' ---- Test 25: Special value #N/A | expected: {'A1': nan}
+[A1] := #N/A
+
+' ---- Test 26: Text concatenation | expected: {'A1': 'Hello, world'}
+: t1 as text = "Hello"
+: t2 as text = "world"
+[A1] := t1 & ", " & t2
+
+' ---- Test 27: Quote escaping | expected: {'A1': 'I say "Hello"'}
+: q as text = "I say ""Hello"""
+[A1] := q
+
+' ---- Test 28: Padding right | expected: {'A1': 'Number:    42'}
+: num = 42
+[A1] := $"Number: {num, 5}"
+
+' ---- Test 29: Padding left | expected: {'A1': 'Number: 42   '}
+: num = 42
+[A1] := $"Number: {num, -5}"
+
+' ---- Test 30: Multi-line interpolation | expected: {'A1': '{Loudly} I say:\n"Hello", world!'}
+: name = "world"
+[A1] := $"{*Loudly} I say:  
+		""Hello"", {name}!"
+
+' ---- Test 31: Empty braces | expected: {'A1': 'Empty: {}'}
+[A1] := $"Empty: {}"
+
+' ---- Test 32: Escaped brace | expected: {'A1': 'Escaped: {{{star'}
+[A1] := $"Escaped: {{{*star"
+
+' ---- Test 33: Escaped brace with closing brace | expected: {'A1': 'Escaped: {{{star}'}
+[A1] := $"Escaped: {{{*star}"
+
+' ---- Test 34: Number sequence default step | expected: {'A1': 1, 'B1': 2, 'C1': 3, 'D1': 4, 'E1': 5, 'F1': 6}
+: dice = 1 to 6
+[^A1] := dice
+
+' ---- Test 35: Point type spilling on grid | expected: {'A3': -4.3, 'B3': 2.1}
+Define Point as Type
+: x as number
+: y as number
+End Point
+: p = new Point(-4.3, 2.1)
+[^A3] := p
+
+' ---- Test 36: Array of Points spilling on grid | expected: {'C3': 1, 'C4': 3, 'D3': 2, 'D4': 4}
+Define Dot as Type
+: x as number
+: y as number
+End Dot
+: p1 = new Dot(1, 2)
+: p2 = new Dot(3, 4)
+[^C3] := {p1, p2}
+
+' ---- Test 37: Nested Rectangle type spilling on grid | expected: {'A1': 0, 'B1': 10, 'C1': 5, 'D1': 3}
+Define Point as Type
+: x as number
+: y as number
+End Point
+Define Rectangle as Type
+: top as Point
+: bottom as Point
+End Rectangle
+[^A1] := new Rectangle(new Point(0, 10), new Point(5, 3))
+
+' ---- Test 38: Point type assigned to single cell | expected: {'A1': {'x': -4.3, 'y': 2.1}}
+Define Point as Type
+	: x as number
+	: y as number
+End Point
+: p = new Point(-4.3, 2.1)
+[A1] := p
+
+' ---- Test 39: Access field of point type | expected: {'A3': 2.1}
+Define Point as Type
+: x as number
+: y as number
+End Point
+: p = new Point(-4.3, 2.1)
+[A3] := p.y
+
+' ---- Test 40: Concatenation with interpolation | expected: {'A1': 'I say- hello world!'}
+: m = "hello"
+[A1] := "I say-" & $" {m} world!"
+
+' ---- Test 41: Nested {* interpolation | expected: {'A1': '{{'}
+[A1] := $"{{*"
+
+' ---- Test 42: Dimension constraint | expected: {'A1': 0}
+: Weights as number dim {0 to 10, 0 to 10} = 0
+[A1] := Weights{0, 0}
+
+' ---- Test 43: Multi-dimensional addition | expected: {'A1': [[1.0, 5.0], [13.0, 15.0]]}
+[A1] := {0, 3; 10, 11} + {1, 2; 3, 4}
+
+' ---- Test 44: Multi-dimensional subtraction | expected: {'A1': [[-1.0, 1.0], [7.0, 7.0]]}
+[A1] := {0, 3; 10, 11} - {1, 2; 3, 4}
+
+' ---- Test 45: Multi-dimensional multiplication | expected: {'A1': [[0.0, 6.0], [30.0, 44.0]]}
+[A1] := {0, 3; 10, 11} * {1, 2; 3, 4}
+
+' ---- Test 46: Multi-dimensional division | expected: {'A1': [[0.0, 1.5], [3.3333333333333335, 2.75]]}
+[A1] := {0, 3; 10, 11} / {1, 2; 3, 4}
+
+' ---- Test 47: Multi-dimensional exponentiation | expected: {'A1': [[0.0, 9.0], [1000.0, 14641.0]]}
+[A1] := {0, 3; 10, 11} ^ {1, 2; 3, 4}
+
+' ---- Test 48: Multi-dimensional modulo | expected: {'A1': [[0.0, 1.0], [1.0, 3.0]]}
+[A1] := {0, 3; 10, 11} mod {1, 2; 3, 4}
+
+' ---- Test 49: Multi-dimensional integer division | expected: {'A1': [[0.0, 1.0], [3.0, 2.0]]}
+[A1] := {0, 3; 10, 11} \ {1, 2; 3, 4}
+
+' ---- Test 50: Pipe operator | expected: {'A1': 1.0, 'B1': 2.0, 'A2': 3.0, 'B2': 4.0, 'A3': -5.0, 'B3': -6.0}
+[^A1] := {1, 2} | {3, 4} | {-5, -6}
+
+' ---- Test 51: Dim reshape | expected: {'A1': [[10], [11]]}
+[A1] := {10, 11} dim {*, 1}
+
+' ---- Test 52: Range with 1D vertical | expected: {'B2': 9, 'B3': 8, 'B4': 7}
+[B2:B4] := {9, 8, 7}
+
+' ---- Test 53: Range with 1D repeated | expected: {'A2': 1, 'A3': 1, 'A4': 1, 'B2': 2, 'B3': 2, 'B4': 2}
+[A2:B4] := {1, 2}
+
+' ---- Test 54: Named dimensions | expected: {'A1': 4}
+: Results as number dim {Dept: *, Quarter: 4} = {9, 4, 5, 1}
+Results!Quarter.Label{"Q1", "Q2", "Q3", "Q4"}
+[A1] := Results!Quarter("Q2")
+
+' ---- Test 55: Assign and access dimensioned array | expected: {'A1': 10, 'B1': 20, 'B2': 20, 'C1': 30, 'D1': 40}
+[A1:D1] := {10, 20, 30, 40}
+: Results as number dim {Dept: *, Quarter: 4} = [A1:D1]
+Results!Quarter.Label{"Q1", "Q2", "Q3", "Q4"}
+[B2] := Results!Quarter("Q2")
+
+' ---- Test 56: Multi-dimensional addressing | expected: {'A1': 20, 'A2': 10, 'B2': 20, 'C2': 30, 'D2': 40}
+[A2:D2] := {10, 20, 30, 40}
+: Results as number dim {Dept: *, Quarter: 4} = [A2:D2]
+[A1] := Results[B1]
+
+' ---- Test 57: FOR with already defined variable | expected: error
+: x = 34
+FOR x AS NUMBER
+
+' ---- Test 58: FOR with LET defining local variable | expected: {'A1': 34}
+For x = 34
+let x as number
+[A1] := x
+
+' ---- Test 59: FOR block with LET defining local variable | expected: {'A1': 34}
+For x = 34 DO
+    Let x as number Then
+        [A1] := x
+    end
+End
+
+' ---- Test 60: LET block with FOR using already declared variable | expected: error
+Let x as number Then
+    For x = 34 DO
+        [A1] := x
+    end
+End
+
+' ---- Test 61: LET followed by FOR with local variable | expected: {'A1': 34}
+Let x as number
+[A1] := x
+For x = 34
+
+' ---- Test 62: LET followed by global variable declaration | expected: {'A1': 34}
+Let x as number
+[A1] := x
+: x = 34
+
+' ---- Test 63: LET with constraint x > 10 | expected: {'A1': 34}
+: x = 34
+Let x > 10 then
+    [A1] := x
+End
+
+' ---- Test 64: LET with constraint x < 10 | expected: {}
+: x = 34
+Let x < 10 then
+    [A1] := x
+End
+
+' ---- Test 65: LET with constraint x < 10 halting execution | expected: {}
+: x = 34
+Let x < 10
+[A1] := x
+
+' ---- Test 66: LET chain with dependencies X -> Y -> Z | expected: {'A1': 8}
+Let X = 2 and Y = X * 5 and Z = Y - X
+[A1] := Z
+
+' ---- Test 67: LET chain with wrong order (Y uses X before defined) | expected: error
+Let Y = X * 5 and X = 2
+[A1] := Y
+
+' ---- Test 68: LET with array and named dimension | expected: {'A1': 'Alice', 'B1': 'Bob', 'C1': 'Carla', 'D1': 'Dylan', 'E1': 'Edith'}
+For names dim 0 to 4
+Let names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}
+[^A1] := names
+
+' ---- Test 69: Global assignment used in FOR | expected: {'A1': 4.2}
+: n = (m + 10) / 10
+[A1] := n
+For m = 32
+
+' ---- Test 70: LET with array access (index and label) | expected: {'A1': 'Alice', 'B1': 'Carla'}
+For names dim 0 to 4
+Let names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}
+[A1] := names(0)
+[B1] := names[3]
+
+' ---- Test 71: Define custom type and array of objects | expected: {'A1': 1.0, 'B1': 'V'}
+define Tensor as type
+    : name as text
+End Tensor
+
+For V as tensor with (name = "V", grid DIM {4, 4, 2} = 1.0) 
+[A1] := V.grid{4, 4, 1}
+[B1] := V.name
+
+' ---- Test 72: Define custom type and array with no constraint for {4, 4, 2} | expected: {'A1': 4.0, 'B1': 7.0, 'C1': 'V'}
+define Tensor as type
+    : name as text
+End Tensor
+
+For V as tensor with (name = "V", grid DIM {4, 4, 2} = {1,1,1,1;2,2,2,2;3,3,3,3;4,4,4,4} | {1,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7})
+[A1] := V.grid{4, 4, 1}
+[B1] := V.grid{4, 4, 2}
+[C1] := V.name
+
+' ---- Test 73: Define custom type and array with variable assignment for {4, 4, 3} | expected: {'A1': 3.0, 'B1': 7.0, 'C1': 'V', 'D1': 11.0}
+define Tensor as type
+    : name as text
+End Tensor
+
+For var = {1,1,1,1;2,2,2,2;3,3,3,3;4,4,4,4} | {1,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7} | {11,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7}
+For V as tensor with (name = "V", grid DIM {4, 4, 3} = var)
+[A1] := V.grid{3, 1, 2}
+[B1] := V.grid{4, 4, 2}
+[C1] := V.name
+[D1] := V.grid{1, 1, 3}
+
+' ---- Test 74: If condition is false, whole block | expected: {}
+Let V = 33
+[A1] := "single digit"
+if V < 10
+
+' ---- Test 75: If condition is true, whole block | expected: {'A1': 'single digit'}
+Let V = 1
+[A1] := "single digit"
+if V < 10
+
+' ---- Test 76: If condition is true, whole block with division | expected: {'A1': 5.0}
+For a = 20 and b = 4
+[A1] := a / b
+If b not = 5
+
+' ---- Test 77: If then block with else | expected: {'A1': 1}
+: name = "Jane"
+For Friend as number
+If name in {"Oscar", "Jane"} then
+	Let Friend = 1
+Else
+	Let Friend = 99
+End
+[A1] := Friend
+
+' ---- Test 78: Single line if then else | expected: {'A1': 99}
+: name = "Liz"
+For Friend as number
+If name in {"Oscar", "Jane"} then let Friend = 1 else let Friend = 99
+[A1] := Friend
+
+' ---- Test 79: Elseif statement | expected: {'A1': 2}
+: name = "Jane"
+For Friend as Number
+If name = "Oscar" Then
+  Let Friend = 1
+elseIf name = "Jane" Then
+  Let Friend = 2
+Else
+  Let friend = 99
+End
+[A1] := Friend
+
+' ---- Test 80: Undefined variable, condition is false | expected: {'A1': 'small'}
+If V > 10 then
+  [A1] := "big"
+else
+  [A1] := "small"
+End
+
+' ---- Test 81: Multiple conditions | expected: {'A1': 'true', 'B1': 'true'}
+For a = 3 and b = 7
+if b > a and a <= 3 and b not = 16 then
+  [A1] := "true"
+End
+If b = 5 OR a = 3 then
+  [B1] := "true"
+End
+
+' ---- Test 82: If constraint on Expression | expected: {'A1': 'true'}
+If 1 + 1 = 2 then
+  [A1] := "true"
+End
+
+' ---- Test 83: If constraint on Expression with variable | expected: {'A1': 'true'}
+For a = 3
+If a * 3 = 9 then [A1] := "true"
+
+' ---- Test 84: If constraint on Expression with comparison | expected: {'A1': 'true'}
+For a = 3
+If 10 > a * 3 then [A1] := "true"
+
+' ---- Test 85: For loop with range | expected: {'A1': 'hello', 'A2': 'hello', 'A3': 'hello'}
+For i in 1 to 3
+[A{i}] := "hello"
+
+' ---- Test 86: Combining loops | expected: {'A1': 8, 'A2': 9}
+For a in 1 to 1000
+For b in 8 to 9
+push [A{a}] = b
+
+' ---- Test 87: Combining loops with different ranges | expected: {'A1': 8, 'A2': 9}
+For a in 1 to 2
+For b in 8 to 90
+push [A{a}] = b
+
+' ---- Test 88: For loop block | expected: {'A1': 4, 'A2': 5, 'A3': 6}
+For i in 1 to 3 do
+	[A{i}] := i + 3
+End
+
+' ---- Test 89: For loop block with set | expected: {'A1': 4, 'A2': 5, 'A3': 6}
+For I in {1, 2, 3} do
+	[A{I}] := I + 3
+End
+
+' ---- Test 90: Nested loop with AND | expected: {'A1': 9, 'A2': 10, 'A3': 18, 'A4': 20}
+For a in {1, 2} AND b in {9, 10} do
+  [A{2 * a + b - 10}] := a * b
+End
+
+' ---- Test 91: Loop with index | expected: {'A1': 9, 'A2': 10}
+For b in {9, 10} index i do
+	[A{i}] := b
+End
+
+' ---- Test 92: Loop with step and index | expected: {'A1': 9, 'A2': 12, 'A3': 15}
+For b in 9 to 15 Step 3 index i do
+	[A{i}] := b
+End
+
+' ---- Test 93: Nested loop with step and index | expected: {'A4': 9, 'A5': 12, 'A6': 15, 'A7': 18, 'A8': 24, 'A9': 30}
+For a in {1, 2} Index I AND b in 9 to 15 step 3 Index J do
+  [A{3 * I + J}] := a * b
+End
+
+' ---- Test 94: If condition Dimension constraint - single element | expected: {'A1': 'true'}
+for x = {3}
+if x dim 1 then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 95: If condition Dimension constraint - array | expected: {'A1': 'false'}
+for x = {3, 8}
+if x dim 1 then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 96: If condition Dimension constraint - 2D | expected: {'A1': 'true'}
+for x = {3, 8}
+if x dim 2 then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 97: Dimension condition two-dim | expected: {'A1': 'true'}
+for x = {3, 8; 1, 0}
+if x dim {2, 2} then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 98: Dimension condition zero-dim | expected: {'A1': 'false'}
+for x = 3
+if x dim 1 then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 99: Dimension condition zero-dim with * | expected: {'A1': 'false'}
+for x = 3
+if x dim * then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 100: Dimension condition zero-dim with {} | expected: {'A1': 'true'}
+for x = 3
+if x dim {} then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 101: If condition Type constraint - uninitialized | expected: {'A1': 'true'}
+For z as text
+If z as text then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 102: If condition Type constraint - string value | expected: {'A1': 'true'}
+For z = "Grid"
+If z as text then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 103: If condition Type constraint - number value | expected: {'A1': 'false'}
+For z = 99
+If z as text then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 104: If condition Type and Dimension constraint | expected: {'A1': 'true'}
+For z = "Grid"
+If z as text dim {} then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 105: If condition Type and Dimension constraint - array | expected: {'A1': 'true'}
+For z = {"Grid", "lang"}
+If z as text dim * then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 106: If condition Type and Dimension constraint - scalar | expected: {'A1': 'false'}
+For z = "Grid"
+If z as text dim * then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 107: If condition Possible Values constraint - in set | expected: {'A1': 'true'}
+For Z = "Grid"
+If z in {"Grid", "lang", "2025"} then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 108: If condition Possible Values constraint - not in set | expected: {'A1': 'false'}
+For z = "hello"
+If z in {"Grid", "lang", "2025"} then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 109: If condition Possible Values constraint - in range | expected: {'A1': 'true'}
+For z = 99
+If z in 50 to 100 then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 110: If condition Unit constraint - with value | expected: {'A1': 'true'}
+For z of dollar = 4
+If z of dollar then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 111: If condition Unit constraint - without value | expected: {'A1': 'true'}
+For z of dollar
+If z of Dollar then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 112: If condition Unit constraint - different unit | expected: {'A1': 'false'}
+For z of peso
+If z of dollar then
+  [A1] := "true"
+else
+  [A1] := "false"
+End
+
+' ---- Test 113: Full Fibonacci Sequence (30 elements) | expected: {'A1': 1, 'B1': 1, 'A2': 1, 'B2': 2, 'A3': 2, 'B3': 3, 'A4': 3, 'B4': 5, 'A5': 5, 'B5': 8, 'A6': 8, 'B6': 13, 'A7': 13, 'B7': 21, 'A8': 21, 'B8': 34, 'A9': 34, 'B9': 55, 'A10': 55, 'B10': 89, 'A11': 89, 'B11': 144, 'A12': 144, 'B12': 233, 'A13': 233, 'B13': 377, 'A14': 377, 'B14': 610, 'A15': 610, 'B15': 987, 'A16': 987, 'B16': 1597, 'A17': 1597, 'B17': 2584, 'A18': 2584, 'B18': 4181, 'A19': 4181, 'B19': 6765, 'A20': 6765, 'B20': 10946, 'A21': 10946, 'B21': 17711, 'A22': 17711, 'B22': 28657, 'A23': 28657, 'B23': 46368, 'A24': 46368, 'B24': 75025, 'A25': 75025, 'B25': 121393, 'A26': 121393, 'B26': 196418, 'A27': 196418, 'B27': 317811, 'A28': 317811, 'B28': 514229, 'A29': 514229, 'B29': 832040, 'A30': 832040, 'B30': 1346269}
+For D as number dim {30, 2}
+Let D[A1] = 1
+Let D[B1] = 1
+For i in 1 to 29 do
+  Let D{i+1, 1} = D{i, 2}
+  Let D{i+1, 2} = D{i, 1} + D{i, 2}
+end
+[^A1] := D
+
+' ---- Test 114: Pascal Triangle Sequence | expected: {'A1': 1, 'A2': 4, 'A3': 9, 'A4': 16, 'A5': 25, 'A6': 36, 'A7': 49, 'A8': 64, 'A9': 81, 'A10': 100, 'A11': 121, 'A12': 144, 'A13': 169, 'A14': 196, 'A15': 225}
+For D as number dim {15, 1}
+Let D[A1] = 1
+For I in 3 to 30 step 2 index k do
+   Let D{k+1, 1} = D{k, 1} + i
+end
+[^A1] := D
+
+' ---- Test 115: Fibonacci Sequence with Cell References | expected: {'A1': 1, 'B1': 1, 'A2': 1, 'B2': 2, 'A3': 2, 'B3': 3, 'A4': 3, 'B4': 5, 'A5': 5, 'B5': 8, 'A6': 8, 'B6': 13, 'A7': 13, 'B7': 21, 'A8': 21, 'B8': 34, 'A9': 34, 'B9': 55, 'A10': 55, 'B10': 89, 'A11': 89, 'B11': 144, 'A12': 144, 'B12': 233, 'A13': 233, 'B13': 377, 'A14': 377, 'B14': 610, 'A15': 610, 'B15': 987, 'A16': 987, 'B16': 1597, 'A17': 1597, 'B17': 2584, 'A18': 2584, 'B18': 4181, 'A19': 4181, 'B19': 6765, 'A20': 6765, 'B20': 10946, 'A21': 10946, 'B21': 17711, 'A22': 17711, 'B22': 28657, 'A23': 28657, 'B23': 46368, 'A24': 46368, 'B24': 75025, 'A25': 75025, 'B25': 121393, 'A26': 121393, 'B26': 196418, 'A27': 196418, 'B27': 317811, 'A28': 317811, 'B28': 514229, 'A29': 514229, 'B29': 832040, 'A30': 832040, 'B30': 1346269}
+[A1:B1] := 1
+For I in 1 to 29 do
+  [a{I+1}] := [B{i}]
+  [b{I+1}] := [a{i}] + [B{I}]
+end
+
+' ---- Test 116: Array with step and index in FOR loop | expected: {'A1': 1.0, 'B1': 4.0, 'C1': 9.0, 'D1': 16.0, 'E1': 25.0, 'F1': 36.0, 'G1': 49.0, 'H1': 64.0, 'I1': 81.0, 'J1': 100.0, 'K1': 121.0, 'L1': 144.0, 'M1': 169.0, 'N1': 196.0, 'O1': 225.0}
+For D as number dim 15
+Let D[1] = 1
+For i in 3 to 30 step 2 index k do
+Let D(k+1) = D(k) + i
+end
+[^A1] := D
+
+' ---- Test 117: Nested FOR loop with dynamic range building grid pattern | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 0.0, 'E1': 0.0, 'F1': 0.0, 'G1': 0.0, 'H1': 0.0, 'I1': 0.0, 'J1': 0.0, 'K1': 0.0, 'L1': 0.0, 'A2': 0.0, 'B2': 1.0, 'C2': 1.0, 'D2': 0.0, 'E2': 0.0, 'F2': 0.0, 'G2': 0.0, 'H2': 0.0, 'I2': 0.0, 'J2': 0.0, 'K2': 0.0, 'L2': 0.0, 'A3': 0.0, 'B3': 1.0, 'C3': 2.0, 'D3': 1.0, 'E3': 0.0, 'F3': 0.0, 'G3': 0.0, 'H3': 0.0, 'I3': 0.0, 'J3': 0.0, 'K3': 0.0, 'L3': 0.0, 'A4': 0.0, 'B4': 1.0, 'C4': 3.0, 'D4': 3.0, 'E4': 1.0, 'F4': 0.0, 'G4': 0.0, 'H4': 0.0, 'I4': 0.0, 'J4': 0.0, 'K4': 0.0, 'L4': 0.0, 'A5': 0.0, 'B5': 1.0, 'C5': 4.0, 'D5': 6.0, 'E5': 4.0, 'F5': 1.0, 'G5': 0.0, 'H5': 0.0, 'I5': 0.0, 'J5': 0.0, 'K5': 0.0, 'L5': 0.0, 'A6': 0.0, 'B6': 1.0, 'C6': 5.0, 'D6': 10.0, 'E6': 10.0, 'F6': 5.0, 'G6': 1.0, 'H6': 0.0, 'I6': 0.0, 'J6': 0.0, 'K6': 0.0, 'L6': 0.0, 'A7': 0.0, 'B7': 1.0, 'C7': 6.0, 'D7': 15.0, 'E7': 20.0, 'F7': 15.0, 'G7': 6.0, 'H7': 1.0, 'I7': 0.0, 'J7': 0.0, 'K7': 0.0, 'L7': 0.0, 'A8': 0.0, 'B8': 1.0, 'C8': 7.0, 'D8': 21.0, 'E8': 35.0, 'F8': 35.0, 'G8': 21.0, 'H8': 7.0, 'I8': 1.0, 'J8': 0.0, 'K8': 0.0, 'L8': 0.0, 'A9': 0.0, 'B9': 1.0, 'C9': 8.0, 'D9': 28.0, 'E9': 56.0, 'F9': 70.0, 'G9': 56.0, 'H9': 28.0, 'I9': 8.0, 'J9': 1.0, 'K9': 0.0, 'L9': 0.0, 'A10': 0.0, 'B10': 1.0, 'C10': 9.0, 'D10': 36.0, 'E10': 84.0, 'F10': 126.0, 'G10': 126.0, 'H10': 84.0, 'I10': 36.0, 'J10': 9.0, 'K10': 1.0, 'L10': 0.0}
+For D as number dim {10, 12}
+
+Let D[B1] = 1
+For a in 2 to 10 AND b in 1 to a do
+  Let D{a, b+1} = d{a-1, b} + d{a-1, b+1}
+End
+
+[^A1] := D
+
+' ---- Test 118: Complex nested FOR loops with IF conditions and set iteration | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 1.0, 'E1': 1.0, 'F1': 0.0, 'G1': 1.0, 'H1': 2.0, 'I1': 1.0, 'J1': 0.0, 'K1': 1.0, 'L1': 3.0, 'M1': 3.0, 'N1': 1.0, 'O1': 0.0, 'P1': 1.0, 'Q1': 4.0, 'R1': 6.0, 'S1': 4.0, 'T1': 1.0, 'U1': 0.0, 'V1': 1.0, 'W1': 5.0, 'X1': 10.0, 'Y1': 10.0, 'Z1': 5.0, 'AA1': 1.0, 'AB1': 0.0, 'AC1': 1.0, 'AD1': 6.0, 'AE1': 15.0, 'AF1': 20.0, 'AG1': 15.0, 'AH1': 6.0, 'AI1': 1.0, 'AJ1': 0.0, 'AK1': 1.0, 'AL1': 7.0, 'AM1': 21.0, 'AN1': 35.0, 'AO1': 35.0, 'AP1': 21.0, 'AQ1': 7.0, 'AR1': 1.0, 'AS1': 0.0, 'AT1': 1.0, 'AU1': 8.0, 'AV1': 28.0, 'AW1': 56.0, 'AX1': 70.0, 'AY1': 56.0, 'AZ1': 28.0, 'BA1': 8.0, 'BB1': 1.0, 'BC1': 0.0, 'BD1': 1.0, 'BE1': 9.0, 'BF1': 36.0, 'BG1': 84.0, 'BH1': 126.0, 'BI1': 126.0, 'BJ1': 84.0, 'BK1': 36.0, 'BL1': 9.0, 'BM1': 1.0}
+For D as number dim 65
+Let D(2) = 1
+For I in 1 to 9 do
+  For a = (i + 3) * i \ 2 + 1
+  For b = (I + 1) * i \ 2
+  For J in 1 to I+1 do
+    Let D(a+j) = D(b+j-1) + D(B+J)
+  end
+end
+[^A1] := D
+
+' ---- Test 119: Binomial coefficient calculation with nested loops | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 1.0, 'E1': 1.0, 'F1': 0.0, 'G1': 1.0, 'H1': 2.0, 'I1': 1.0, 'J1': 0.0, 'K1': 1.0, 'L1': 3.0, 'M1': 3.0, 'N1': 1.0, 'O1': 0.0}
+For D as number dim 15
+Let D(2) = 1
+For I in 1 to 3 do
+  let a = (i + 3) * i \ 2 + 1
+  let b = (I + 1) * i \ 2
+  For J in {1, 2, 3, 4} do
+    if j <= I+1 then
+      Let D(a+j) = D(b+j-1) + D(B+J)
+    end
+  end
+end
+[^A1] := D
+
+' ---- Test 120: Binomial type with grid spilling (Pascal's Triangle) | expected: {'A1': 0, 'B1': 1, 'B2': 1, 'C2': 1, 'B3': 1, 'C3': 2, 'D3': 1, 'B4': 1, 'C4': 3, 'D4': 3, 'E4': 1, 'B5': 1, 'C5': 4, 'D5': 6, 'E5': 4, 'F5': 1, 'B6': 1, 'C6': 5, 'D6': 10, 'E6': 10, 'F6': 5, 'G6': 1, 'B7': 1, 'C7': 6, 'D7': 15, 'E7': 20, 'F7': 15, 'G7': 6, 'H7': 1, 'B8': 1, 'C8': 7, 'D8': 21, 'E8': 35, 'F8': 35, 'G8': 21, 'H8': 7, 'I8': 1, 'B9': 1, 'C9': 8, 'D9': 28, 'E9': 56, 'F9': 70, 'G9': 56, 'H9': 28, 'I9': 8, 'J9': 1, 'B10': 1, 'C10': 9, 'D10': 36, 'E10': 84, 'F10': 126, 'G10': 126, 'H10': 84, 'I10': 36, 'J10': 9, 'K10': 1}
+define binomial as type
+  [B1] := 1
+  For a in 2 to 10 AND b in 2 to a+1 do
+    Let grid{a, b} = grid{a-1, b-1} + grid{a-1, b}
+  End
+end binomial
+
+: Bin = new Binomial()
+[^A1] := Bin.grid
+
+' ---- Test 121: Guard prevents earlier statements | expected: {}
+[A1] := 9
+If 2 < 1
+[A2] := 7
+
+' ---- Test 122: Guard allows execution when true | expected: {'A1': 5, 'A2': 6}
+: needle = 5
+[A1] := needle
+If needle < 10
+[A2] := needle + 1
+
+' ---- Test 123: Guard blocks when condition false with definition | expected: {}
+: limit = 25
+[A1] := 42
+If limit < 10
+[A2] := limit
+
+' ---- Test 124: Assignment waits for future FOR variable | expected: {'A1': 11}
+[A1] := total + 1
+For total as number = 10
+
+' ---- Test 125: LET waits for future definition | expected: {'A1': 12}
+Let result = base + 5
+For base as number = 7
+[A1] := result
+
+' ---- Test 126: IF THEN ELSE simple | expected: {'A1': 'single', 'B1': 'ok'}
+: V = 1
+[A1] := "single"
+If V < 10 then [B1] := "ok"
+
+' ---- Test 127: FOR range block assignment | expected: {'A1': 1, 'A2': 2, 'A3': 3}
+For i in 1 to 3 do
+  [A{i}] := i
+End
+
+' ---- Test 128: Guard prevents runtime errors in body | expected: {}
+If 1 = 0
+[A1] := 1 / 0
+
+' ---- Test 129: Global FOR declaration executes before main | expected: {'A1': 6}
+For length as number = 6
+[A1] := length
+
+' ---- Test 130: Doc LET chain dependencies | expected: {'A1': 8.0}
+Let X = 2 and Y = X * 5 and Z = Y - X
+[A1] := Z
+
+' ---- Test 131: Doc LET with late declaration | expected: {'A1': 6.0}
+Let x = y \ 2
+For x as number
+For y as number = 13
+[A1] := x
+
+' ---- Test 132: Doc guard sum condition | expected: {'B1': 400, 'B2': 500, 'A1': 9}
+[B1] := 400
+[B2] := 500
+[A1] := 9
+If sum[B1:B2] < 1000
+
+' ---- Test 133: Doc guard with input allows execution | inputs: ['500'], expected: {'A1': 9}
+Input x as number
+[A1] := 9
+If x < 1000
+
+' ---- Test 134: Guard allows execution when true with input | inputs: ['5'], expected: {'A1': 5.0, 'A2': 6.0}
+input needle as number
+[A1] := needle
+If needle < 10
+[A2] := needle + 1
+
+' ---- Test 135: Guard blocks when condition false with input | inputs: ['25'], expected: {}
+input limit as number
+[A1] := 42
+If limit < 10
+[A2] := limit
+
+' ---- Test 136: Doc global FOR sequence | expected: {'A2': 2, 'A3': 3, 'A4': 4}
+For n in 2 to 4 do
+  [A{n}] := n
+End
+
+' ---- Test 137: Tyre size lookup TOYO YARI | inputs: ['TOYO', 'YARI'], expected: {'A1': 195, 'B1': 55, 'C1': 16}
+Input make as text
+Input model as text
+
+
+
+[A1]: Width as number
+[B1]: Ratio as number
+[C1]: Diameter as number
+
+if make = "TOYO" then
+  if model = "YARI" then
+    let width = 195
+    let ratio = 55
+    let diameter = 16
+  elseif model = "AURI" then
+    let width = 205
+    let ratio = 55
+    let diameter = 16
+  elseif model = "CH-R" then
+    let width = 215
+    let ratio = 60
+    let diameter = 17
+  end
+end
+if make = "MERC" then
+  if model = "A205" then
+    let width = 205
+    let ratio = 55
+    let diameter = 17
+  elseif model = "C200" then
+    let width = 225
+    let ratio = 45
+    let diameter = 18
+  end
+end
+
+if len(make) = 4
+
+' ---- Test 138: Tyre size lookup MERC C200 | inputs: ['MERC', 'C200'], expected: {'A1': 225, 'B1': 45, 'C1': 18}
+Input make as text
+Input model as text
+
+
+
+[A1]: Width as number
+[B1]: Ratio as number
+[C1]: Diameter as number
+
+if make = "TOYO" then
+  if model = "YARI" then
+    let width = 195
+    let ratio = 55
+    let diameter = 16
+  elseif model = "AURI" then
+    let width = 205
+    let ratio = 55
+    let diameter = 16
+  elseif model = "CH-R" then
+    let width = 215
+    let ratio = 60
+    let diameter = 17
+  end
+end
+if make = "MERC" then
+  if model = "A205" then
+    let width = 205
+    let ratio = 55
+    let diameter = 17
+  elseif model = "C200" then
+    let width = 225
+    let ratio = 45
+    let diameter = 18
+  end
+end
+
+if len(make) = 4
+
+' ---- Test 139: Default input value | expected: {'A1': 5.0}
+Input x as number or = 5
+[A1] := x
+
+' ---- Test 140: INIT allows later updates | expected: {'A1': 7, 'A2': 7}
+: x as number init 3
+[A1] := x
+push x = 7
+[A2] := x
+
+' ---- Test 141: Function reverse example | expected: {'A1': 'DENIS'}
+define Reverse as Function
+ Input word as Text
+ For rev as Text init ""
+ For i in 1 to Len(word) do
+  Let c = Mid(word, i, 1)
+  push rev = c & rev
+ End
+ return rev
+end Reverse
+[A1] := Reverse("SINED")
+
+' ---- Test 142: Function square with output | expected: {'A1': 25.0}
+Define SQUARE as Function
+ Input n as number
+ Output sq as number
+ push Sq = n ^ 2
+End SQUARE
+[A1] := square(5)
+
+' ---- Test 143: Function spellreverse multi-output | expected: {}
+define SpellReverse as function
+ Input word as Text
+ For i in Len(word) to 1 step -1 do
+  return Mid(word, i, 1)
+ End
+end SpellReverse
+return SpellReverse("DIRG")
+
+' ---- Test 144: Subprocess pushes to caller binding | expected: {'A1': 6}
+define DoublePush as subprocess
+ Input n as number
+ Output res as number
+ push res = n
+ push res = n * 2
+end DoublePush
+
+DoublePush(3, [^A1])
+
+' ---- Test 145: Subprocess grid spill through result | expected: {'C1': 'G', 'D1': 'R', 'E1': 'I', 'F1': 'D'}
+define SpellReverseSub as subprocess
+ Input word as Text
+ [^A1] := {Mid(word, Len(word), 1), Mid(word, Len(word)-1, 1), Mid(word, Len(word)-2, 1), Mid(word, Len(word)-3, 1)}
+end SpellReverseSub
+
+[^C1] := SpellReverseSub("DIRG").grid
+
+' ---- Test 146: Subprocess split name push to binding | expected: {'A1': 'Jane Doe', 'B1': 'Jane', 'C1': 'Doe'}
+Define SplitName as Subprocess
+ Input Name as text
+ Output Result as text
+ For Parts as text = TextSplit(Name, " ")
+  push Result = Parts
+ End SplitName
+
+[A1] := "Jane Doe"
+SplitName([A1], [^B1])
+
+' ---- Test 147: Subprocess grid builder reverse word | expected: {'A1': 'G', 'B1': 'R', 'C1': 'I', 'D1': 'D'}
+define SpellReverseSub as subprocess
+ Input word as Text
+ For i in Len(word) to 1 step -1 index c do
+  Let grid{1, c} = Mid(word, i, 1)
+ End
+end SpellReverseSub
+For myword = SpellReverseSub("DIRG")
+[^A1] := myword.grid
+
+' ---- Test 148: Type constructor with inputs and mutable peer | expected: {'A1': 3.0, 'B1': -2.0, 'A3': 1.2, 'B3': 1001.0}
+Define Point1 as Type
+ Input in_x as number
+ Input in_y as number
+ : x = in_x
+ : y = in_y
+End Point1
+Define Point2 as Type
+ : x as number
+ : y as number
+End Point2
+
+: P1 = new Point1(3.0, -2.0)
+: P2 = new Point2(1.2, 0.7)
+push P2.Y = 1001.0
+[^A1] := P1
+[^A3] := P2
+
+' ---- Test 149: Type constructor immutability conflict | expected: error
+Define Point1 as Type
+ Input in_x as number
+ Input in_y as number
+ : x = in_x
+ : y = in_y
+End Point1
+: P1 = new Point1(3.0, -2.0)
+push P1.Y = 1001.0
+[A1] := P1.y
+
+' ---- Test 150: Member function DistanceToOrigin | expected: {'A1': 5.0}
+Define Point1 as Type
+: x as number
+: y as number
+End Point1
+Define Point1.DistanceToOrigin as Function
+Input p as Point1
+return SQRT(p.x ^ 2 + p.y ^ 2)
+end Point1.DistanceToOrigin
+: P1 = new Point1(3, 4)
+[A1] := P1.DistanceToOrigin
+
+' ---- Test 151: INIT copies object, equality shares reference | expected: {'A1': -1.0, 'B1': 2.0, 'A3': -1.0, 'B3': 0.0}
+Define Point as Type
+: x as number
+: y as number
+End Point
+: f = new Point(-1.0, 0.0)
+: p init f
+push f.y = 2.0
+[^A1] := f
+[^A3] := p
+
+' ---- Test 152: Equality constraint tracks updates | expected: {'A1': -1.0, 'B1': 2.0}
+Define Point as Type
+: x as number
+: y as number
+End Point
+: f = new Point(-1.0, 0.0)
+: p = f
+push f.y = 2.0
+[^A1] := p
+
+' ---- Test 153: Input default via equality constraint | expected: {'A1': 25.0}
+Define square as function
+ Input x as number or = 5
+ return x ^ 2
+End
+: y = square()
+: z = square("circle")
+[^A1] := y
+
+' ---- Test 154: Output INIT vs equality on output | expected: {'A1': 9.0, 'A2': 16.0}
+Define square_init as function
+ Input x as number
+ Output r as number Init x ^ 2
+End
+Define square_eq_c as function
+ Input x as number
+ Output r as number = x ^ 2
+End
+[A1] := square_init(3)
+[A2] := square_eq_c(4)
+
+' ---- Test 155: FOR INIT generator without IN | expected: {'A1': 'GRID', 'A2': 'D', 'A3': 'D'}
+define SpellReverse as function
+ Input word as Text
+ For i in Len(word) to 1 step -1 do
+  return Mid(word, i, 1)
+ End
+end SpellReverse
+: acc as text init ""
+For letter as text init SpellReverse("DIRG") do
+ push acc = acc & letter
+end
+[^A1] := acc
+
+For letter2 as text init SpellReverse("DIRG")
+[A2] := letter2
+
+For letter3 as text
+ push letter3 = SpellReverse("DIRG")
+[A3] := letter3
+
+' ---- Test 156: Subprocess INIT materializes grid result | expected: {'A1': 'G', 'B1': 'R', 'C1': 'I', 'D1': 'D'}
+define SpellReverseSub as subprocess
+ Input word as Text
+ For i in Len(word) to 1 step -1 index c do
+  Let grid{1, c} = Mid(word, i, 1)
+ End
+end SpellReverseSub
+For myword init SpellReverseSub("DIRG")
+[^A1] := myword.grid
+
+' ---- Test 157: Friendly member function call via For assignment | expected: {'A1': 3.605551275463989}
+Define Point1 as Type
+ Input in_x as number
+ Input in_y as number
+ : x = in_x
+ : y = in_y
+End Point1
+
+For P1 = new Point1(3.0, -2.0)
+
+Define Point1.DistanceToOrigin as Function
+ Input p as Point1
+ return SQRT(p.x ^ 2 + p.y ^ 2)
+end Point1.DistanceToOrigin
+
+For d = P1.DistanceToOrigin()
+[^A1] := d
+
+' ---- Test 158: Nested generator zipping in Push | expected: {}
+define SpellReverse as function
+ Input word as Text
+ For i in Len(word) to 1 step -1 do
+  return Mid(word, i, 1)
+ End
+end SpellReverse
+
+define combine as function
+ Input a, b as text
+ return a & "-" & b
+end combine
+
+return combine(SpellReverse("DIRG"), SpellReverse("ecin"))
+
+' ---- Test 159: FOR text without dim allows any size | expected: {}
+For a as text = {"hello", "world", "!"}
+
+' ---- Test 160: FOR text with dim size mismatch | expected: error
+For a as text dim 2 = {"hello", "world", "!"}
+
+' ---- Test 161: FOR nested init with push and cell write | expected: {'A1': 'ox'}
+for acc as text init "" do
+  for letter as text init "o" do
+    push acc = letter & "x"
+    [A1] := acc
+  end
+end
+
+' ---- Test 162: Milestone 4 constraints | expected: {'A1': 3, 'A2': 'Alice', 'B2': 'Bob', 'C2': 'Carla', 'D2': 'Dylan', 'E2': 'Edith'}
+For vmax = 5
+For v <= vmax
+Let v = 3
+For names dim 0 to 4
+Let names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}
+[A1] := v
+[^A2] := names
+
+' ---- Test 163: Combined constraints literal values | expected: {'A2': 2, 'A3': 7, 'A4': 'hi', 'B4': 'yo'}
+: choice as number in {1, 2, 3} = 2
+: span as number in 1 to 10 = 7
+: words as text dim 2 = {"hi", "yo"}
+
+[A2] := choice
+[A3] := span
+[^A4] := words
+
+' ---- Test 164: Subprocess writes into dimmed parts | expected: {'A1': 'Jane Doe', 'B1': 'Jane', 'C1': 'Doe'}
+: parts as text dim 2
+
+Define SplitName as Subprocess
+ Input Name as text
+ push Parts = TextSplit(Name, " ")
+End SplitName
+
+[A1] := "Jane Doe"
+[^B1] := parts
+SplitName([A1])
+[^B1] := parts
+
+' ---- Test 165: Column interpolation | expected: {'D5': 11, 'CE5': 22}
+: i = 4
+[{i :A}5] := 11
+: j = 4
+[{j :CB}5] := 22
+
+' ---- Test 166: Hidden field skipped on spill | expected: {'A1': 7.0}
+Define SecretPoint as Type
+: x as number
+: $secret as number init 99
+End SecretPoint
+: p = new SecretPoint with (x = 7)
+[^A1] := p
+
+' ---- Test 167: Hidden field access outside type errors | expected: error
+Define SecretPoint as Type
+: x as number
+: $secret as number init 99
+End SecretPoint
+: p = new SecretPoint with (x = 7)
+[A1] := p.secret
+
+' ---- Test 168: Private helper in constructor | expected: {'A1': 3.0, 'B1': 2.0}
+Define Point as Type
+Input in_x, in_y as number
+: x as number init in_x
+: y as number init in_y
+ShiftRight(2.0)
+End Point
+Define Point.ShiftRight as PrivateHelper
+Input dx as number
+Push x = x + dx
+End Point.ShiftRight
+: p = new Point(1.0, 2.0)
+[^A1] := p
+
+' ---- Test 169: Private helper called from member function | expected: {'A1': 1.5, 'B1': 2.0}
+Define Point as Type
+Input in_x, in_y as number
+: x as number init in_x
+: y as number init in_y
+End Point
+Define Point.ShiftRight as PrivateHelper
+Input dx as number
+Push x = x + dx
+End Point.ShiftRight
+Define Point.GoSlightlyRight as Function
+Input P as Point
+Output Shifted as Point
+Push Shifted = P.ShiftRight(0.5)
+End Point.GoSlightlyRight
+: p = new Point(1.0, 2.0)
+For s as Point
+Push s = Point.GoSlightlyRight(p)
+[^A1] := s
+
+' ---- Test 170: Hidden member function call outside type errors | expected: error
+Define Point as Type
+: x as number
+: y as number
+End Point
+Define $Point.OnTheRight as Function
+Input P1, P2 as Point
+Return P1.x > P2.x?
+End $Point.OnTheRight
+: p1 = new Point(1.0, 0.0)
+: p2 = new Point(2.0, 0.0)
+[A1] := p1.OnTheRight(p2)
+
+' ---- Test 171: Type instantiation from array without constructor inputs | expected: {'A1': 1.0, 'B1': -5.0}
+Define Simple as Type
+: x as number
+: y as number
+End Simple
+For P as Simple = {1.0, -5.0}
+[^A1] := P
+
+' ---- Test 172: New with WITH and shorthand variables | expected: {'A1': 1.0, 'B1': -5.0}
+Define Point as Type
+: x as number
+: y as number
+End Point
+: x = 1.0
+: y = -5.0
+: P = new Point with (x, y)
+[^A1] := P
+
+' ---- Test 173: Type extension with Super and new field | expected: {'A1': 2.0, 'B1': 3.0, 'C1': 0.5}
+Define Point as Type
+Input in_x, in_y as number or = 0.0
+: x as number init in_x
+: y as number init in_y
+End Point
+Define RoundDot as Type(Point)
+Input in_x, in_y as number or = 0.0
+Super(in_x, in_y)
+: radius as number or = 0.1
+End RoundDot
+: R = new RoundDot(2.0, 3.0) with (radius = 0.5)
+[^A1] := R
+
+' ---- Test 174: Type constraints on numeric subtype | expected: {'A1': 0.25}
+Define RateValue as Type(Number) >= 0.0 <= 1.0
+End RateValue
+For r as RateValue = 0.25
+[A1] := r
+
+' ---- Test 175: Type constraint violation errors | expected: error
+Define RateValue as Type(Number) >= 0.0 <= 1.0
+End RateValue
+For r as RateValue = 1.5
+[A1] := r
+
+' ---- Test 176: Member function override polymorphism | expected: {'A1': 0}
+Define Point as Type
+: x as number
+: y as number
+End Point
+Define Point.OnTheLeft as Function
+Input P1, P2 as Point
+Return P1.x < P2.x?
+End Point.OnTheLeft
+Define RoundDot as Type(Point)
+Input in_x, in_y as number or = 0.0
+Super(in_x, in_y)
+: radius as number or = 0.1
+End RoundDot
+Define RoundDot.OnTheLeft as Function
+Input D1, D2 as RoundDot
+Return D1.x + D1.radius + D2.radius < D2.x?
+End RoundDot.OnTheLeft
+: R = new RoundDot(9.0, 0.0) with (radius = 0.5)
+: S = new RoundDot(9.5, 4.0) with (radius = 0.5)
+[A1] := R.OnTheLeft(S)
+
+' ---- Test 177: Member function override uses RoundDot | expected: {'A1': 1}
+Define Point as Type
+Input in_x, in_y as number or = 0.0
+: x as number init in_x
+: y as number init in_y
+End Point
+Define Point.OnTheLeft as Function
+Input P1, P2 as Point
+Return P1.x < P2.x?
+End Point.OnTheLeft
+Define RoundDot as Type(Point)
+Input in_x, in_y as number or = 0.0
+Super(in_x, in_y)
+: radius as number or = 0.1
+End RoundDot
+Define RoundDot.OnTheLeft as Function
+Input D1, D2 as RoundDot
+Return D1.x + D1.radius + D2.radius < D2.x?
+End RoundDot.OnTheLeft
+: R = new RoundDot(9.0, 0.0) with (radius = 0.5)
+: P = new RoundDot(900.0, 0.0) with (radius = 0.5)
+[A1] := R.OnTheLeft(P)
+
+' ---- Test 178: Array init fixed dim via LET | expected: {'A1': 12, 'B1': 5, 'C1': 0.3}
+For A as Number dim 3
+let A(1) = 12
+let A(2) = 5
+let A(3) = 0.3
+[^A1] := A
+
+' ---- Test 179: Array dim * requires PUSH | expected: error
+For B as Number dim *
+let B(1) = 12
+
+' ---- Test 180: Array dim * grows with PUSH | expected: {'A1': 12, 'B1': 5, 'C1': 0.3}
+For C as Number dim *
+push C(1) = 12
+push C(2) = 5
+push C(3) = 0.3
+[^A1] := C
+
+' ---- Test 181: Push without dim errors | expected: error
+For D as Number
+push D(1) = 12
+
