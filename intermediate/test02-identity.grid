@@ -1,0 +1,1 @@
+⎝ This should fail on a semantic error (end name does not match function name)⎠⎩1⎭Define❲abcsquare❳asFunction⎩2⎭Input❲n❳asnumber⎩3⎭Output❲sq❳asnumber⎩4⎭push❲sq❳="hello"^2⎩5⎭End❲abc❳⎩6⎭

@@ -1,32 +1,21 @@
 
 
 import rtlib
-subject = rt.libFresh ()
+subject = rtlib.fresh ()
 #  ---- Test 142: Function square with output | expected: {'A1': 25.0} #1
 
 def square (self): #2
 
-    rtlib.input (subject, n,  "number") #3
-    rtlib.output (subject, sq,  "number") #4
-    rtlib.push (subect, sq, n^2) #5
+    rtlib.input (subject, "n",  "number") #3
+    rtlib.output (subject, "sq",  "number") #4
+    rtlib.push (subject, "sq", n^2) #5
     
     #end square
 #6
 
 
-rtlib.cellAssign ([a1], square(5))
+rtlib.cellAssign (subject, "a", 1, square(5))
 #7
-
-#8
-
-def abcsquare (self): #9
-
-    rtlib.input (subject, n,  "number") #10
-    rtlib.output (subject, sq,  "number") #11
-    rtlib.push (subect, sq, n^2) #12
-    
-    #end abc
-#13
 
 
 

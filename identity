@@ -1,0 +1,8 @@
+#!/bin/bash
+set -o pipefail
+## grid-identity.rwr shows how to do "nothing" (output == input)
+##  but, this checks for basic typos and that the scripts are OK
+## delete calls to this script (from @makec) later
+cat ${test}.grid |\
+    ${PBP}/t2t prepass | tee ./intermediate/pre-identity.grid |\
+    ${PBP}/t2t grid grid-identity | tee ./intermediate/${test}-identity.grid

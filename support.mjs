@@ -9,9 +9,9 @@ function incnl () {
 }
 
 // semantic checks
-function semcheckideq (id1, id2) {
+function semcheckideq (id1, id2, line) {
     if (id1 != id2) {
-	throw new Error (`ending name ${id2} does not match function name ${id1}`);
+	throw new Error (`ending name ${id2} does not match function name ${id1} at line ${line}`);
     }
     return "";
 }

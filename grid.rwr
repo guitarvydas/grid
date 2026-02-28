@@ -1,7 +1,7 @@
 % parameter functionid
 
 % rewrite grid {
-  Program [Statement+] = ‛\nimport rtlib\nsubject = rt.libFresh ()«Statement»’
+  Program [Statement*] = ‛\nimport rtlib\nsubject = rtlib.fresh ()«Statement»’
   TopLevelStatement_empty [eol] = ‛\n«eol»’
   TopLevelStatement_return [_ e eol] = ‛\nprint («e»)«eol»’
   TopLevelStatement_function [f] = ‛\n«f»’
@@ -16,11 +16,11 @@
   FuncInnard_output [s eol] = ‛«s»«eol»’
   FuncInnard_push [s eol] = ‛«s»«eol»’
 
-  InputStatement [_input id tyc?] = ‛rtlib.input (subject, «id», «tyc»)’
-  OutputStatement [_output id tyc?] = ‛rtlib.output (subject, «id», «tyc»)’
-  PushStatement [_push id _eq e] = ‛rtlib.push (subect, «id», «e»)’
+  InputStatement [_input id tyc?] = ‛rtlib.input (subject, "«id»", «tyc»)’
+  OutputStatement [_output id tyc?] = ‛rtlib.output (subject, "«id»", «tyc»)’
+  PushStatement [_push id _eq e] = ‛rtlib.push (subject, "«id»", «e»)’
 
-  Assignment [cell _ceq e] = ‛\nrtlib.cellAssign («cell», «e»)’
+  Assignment [cell _ceq e] = ‛\nrtlib.cellAssign (subject, «cell», «e»)’
 
   TypeConstraint [_as ty] = ‛ "«ty»"’
   Type_number [_] = ‛«_»’
@@ -44,7 +44,7 @@
 
   FunctionCall [id lp Arg+ rp] = ‛«id»«lp»«Arg»«rp»’
   Arg [e _c?] = ‛«e»«_c»’
-  Cell [lb id rb] = ‛«lb»«id»«rb»’
+  Cell [lb id rb] = ‛«id»’
   plainstring [lq cs* rq] = ‛«lq»«cs»«rq»’
 
   EOL [comment? nl] = ‛«comment»«nl»’
@@ -54,5 +54,5 @@
 
   number [digit+] = ‛«digit»’
   id [lb cs* rb] = ‛«lb»«cs»«rb»’
-  cellid [lb letters+ digits+ rb] = ‛«lb»«letters»«digits»«rb»’
+  cellid [lb letters+ digits+ rb] = ‛"«letters»", «digits»’
 }

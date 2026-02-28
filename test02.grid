@@ -1,0 +1,6 @@
+' This should fail on a semantic error (end name does not match function name)
+Define abcSQUARE as Function
+ Input n as number
+ Output sq as number
+ push Sq = "hello" ^ 2
+End abc

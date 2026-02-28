@@ -1,38 +1,30 @@
 #!/bin/bash
 set -o pipefail
+export SHELLOPTS
 
 ######### commands specific to this project #############
 
 test=test01
 mkdir -p intermediate
 
-## the next 5 lines are for expository purposes only - grid-identity.rwr shows how to do "nothing" (output == input)
-##  but, this checks for basic typos and that the scripts are OK
-echo
-echo '*** identity (output == input) ***'
-cat ${test}.grid |\
-    ${PBP}/t2t prepass | tee ./intermediate/pre-identity.grid |\
-    ${PBP}/t2t grid grid-identity | tee ./intermediate/${test}-identity.grid
+## test0
+echo "--------- test 0 ------------"
+export test=test0
+./identity | ./emit-python >test.py
+./run-python test.py
 
 echo
-echo '*** semantic checking (identity if OK) ***'
-cat ${test}.grid |\
-    ${PBP}/t2t prepass | tee ./intermediate/pre-identity.grid |\
-    ${PBP}/t2t grid grid-semcheck | tee ./intermediate/${test}-semcheck.grid
-
-echo
-echo '*** Python ***'
-cat ${test}.grid |\
-    ${PBP}/t2t prepass | tee ./intermediate/pre.grid |\
-    ${PBP}/t2t grid | tee ./intermediate/${test}.grid |\
-    ${PBP}/t2t postpass | tee ./intermediate/post.grid |\
-    ${PBP}/indent | tee ./intermediate/indent.grid >test.py
+echo "--------- test 01 ------------"
+export test=test01
+./identity | ./semantics | ./emit-python >test.py
 cat test.py
 
-# ## more expository - delete later
-# echo
-# echo '*** Run ***'
-# python test.py
+echo
+echo "--------- test 02 (should fail on error) ------------"
+# again, with semantic error
+export test=test02
+./identity | ./semantics | ./emit-python >fail.py
+
 
 ### ./intermediate contains the intermediate generated files - you might want to look at these while debugging the
 ###  compiler, else, delete the "| tee ... |\" stuff above

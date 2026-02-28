@@ -1,0 +1,5 @@
+#!/bin/bash
+set -o pipefail
+${PBP}/t2t grid | tee ./intermediate/${test}.grid |\
+    ${PBP}/t2t postpass | tee ./intermediate/post.grid |\
+    ${PBP}/indent | tee ./intermediate/indent.grid
