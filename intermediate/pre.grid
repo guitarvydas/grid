@@ -1,2 +1,1300 @@
-⎝ ---- Test 1: Basic calculation | expected: {'A1': 51}⎠⎩1⎭[a1] : a = 51⎩2⎭⎩3⎭⎝ ---- Test 2: Arithmetic with reference | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}⎠⎩4⎭[a1] := 51⎩5⎭[a2] := ([a1] + 15) / 1.2e3⎩6⎭[a3] := sum[a1:a2]⎩7⎭⎩8⎭⎝ ---- Test 3: Variable in cell definition | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}⎠⎩9⎭[a1] : a = 51⎩10⎭[a2] : b = (a + 15) / 1.2e3⎩11⎭[a3] : c = sum([a1:a2])⎩12⎭⎩13⎭⎝ ---- Test 4: Global variables and sum{} | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}⎠⎩14⎭: a = 51⎩15⎭: b = (a + 15) / 1.2e3⎩16⎭: c = sum{a, b}⎩17⎭[a1] := a⎩18⎭[a2] := b⎩19⎭[a3] := c⎩20⎭⎩21⎭⎝ ---- Test 5: Inline comment parsing | expected: {'AB2': 33}⎠⎩22⎭[ab2] := 33 ⎝28th column⎠⎩23⎭⎩24⎭⎝ ---- Test 6: Horizontal array assignment from inline var | expected: {'A1': 51, 'B2': 12, 'C2': 0.055, 'D2': 52, 'E2': 8}⎠⎩25⎭[a1] : a = 51⎩26⎭[^b2] := {12, (15 + a) / 1.2e3, 1+[a1], 8}⎩27⎭⎩28⎭⎝ ---- Test 7: Horizontal array from variable | expected: {'A1': 51, 'B2': 12, 'C2': 0.055, 'D2': 52, 'E2': 8}⎠⎩29⎭[a1] : a = 51⎩30⎭: b = {12, (15 + a) / 1.2e3, 1+[a1], 8}⎩31⎭[^b2] := b⎩32⎭⎩33⎭⎝ ---- Test 8: Math function - SQRT | expected: {'A1': 6.0}⎠⎩34⎭[a1] := 2*( sqrt(100) - 7 )⎩35⎭⎩36⎭⎝ ---- Test 9: Interpolation with cell reference | expected: {'A2': 33, 'A3': -4.9}⎠⎩37⎭: n = 2⎩38⎭[a{ n }] := 33⎩39⎭[a{n + 1}] := -4.9⎩40⎭⎩41⎭⎝ ---- Test 10: 2D range assign and slice | expected: {'A1': 1, 'A2': 10, 'A3': 1, 'B1': 2, 'B2': 11, 'B3': 2, 'C1': 3, 'C2': 12, 'C3': 3}⎠⎩42⎭[a1:c2] := {1, 2, 3; 10, 11, 12}⎩43⎭[^a3] := [a1:c1]⎩44⎭⎩45⎭⎝ ---- Test 11: Range read and vertical assignment | expected: {'A1': 1, 'A2': 2, 'A3': 3, 'B1': 2, 'B2': 3}⎠⎩46⎭[^a1] := {1; 2; 3}⎩47⎭[b1:b2] := [a2:a3]⎩48⎭⎩49⎭⎝ ---- Test 12: Text type assignment | expected: {'A1': 'Hello'}⎠⎩50⎭: t kw kw = "Hello"⎩51⎭[a1] := t⎩52⎭⎩53⎭⎝ ---- Test 13: Cell var definition | expected: {'A1': 3}⎠⎩54⎭[a1] : e = 3⎩55⎭⎩56⎭⎝ ---- Test 14: Number type declaration | expected: {'A1': 42}⎠⎩57⎭: x kw kw = 42⎩58⎭[a1] := x⎩59⎭⎩60⎭⎝ ---- Test 15: Number declaration with scientific notation | expected: {'A1': 0.0001234}⎠⎩61⎭: num kw kw = 12.34e-5⎩62⎭[a1] := num⎩63⎭⎩64⎭⎝ ---- Test 16: Number sequence with custom step | expected: {'B1': 1.0, 'C1': 2.5, 'D1': 4.0, 'E1': 5.5}⎠⎩65⎭: seq = 1 kw 6 kw 1.5⎩66⎭[^b1] := seq⎩67⎭⎩68⎭⎝ ---- Test 17: Interpolated text | expected: {'A1': 'Hello, world!'}⎠⎩69⎭: name kw kw = "world"⎩70⎭[a1] := $"Hello, {name}!"⎩71⎭⎩72⎭⎝ ---- Test 18: Self-referential assignment (should fail) | expected: error⎠⎩73⎭: x = x⎩74⎭⎩75⎭⎝ ---- Test 19: Variable before definition | expected: {'A1': 6}⎠⎩76⎭: y = x + 1⎩77⎭: x kw kw = 5⎩78⎭[a1] := y⎩79⎭⎩80⎭⎝ ---- Test 20: Integer division | expected: {'A1': 3}⎠⎩81⎭[a1] := 10 \ 3⎩82⎭⎩83⎭⎝ ---- Test 21: Exponentiation | expected: {'A1': 8}⎠⎩84⎭[a1] := 2 ^ 3⎩85⎭⎩86⎭⎝ ---- Test 22: Modulus | expected: {'A1': 1}⎠⎩87⎭[a1] := 10 kw 3⎩88⎭⎩89⎭⎝ ---- Test 23: Special value #INF | expected: {'A1': inf}⎠⎩90⎭[a1] := #inf⎩91⎭⎩92⎭⎝ ---- Test 24: Special value -#INF | expected: {'A1': -inf}⎠⎩93⎭[a1] := -#inf⎩94⎭⎩95⎭⎝ ---- Test 25: Special value #N/A | expected: {'A1': nan}⎠⎩96⎭[a1] := #n/a⎩97⎭⎩98⎭⎝ ---- Test 26: Text concatenation | expected: {'A1': 'Hello, world'}⎠⎩99⎭: t1 kw kw = "Hello"⎩100⎭: t2 kw kw = "world"⎩101⎭[a1] := t1 & ", " & t2⎩102⎭⎩103⎭⎝ ---- Test 27: Quote escaping | expected: {'A1': 'I say "Hello"'}⎠⎩104⎭: q kw kw = "I say "Hello""⎩105⎭[a1] := q⎩106⎭⎩107⎭⎝ ---- Test 28: Padding right | expected: {'A1': 'Number:    42'}⎠⎩108⎭: num = 42⎩109⎭[a1] := $"Number: {num, 5}"⎩110⎭⎩111⎭⎝ ---- Test 29: Padding left | expected: {'A1': 'Number: 42   '}⎠⎩112⎭: num = 42⎩113⎭[a1] := $"Number: {num, -5}"⎩114⎭⎩115⎭⎝ ---- Test 30: Multi-line interpolation | expected: {'A1': '{Loudly} I say:\n"Hello", world!'}⎠⎩116⎭: name = "world"⎩117⎭[a1] := $"{*Loudly} I say:  
-		"Hello", {name}!"⎩118⎭⎩119⎭⎝ ---- Test 31: Empty braces | expected: {'A1': 'Empty: {}'}⎠⎩120⎭[a1] := $"Empty: {}"⎩121⎭⎩122⎭⎝ ---- Test 32: Escaped brace | expected: {'A1': 'Escaped: {{{star'}⎠⎩123⎭[a1] := $"Escaped: {{{*star"⎩124⎭⎩125⎭⎝ ---- Test 33: Escaped brace with closing brace | expected: {'A1': 'Escaped: {{{star}'}⎠⎩126⎭[a1] := $"Escaped: {{{*star}"⎩127⎭⎩128⎭⎝ ---- Test 34: Number sequence default step | expected: {'A1': 1, 'B1': 2, 'C1': 3, 'D1': 4, 'E1': 5, 'F1': 6}⎠⎩129⎭: dice = 1 kw 6⎩130⎭[^a1] := dice⎩131⎭⎩132⎭⎝ ---- Test 35: Point type spilling on grid | expected: {'A3': -4.3, 'B3': 2.1}⎠⎩133⎭kw point kw kw⎩134⎭: x kw kw⎩135⎭: y kw kw⎩136⎭kw point⎩137⎭: p = kw point(-4.3, 2.1)⎩138⎭[^a3] := p⎩139⎭⎩140⎭⎝ ---- Test 36: Array of Points spilling on grid | expected: {'C3': 1, 'C4': 3, 'D3': 2, 'D4': 4}⎠⎩141⎭kw dot kw kw⎩142⎭: x kw kw⎩143⎭: y kw kw⎩144⎭kw dot⎩145⎭: p1 = kw dot(1, 2)⎩146⎭: p2 = kw dot(3, 4)⎩147⎭[^c3] := {p1, p2}⎩148⎭⎩149⎭⎝ ---- Test 37: Nested Rectangle type spilling on grid | expected: {'A1': 0, 'B1': 10, 'C1': 5, 'D1': 3}⎠⎩150⎭kw point kw kw⎩151⎭: x kw kw⎩152⎭: y kw kw⎩153⎭kw point⎩154⎭kw rectangle kw kw⎩155⎭: top kw point⎩156⎭: bottom kw point⎩157⎭kw rectangle⎩158⎭[^a1] := kw rectangle(kw point(0, 10), kw point(5, 3))⎩159⎭⎩160⎭⎝ ---- Test 38: Point type assigned to single cell | expected: {'A1': {'x': -4.3, 'y': 2.1}}⎠⎩161⎭kw point kw kw⎩162⎭	: x kw kw⎩163⎭	: y kw kw⎩164⎭kw point⎩165⎭: p = kw point(-4.3, 2.1)⎩166⎭[a1] := p⎩167⎭⎩168⎭⎝ ---- Test 39: Access field of point type | expected: {'A3': 2.1}⎠⎩169⎭kw point kw kw⎩170⎭: x kw kw⎩171⎭: y kw kw⎩172⎭kw point⎩173⎭: p = kw point(-4.3, 2.1)⎩174⎭[a3] := p.y⎩175⎭⎩176⎭⎝ ---- Test 40: Concatenation with interpolation | expected: {'A1': 'I say- hello world!'}⎠⎩177⎭: m = "hello"⎩178⎭[a1] := "I say-" & $" {m} world!"⎩179⎭⎩180⎭⎝ ---- Test 41: Nested {* interpolation | expected: {'A1': '{{'}⎠⎩181⎭[a1] := $"{{*"⎩182⎭⎩183⎭⎝ ---- Test 42: Dimension constraint | expected: {'A1': 0}⎠⎩184⎭: weights kw kw kw {0 kw 10, 0 kw 10} = 0⎩185⎭[a1] := weights{0, 0}⎩186⎭⎩187⎭⎝ ---- Test 43: Multi-dimensional addition | expected: {'A1': [[1.0, 5.0], [13.0, 15.0]]}⎠⎩188⎭[a1] := {0, 3; 10, 11} + {1, 2; 3, 4}⎩189⎭⎩190⎭⎝ ---- Test 44: Multi-dimensional subtraction | expected: {'A1': [[-1.0, 1.0], [7.0, 7.0]]}⎠⎩191⎭[a1] := {0, 3; 10, 11} - {1, 2; 3, 4}⎩192⎭⎩193⎭⎝ ---- Test 45: Multi-dimensional multiplication | expected: {'A1': [[0.0, 6.0], [30.0, 44.0]]}⎠⎩194⎭[a1] := {0, 3; 10, 11} * {1, 2; 3, 4}⎩195⎭⎩196⎭⎝ ---- Test 46: Multi-dimensional division | expected: {'A1': [[0.0, 1.5], [3.3333333333333335, 2.75]]}⎠⎩197⎭[a1] := {0, 3; 10, 11} / {1, 2; 3, 4}⎩198⎭⎩199⎭⎝ ---- Test 47: Multi-dimensional exponentiation | expected: {'A1': [[0.0, 9.0], [1000.0, 14641.0]]}⎠⎩200⎭[a1] := {0, 3; 10, 11} ^ {1, 2; 3, 4}⎩201⎭⎩202⎭⎝ ---- Test 48: Multi-dimensional modulo | expected: {'A1': [[0.0, 1.0], [1.0, 3.0]]}⎠⎩203⎭[a1] := {0, 3; 10, 11} kw {1, 2; 3, 4}⎩204⎭⎩205⎭⎝ ---- Test 49: Multi-dimensional integer division | expected: {'A1': [[0.0, 1.0], [3.0, 2.0]]}⎠⎩206⎭[a1] := {0, 3; 10, 11} \ {1, 2; 3, 4}⎩207⎭⎩208⎭⎝ ---- Test 50: Pipe operator | expected: {'A1': 1.0, 'B1': 2.0, 'A2': 3.0, 'B2': 4.0, 'A3': -5.0, 'B3': -6.0}⎠⎩209⎭[^a1] := {1, 2} | {3, 4} | {-5, -6}⎩210⎭⎩211⎭⎝ ---- Test 51: Dim reshape | expected: {'A1': [[10], [11]]}⎠⎩212⎭[a1] := {10, 11} kw {*, 1}⎩213⎭⎩214⎭⎝ ---- Test 52: Range with 1D vertical | expected: {'B2': 9, 'B3': 8, 'B4': 7}⎠⎩215⎭[b2:b4] := {9, 8, 7}⎩216⎭⎩217⎭⎝ ---- Test 53: Range with 1D repeated | expected: {'A2': 1, 'A3': 1, 'A4': 1, 'B2': 2, 'B3': 2, 'B4': 2}⎠⎩218⎭[a2:b4] := {1, 2}⎩219⎭⎩220⎭⎝ ---- Test 54: Named dimensions | expected: {'A1': 4}⎠⎩221⎭: results kw kw kw {dept: *, quarter: 4} = {9, 4, 5, 1}⎩222⎭results!quarter.kw{"Q1", "Q2", "Q3", "Q4"}⎩223⎭[a1] := results!quarter("Q2")⎩224⎭⎩225⎭⎝ ---- Test 55: Assign and access dimensioned array | expected: {'A1': 10, 'B1': 20, 'B2': 20, 'C1': 30, 'D1': 40}⎠⎩226⎭[a1:d1] := {10, 20, 30, 40}⎩227⎭: results kw kw kw {dept: *, quarter: 4} = [a1:d1]⎩228⎭results!quarter.kw{"Q1", "Q2", "Q3", "Q4"}⎩229⎭[b2] := results!quarter("Q2")⎩230⎭⎩231⎭⎝ ---- Test 56: Multi-dimensional addressing | expected: {'A1': 20, 'A2': 10, 'B2': 20, 'C2': 30, 'D2': 40}⎠⎩232⎭[a2:d2] := {10, 20, 30, 40}⎩233⎭: results kw kw kw {dept: *, quarter: 4} = [a2:d2]⎩234⎭[a1] := results[b1]⎩235⎭⎩236⎭⎝ ---- Test 57: FOR with already defined variable | expected: error⎠⎩237⎭: x = 34⎩238⎭kw x kw kw⎩239⎭⎩240⎭⎝ ---- Test 58: FOR with LET defining local variable | expected: {'A1': 34}⎠⎩241⎭kw x = 34⎩242⎭kw x kw kw⎩243⎭[a1] := x⎩244⎭⎩245⎭⎝ ---- Test 59: FOR block with LET defining local variable | expected: {'A1': 34}⎠⎩246⎭kw x = 34 kw⎩247⎭    kw x kw kw kw⎩248⎭        [a1] := x⎩249⎭    kw⎩250⎭kw⎩251⎭⎩252⎭⎝ ---- Test 60: LET block with FOR using already declared variable | expected: error⎠⎩253⎭kw x kw kw kw⎩254⎭    kw x = 34 kw⎩255⎭        [a1] := x⎩256⎭    kw⎩257⎭kw⎩258⎭⎩259⎭⎝ ---- Test 61: LET followed by FOR with local variable | expected: {'A1': 34}⎠⎩260⎭kw x kw kw⎩261⎭[a1] := x⎩262⎭kw x = 34⎩263⎭⎩264⎭⎝ ---- Test 62: LET followed by global variable declaration | expected: {'A1': 34}⎠⎩265⎭kw x kw kw⎩266⎭[a1] := x⎩267⎭: x = 34⎩268⎭⎩269⎭⎝ ---- Test 63: LET with constraint x > 10 | expected: {'A1': 34}⎠⎩270⎭: x = 34⎩271⎭kw x > 10 kw⎩272⎭    [a1] := x⎩273⎭kw⎩274⎭⎩275⎭⎝ ---- Test 64: LET with constraint x < 10 | expected: {}⎠⎩276⎭: x = 34⎩277⎭kw x < 10 kw⎩278⎭    [a1] := x⎩279⎭kw⎩280⎭⎩281⎭⎝ ---- Test 65: LET with constraint x < 10 halting execution | expected: {}⎠⎩282⎭: x = 34⎩283⎭kw x < 10⎩284⎭[a1] := x⎩285⎭⎩286⎭⎝ ---- Test 66: LET chain with dependencies X -> Y -> Z | expected: {'A1': 8}⎠⎩287⎭kw x = 2 kw y = x * 5 kw z = y - x⎩288⎭[a1] := z⎩289⎭⎩290⎭⎝ ---- Test 67: LET chain with wrong order (Y uses X before defined) | expected: error⎠⎩291⎭kw y = x * 5 kw x = 2⎩292⎭[a1] := y⎩293⎭⎩294⎭⎝ ---- Test 68: LET with array and named dimension | expected: {'A1': 'Alice', 'B1': 'Bob', 'C1': 'Carla', 'D1': 'Dylan', 'E1': 'Edith'}⎠⎩295⎭kw names kw 0 kw 4⎩296⎭kw names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}⎩297⎭[^a1] := names⎩298⎭⎩299⎭⎝ ---- Test 69: Global assignment used in FOR | expected: {'A1': 4.2}⎠⎩300⎭: n = (m + 10) / 10⎩301⎭[a1] := n⎩302⎭kw m = 32⎩303⎭⎩304⎭⎝ ---- Test 70: LET with array access (index and label) | expected: {'A1': 'Alice', 'B1': 'Carla'}⎠⎩305⎭kw names kw 0 kw 4⎩306⎭kw names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}⎩307⎭[a1] := names(0)⎩308⎭[b1] := names[3]⎩309⎭⎩310⎭⎝ ---- Test 71: Define custom type and array of objects | expected: {'A1': 1.0, 'B1': 'V'}⎠⎩311⎭kw tensor kw kw⎩312⎭    : name kw kw⎩313⎭kw tensor⎩314⎭⎩315⎭kw v kw tensor kw (name = "V", grid kw {4, 4, 2} = 1.0) ⎩316⎭[a1] := v.grid{4, 4, 1}⎩317⎭[b1] := v.name⎩318⎭⎩319⎭⎝ ---- Test 72: Define custom type and array with no constraint for {4, 4, 2} | expected: {'A1': 4.0, 'B1': 7.0, 'C1': 'V'}⎠⎩320⎭kw tensor kw kw⎩321⎭    : name kw kw⎩322⎭kw tensor⎩323⎭⎩324⎭kw v kw tensor kw (name = "V", grid kw {4, 4, 2} = {1,1,1,1;2,2,2,2;3,3,3,3;4,4,4,4} | {1,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7})⎩325⎭[a1] := v.grid{4, 4, 1}⎩326⎭[b1] := v.grid{4, 4, 2}⎩327⎭[c1] := v.name⎩328⎭⎩329⎭⎝ ---- Test 73: Define custom type and array with variable assignment for {4, 4, 3} | expected: {'A1': 3.0, 'B1': 7.0, 'C1': 'V', 'D1': 11.0}⎠⎩330⎭kw tensor kw kw⎩331⎭    : name kw kw⎩332⎭kw tensor⎩333⎭⎩334⎭kw var = {1,1,1,1;2,2,2,2;3,3,3,3;4,4,4,4} | {1,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7} | {11,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7}⎩335⎭kw v kw tensor kw (name = "V", grid kw {4, 4, 3} = var)⎩336⎭[a1] := v.grid{3, 1, 2}⎩337⎭[b1] := v.grid{4, 4, 2}⎩338⎭[c1] := v.name⎩339⎭[d1] := v.grid{1, 1, 3}⎩340⎭⎩341⎭⎝ ---- Test 74: If condition is false, whole block | expected: {}⎠⎩342⎭kw v = 33⎩343⎭[a1] := "single digit"⎩344⎭kw v < 10⎩345⎭⎩346⎭⎝ ---- Test 75: If condition is true, whole block | expected: {'A1': 'single digit'}⎠⎩347⎭kw v = 1⎩348⎭[a1] := "single digit"⎩349⎭kw v < 10⎩350⎭⎩351⎭⎝ ---- Test 76: If condition is true, whole block with division | expected: {'A1': 5.0}⎠⎩352⎭kw a = 20 kw b = 4⎩353⎭[a1] := a / b⎩354⎭kw b kw = 5⎩355⎭⎩356⎭⎝ ---- Test 77: If then block with else | expected: {'A1': 1}⎠⎩357⎭: name = "Jane"⎩358⎭kw friend kw kw⎩359⎭kw name kw {"Oscar", "Jane"} kw⎩360⎭	kw friend = 1⎩361⎭kw⎩362⎭	kw friend = 99⎩363⎭kw⎩364⎭[a1] := friend⎩365⎭⎩366⎭⎝ ---- Test 78: Single line if then else | expected: {'A1': 99}⎠⎩367⎭: name = "Liz"⎩368⎭kw friend kw kw⎩369⎭kw name kw {"Oscar", "Jane"} kw kw friend = 1 kw kw friend = 99⎩370⎭[a1] := friend⎩371⎭⎩372⎭⎝ ---- Test 79: Elseif statement | expected: {'A1': 2}⎠⎩373⎭: name = "Jane"⎩374⎭kw friend kw kw⎩375⎭kw name = "Oscar" kw⎩376⎭  kw friend = 1⎩377⎭kw name = "Jane" kw⎩378⎭  kw friend = 2⎩379⎭kw⎩380⎭  kw friend = 99⎩381⎭kw⎩382⎭[a1] := friend⎩383⎭⎩384⎭⎝ ---- Test 80: Undefined variable, condition is false | expected: {'A1': 'small'}⎠⎩385⎭kw v > 10 kw⎩386⎭  [a1] := "big"⎩387⎭kw⎩388⎭  [a1] := "small"⎩389⎭kw⎩390⎭⎩391⎭⎝ ---- Test 81: Multiple conditions | expected: {'A1': 'true', 'B1': 'true'}⎠⎩392⎭kw a = 3 kw b = 7⎩393⎭kw b > a kw a <= 3 kw b kw = 16 kw⎩394⎭  [a1] := "true"⎩395⎭kw⎩396⎭kw b = 5 kw a = 3 kw⎩397⎭  [b1] := "true"⎩398⎭kw⎩399⎭⎩400⎭⎝ ---- Test 82: If constraint on Expression | expected: {'A1': 'true'}⎠⎩401⎭kw 1 + 1 = 2 kw⎩402⎭  [a1] := "true"⎩403⎭kw⎩404⎭⎩405⎭⎝ ---- Test 83: If constraint on Expression with variable | expected: {'A1': 'true'}⎠⎩406⎭kw a = 3⎩407⎭kw a * 3 = 9 kw [a1] := "true"⎩408⎭⎩409⎭⎝ ---- Test 84: If constraint on Expression with comparison | expected: {'A1': 'true'}⎠⎩410⎭kw a = 3⎩411⎭kw 10 > a * 3 kw [a1] := "true"⎩412⎭⎩413⎭⎝ ---- Test 85: For loop with range | expected: {'A1': 'hello', 'A2': 'hello', 'A3': 'hello'}⎠⎩414⎭kw i kw 1 kw 3⎩415⎭[a{i}] := "hello"⎩416⎭⎩417⎭⎝ ---- Test 86: Combining loops | expected: {'A1': 8, 'A2': 9}⎠⎩418⎭kw a kw 1 kw 1000⎩419⎭kw b kw 8 kw 9⎩420⎭kw [a{a}] = b⎩421⎭⎩422⎭⎝ ---- Test 87: Combining loops with different ranges | expected: {'A1': 8, 'A2': 9}⎠⎩423⎭kw a kw 1 kw 2⎩424⎭kw b kw 8 kw 90⎩425⎭kw [a{a}] = b⎩426⎭⎩427⎭⎝ ---- Test 88: For loop block | expected: {'A1': 4, 'A2': 5, 'A3': 6}⎠⎩428⎭kw i kw 1 kw 3 kw⎩429⎭	[a{i}] := i + 3⎩430⎭kw⎩431⎭⎩432⎭⎝ ---- Test 89: For loop block with set | expected: {'A1': 4, 'A2': 5, 'A3': 6}⎠⎩433⎭kw i kw {1, 2, 3} kw⎩434⎭	[a{i}] := i + 3⎩435⎭kw⎩436⎭⎩437⎭⎝ ---- Test 90: Nested loop with AND | expected: {'A1': 9, 'A2': 10, 'A3': 18, 'A4': 20}⎠⎩438⎭kw a kw {1, 2} kw b kw {9, 10} kw⎩439⎭  [a{2 * a + b - 10}] := a * b⎩440⎭kw⎩441⎭⎩442⎭⎝ ---- Test 91: Loop with index | expected: {'A1': 9, 'A2': 10}⎠⎩443⎭kw b kw {9, 10} kw i kw⎩444⎭	[a{i}] := b⎩445⎭kw⎩446⎭⎩447⎭⎝ ---- Test 92: Loop with step and index | expected: {'A1': 9, 'A2': 12, 'A3': 15}⎠⎩448⎭kw b kw 9 kw 15 kw 3 kw i kw⎩449⎭	[a{i}] := b⎩450⎭kw⎩451⎭⎩452⎭⎝ ---- Test 93: Nested loop with step and index | expected: {'A4': 9, 'A5': 12, 'A6': 15, 'A7': 18, 'A8': 24, 'A9': 30}⎠⎩453⎭kw a kw {1, 2} kw i kw b kw 9 kw 15 kw 3 kw j kw⎩454⎭  [a{3 * i + j}] := a * b⎩455⎭kw⎩456⎭⎩457⎭⎝ ---- Test 94: If condition Dimension constraint - single element | expected: {'A1': 'true'}⎠⎩458⎭kw x = {3}⎩459⎭kw x kw 1 kw⎩460⎭  [a1] := "true"⎩461⎭kw⎩462⎭  [a1] := "false"⎩463⎭kw⎩464⎭⎩465⎭⎝ ---- Test 95: If condition Dimension constraint - array | expected: {'A1': 'false'}⎠⎩466⎭kw x = {3, 8}⎩467⎭kw x kw 1 kw⎩468⎭  [a1] := "true"⎩469⎭kw⎩470⎭  [a1] := "false"⎩471⎭kw⎩472⎭⎩473⎭⎝ ---- Test 96: If condition Dimension constraint - 2D | expected: {'A1': 'true'}⎠⎩474⎭kw x = {3, 8}⎩475⎭kw x kw 2 kw⎩476⎭  [a1] := "true"⎩477⎭kw⎩478⎭  [a1] := "false"⎩479⎭kw⎩480⎭⎩481⎭⎝ ---- Test 97: Dimension condition two-dim | expected: {'A1': 'true'}⎠⎩482⎭kw x = {3, 8; 1, 0}⎩483⎭kw x kw {2, 2} kw⎩484⎭  [a1] := "true"⎩485⎭kw⎩486⎭  [a1] := "false"⎩487⎭kw⎩488⎭⎩489⎭⎝ ---- Test 98: Dimension condition zero-dim | expected: {'A1': 'false'}⎠⎩490⎭kw x = 3⎩491⎭kw x kw 1 kw⎩492⎭  [a1] := "true"⎩493⎭kw⎩494⎭  [a1] := "false"⎩495⎭kw⎩496⎭⎩497⎭⎝ ---- Test 99: Dimension condition zero-dim with * | expected: {'A1': 'false'}⎠⎩498⎭kw x = 3⎩499⎭kw x kw * kw⎩500⎭  [a1] := "true"⎩501⎭kw⎩502⎭  [a1] := "false"⎩503⎭kw⎩504⎭⎩505⎭⎝ ---- Test 100: Dimension condition zero-dim with {} | expected: {'A1': 'true'}⎠⎩506⎭kw x = 3⎩507⎭kw x kw {} kw⎩508⎭  [a1] := "true"⎩509⎭kw⎩510⎭  [a1] := "false"⎩511⎭kw⎩512⎭⎩513⎭⎝ ---- Test 101: If condition Type constraint - uninitialized | expected: {'A1': 'true'}⎠⎩514⎭kw z kw kw⎩515⎭kw z kw kw kw⎩516⎭  [a1] := "true"⎩517⎭kw⎩518⎭  [a1] := "false"⎩519⎭kw⎩520⎭⎩521⎭⎝ ---- Test 102: If condition Type constraint - string value | expected: {'A1': 'true'}⎠⎩522⎭kw z = "Grid"⎩523⎭kw z kw kw kw⎩524⎭  [a1] := "true"⎩525⎭kw⎩526⎭  [a1] := "false"⎩527⎭kw⎩528⎭⎩529⎭⎝ ---- Test 103: If condition Type constraint - number value | expected: {'A1': 'false'}⎠⎩530⎭kw z = 99⎩531⎭kw z kw kw kw⎩532⎭  [a1] := "true"⎩533⎭kw⎩534⎭  [a1] := "false"⎩535⎭kw⎩536⎭⎩537⎭⎝ ---- Test 104: If condition Type and Dimension constraint | expected: {'A1': 'true'}⎠⎩538⎭kw z = "Grid"⎩539⎭kw z kw kw kw {} kw⎩540⎭  [a1] := "true"⎩541⎭kw⎩542⎭  [a1] := "false"⎩543⎭kw⎩544⎭⎩545⎭⎝ ---- Test 105: If condition Type and Dimension constraint - array | expected: {'A1': 'true'}⎠⎩546⎭kw z = {"Grid", "lang"}⎩547⎭kw z kw kw kw * kw⎩548⎭  [a1] := "true"⎩549⎭kw⎩550⎭  [a1] := "false"⎩551⎭kw⎩552⎭⎩553⎭⎝ ---- Test 106: If condition Type and Dimension constraint - scalar | expected: {'A1': 'false'}⎠⎩554⎭kw z = "Grid"⎩555⎭kw z kw kw kw * kw⎩556⎭  [a1] := "true"⎩557⎭kw⎩558⎭  [a1] := "false"⎩559⎭kw⎩560⎭⎩561⎭⎝ ---- Test 107: If condition Possible Values constraint - in set | expected: {'A1': 'true'}⎠⎩562⎭kw z = "Grid"⎩563⎭kw z kw {"Grid", "lang", "2025"} kw⎩564⎭  [a1] := "true"⎩565⎭kw⎩566⎭  [a1] := "false"⎩567⎭kw⎩568⎭⎩569⎭⎝ ---- Test 108: If condition Possible Values constraint - not in set | expected: {'A1': 'false'}⎠⎩570⎭kw z = "hello"⎩571⎭kw z kw {"Grid", "lang", "2025"} kw⎩572⎭  [a1] := "true"⎩573⎭kw⎩574⎭  [a1] := "false"⎩575⎭kw⎩576⎭⎩577⎭⎝ ---- Test 109: If condition Possible Values constraint - in range | expected: {'A1': 'true'}⎠⎩578⎭kw z = 99⎩579⎭kw z kw 50 kw 100 kw⎩580⎭  [a1] := "true"⎩581⎭kw⎩582⎭  [a1] := "false"⎩583⎭kw⎩584⎭⎩585⎭⎝ ---- Test 110: If condition Unit constraint - with value | expected: {'A1': 'true'}⎠⎩586⎭kw z kw dollar = 4⎩587⎭kw z kw dollar kw⎩588⎭  [a1] := "true"⎩589⎭kw⎩590⎭  [a1] := "false"⎩591⎭kw⎩592⎭⎩593⎭⎝ ---- Test 111: If condition Unit constraint - without value | expected: {'A1': 'true'}⎠⎩594⎭kw z kw dollar⎩595⎭kw z kw dollar kw⎩596⎭  [a1] := "true"⎩597⎭kw⎩598⎭  [a1] := "false"⎩599⎭kw⎩600⎭⎩601⎭⎝ ---- Test 112: If condition Unit constraint - different unit | expected: {'A1': 'false'}⎠⎩602⎭kw z kw peso⎩603⎭kw z kw dollar kw⎩604⎭  [a1] := "true"⎩605⎭kw⎩606⎭  [a1] := "false"⎩607⎭kw⎩608⎭⎩609⎭⎝ ---- Test 113: Full Fibonacci Sequence (30 elements) | expected: {'A1': 1, 'B1': 1, 'A2': 1, 'B2': 2, 'A3': 2, 'B3': 3, 'A4': 3, 'B4': 5, 'A5': 5, 'B5': 8, 'A6': 8, 'B6': 13, 'A7': 13, 'B7': 21, 'A8': 21, 'B8': 34, 'A9': 34, 'B9': 55, 'A10': 55, 'B10': 89, 'A11': 89, 'B11': 144, 'A12': 144, 'B12': 233, 'A13': 233, 'B13': 377, 'A14': 377, 'B14': 610, 'A15': 610, 'B15': 987, 'A16': 987, 'B16': 1597, 'A17': 1597, 'B17': 2584, 'A18': 2584, 'B18': 4181, 'A19': 4181, 'B19': 6765, 'A20': 6765, 'B20': 10946, 'A21': 10946, 'B21': 17711, 'A22': 17711, 'B22': 28657, 'A23': 28657, 'B23': 46368, 'A24': 46368, 'B24': 75025, 'A25': 75025, 'B25': 121393, 'A26': 121393, 'B26': 196418, 'A27': 196418, 'B27': 317811, 'A28': 317811, 'B28': 514229, 'A29': 514229, 'B29': 832040, 'A30': 832040, 'B30': 1346269}⎠⎩610⎭kw d kw kw kw {30, 2}⎩611⎭kw d[a1] = 1⎩612⎭kw d[b1] = 1⎩613⎭kw i kw 1 kw 29 kw⎩614⎭  kw d{i+1, 1} = d{i, 2}⎩615⎭  kw d{i+1, 2} = d{i, 1} + d{i, 2}⎩616⎭kw⎩617⎭[^a1] := d⎩618⎭⎩619⎭⎝ ---- Test 114: Pascal Triangle Sequence | expected: {'A1': 1, 'A2': 4, 'A3': 9, 'A4': 16, 'A5': 25, 'A6': 36, 'A7': 49, 'A8': 64, 'A9': 81, 'A10': 100, 'A11': 121, 'A12': 144, 'A13': 169, 'A14': 196, 'A15': 225}⎠⎩620⎭kw d kw kw kw {15, 1}⎩621⎭kw d[a1] = 1⎩622⎭kw i kw 3 kw 30 kw 2 kw k kw⎩623⎭   kw d{k+1, 1} = d{k, 1} + i⎩624⎭kw⎩625⎭[^a1] := d⎩626⎭⎩627⎭⎝ ---- Test 115: Fibonacci Sequence with Cell References | expected: {'A1': 1, 'B1': 1, 'A2': 1, 'B2': 2, 'A3': 2, 'B3': 3, 'A4': 3, 'B4': 5, 'A5': 5, 'B5': 8, 'A6': 8, 'B6': 13, 'A7': 13, 'B7': 21, 'A8': 21, 'B8': 34, 'A9': 34, 'B9': 55, 'A10': 55, 'B10': 89, 'A11': 89, 'B11': 144, 'A12': 144, 'B12': 233, 'A13': 233, 'B13': 377, 'A14': 377, 'B14': 610, 'A15': 610, 'B15': 987, 'A16': 987, 'B16': 1597, 'A17': 1597, 'B17': 2584, 'A18': 2584, 'B18': 4181, 'A19': 4181, 'B19': 6765, 'A20': 6765, 'B20': 10946, 'A21': 10946, 'B21': 17711, 'A22': 17711, 'B22': 28657, 'A23': 28657, 'B23': 46368, 'A24': 46368, 'B24': 75025, 'A25': 75025, 'B25': 121393, 'A26': 121393, 'B26': 196418, 'A27': 196418, 'B27': 317811, 'A28': 317811, 'B28': 514229, 'A29': 514229, 'B29': 832040, 'A30': 832040, 'B30': 1346269}⎠⎩628⎭[a1:b1] := 1⎩629⎭kw i kw 1 kw 29 kw⎩630⎭  [a{i+1}] := [b{i}]⎩631⎭  [b{i+1}] := [a{i}] + [b{i}]⎩632⎭kw⎩633⎭⎩634⎭⎝ ---- Test 116: Array with step and index in FOR loop | expected: {'A1': 1.0, 'B1': 4.0, 'C1': 9.0, 'D1': 16.0, 'E1': 25.0, 'F1': 36.0, 'G1': 49.0, 'H1': 64.0, 'I1': 81.0, 'J1': 100.0, 'K1': 121.0, 'L1': 144.0, 'M1': 169.0, 'N1': 196.0, 'O1': 225.0}⎠⎩635⎭kw d kw kw kw 15⎩636⎭kw d[1] = 1⎩637⎭kw i kw 3 kw 30 kw 2 kw k kw⎩638⎭kw d(k+1) = d(k) + i⎩639⎭kw⎩640⎭[^a1] := d⎩641⎭⎩642⎭⎝ ---- Test 117: Nested FOR loop with dynamic range building grid pattern | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 0.0, 'E1': 0.0, 'F1': 0.0, 'G1': 0.0, 'H1': 0.0, 'I1': 0.0, 'J1': 0.0, 'K1': 0.0, 'L1': 0.0, 'A2': 0.0, 'B2': 1.0, 'C2': 1.0, 'D2': 0.0, 'E2': 0.0, 'F2': 0.0, 'G2': 0.0, 'H2': 0.0, 'I2': 0.0, 'J2': 0.0, 'K2': 0.0, 'L2': 0.0, 'A3': 0.0, 'B3': 1.0, 'C3': 2.0, 'D3': 1.0, 'E3': 0.0, 'F3': 0.0, 'G3': 0.0, 'H3': 0.0, 'I3': 0.0, 'J3': 0.0, 'K3': 0.0, 'L3': 0.0, 'A4': 0.0, 'B4': 1.0, 'C4': 3.0, 'D4': 3.0, 'E4': 1.0, 'F4': 0.0, 'G4': 0.0, 'H4': 0.0, 'I4': 0.0, 'J4': 0.0, 'K4': 0.0, 'L4': 0.0, 'A5': 0.0, 'B5': 1.0, 'C5': 4.0, 'D5': 6.0, 'E5': 4.0, 'F5': 1.0, 'G5': 0.0, 'H5': 0.0, 'I5': 0.0, 'J5': 0.0, 'K5': 0.0, 'L5': 0.0, 'A6': 0.0, 'B6': 1.0, 'C6': 5.0, 'D6': 10.0, 'E6': 10.0, 'F6': 5.0, 'G6': 1.0, 'H6': 0.0, 'I6': 0.0, 'J6': 0.0, 'K6': 0.0, 'L6': 0.0, 'A7': 0.0, 'B7': 1.0, 'C7': 6.0, 'D7': 15.0, 'E7': 20.0, 'F7': 15.0, 'G7': 6.0, 'H7': 1.0, 'I7': 0.0, 'J7': 0.0, 'K7': 0.0, 'L7': 0.0, 'A8': 0.0, 'B8': 1.0, 'C8': 7.0, 'D8': 21.0, 'E8': 35.0, 'F8': 35.0, 'G8': 21.0, 'H8': 7.0, 'I8': 1.0, 'J8': 0.0, 'K8': 0.0, 'L8': 0.0, 'A9': 0.0, 'B9': 1.0, 'C9': 8.0, 'D9': 28.0, 'E9': 56.0, 'F9': 70.0, 'G9': 56.0, 'H9': 28.0, 'I9': 8.0, 'J9': 1.0, 'K9': 0.0, 'L9': 0.0, 'A10': 0.0, 'B10': 1.0, 'C10': 9.0, 'D10': 36.0, 'E10': 84.0, 'F10': 126.0, 'G10': 126.0, 'H10': 84.0, 'I10': 36.0, 'J10': 9.0, 'K10': 1.0, 'L10': 0.0}⎠⎩643⎭kw d kw kw kw {10, 12}⎩644⎭⎩645⎭kw d[b1] = 1⎩646⎭kw a kw 2 kw 10 kw b kw 1 kw a kw⎩647⎭  kw d{a, b+1} = d{a-1, b} + d{a-1, b+1}⎩648⎭kw⎩649⎭⎩650⎭[^a1] := d⎩651⎭⎩652⎭⎝ ---- Test 118: Complex nested FOR loops with IF conditions and set iteration | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 1.0, 'E1': 1.0, 'F1': 0.0, 'G1': 1.0, 'H1': 2.0, 'I1': 1.0, 'J1': 0.0, 'K1': 1.0, 'L1': 3.0, 'M1': 3.0, 'N1': 1.0, 'O1': 0.0, 'P1': 1.0, 'Q1': 4.0, 'R1': 6.0, 'S1': 4.0, 'T1': 1.0, 'U1': 0.0, 'V1': 1.0, 'W1': 5.0, 'X1': 10.0, 'Y1': 10.0, 'Z1': 5.0, 'AA1': 1.0, 'AB1': 0.0, 'AC1': 1.0, 'AD1': 6.0, 'AE1': 15.0, 'AF1': 20.0, 'AG1': 15.0, 'AH1': 6.0, 'AI1': 1.0, 'AJ1': 0.0, 'AK1': 1.0, 'AL1': 7.0, 'AM1': 21.0, 'AN1': 35.0, 'AO1': 35.0, 'AP1': 21.0, 'AQ1': 7.0, 'AR1': 1.0, 'AS1': 0.0, 'AT1': 1.0, 'AU1': 8.0, 'AV1': 28.0, 'AW1': 56.0, 'AX1': 70.0, 'AY1': 56.0, 'AZ1': 28.0, 'BA1': 8.0, 'BB1': 1.0, 'BC1': 0.0, 'BD1': 1.0, 'BE1': 9.0, 'BF1': 36.0, 'BG1': 84.0, 'BH1': 126.0, 'BI1': 126.0, 'BJ1': 84.0, 'BK1': 36.0, 'BL1': 9.0, 'BM1': 1.0}⎠⎩653⎭kw d kw kw kw 65⎩654⎭kw d(2) = 1⎩655⎭kw i kw 1 kw 9 kw⎩656⎭  kw a = (i + 3) * i \ 2 + 1⎩657⎭  kw b = (i + 1) * i \ 2⎩658⎭  kw j kw 1 kw i+1 kw⎩659⎭    kw d(a+j) = d(b+j-1) + d(b+j)⎩660⎭  kw⎩661⎭kw⎩662⎭[^a1] := d⎩663⎭⎩664⎭⎝ ---- Test 119: Binomial coefficient calculation with nested loops | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 1.0, 'E1': 1.0, 'F1': 0.0, 'G1': 1.0, 'H1': 2.0, 'I1': 1.0, 'J1': 0.0, 'K1': 1.0, 'L1': 3.0, 'M1': 3.0, 'N1': 1.0, 'O1': 0.0}⎠⎩665⎭kw d kw kw kw 15⎩666⎭kw d(2) = 1⎩667⎭kw i kw 1 kw 3 kw⎩668⎭  kw a = (i + 3) * i \ 2 + 1⎩669⎭  kw b = (i + 1) * i \ 2⎩670⎭  kw j kw {1, 2, 3, 4} kw⎩671⎭    kw j <= i+1 kw⎩672⎭      kw d(a+j) = d(b+j-1) + d(b+j)⎩673⎭    kw⎩674⎭  kw⎩675⎭kw⎩676⎭[^a1] := d⎩677⎭⎩678⎭⎝ ---- Test 120: Binomial type with grid spilling (Pascal's Triangle) | expected: {'A1': 0, 'B1': 1, 'B2': 1, 'C2': 1, 'B3': 1, 'C3': 2, 'D3': 1, 'B4': 1, 'C4': 3, 'D4': 3, 'E4': 1, 'B5': 1, 'C5': 4, 'D5': 6, 'E5': 4, 'F5': 1, 'B6': 1, 'C6': 5, 'D6': 10, 'E6': 10, 'F6': 5, 'G6': 1, 'B7': 1, 'C7': 6, 'D7': 15, 'E7': 20, 'F7': 15, 'G7': 6, 'H7': 1, 'B8': 1, 'C8': 7, 'D8': 21, 'E8': 35, 'F8': 35, 'G8': 21, 'H8': 7, 'I8': 1, 'B9': 1, 'C9': 8, 'D9': 28, 'E9': 56, 'F9': 70, 'G9': 56, 'H9': 28, 'I9': 8, 'J9': 1, 'B10': 1, 'C10': 9, 'D10': 36, 'E10': 84, 'F10': 126, 'G10': 126, 'H10': 84, 'I10': 36, 'J10': 9, 'K10': 1}⎠⎩679⎭kw binomial kw kw⎩680⎭  [b1] := 1⎩681⎭  kw a kw 2 kw 10 kw b kw 2 kw a+1 kw⎩682⎭    kw grid{a, b} = grid{a-1, b-1} + grid{a-1, b}⎩683⎭  kw⎩684⎭kw binomial⎩685⎭⎩686⎭: bin = kw binomial()⎩687⎭[^a1] := bin.grid⎩688⎭⎩689⎭⎝ ---- Test 121: Guard prevents earlier statements | expected: {}⎠⎩690⎭[a1] := 9⎩691⎭kw 2 < 1⎩692⎭[a2] := 7⎩693⎭⎩694⎭⎝ ---- Test 122: Guard allows execution when true | expected: {'A1': 5, 'A2': 6}⎠⎩695⎭: needle = 5⎩696⎭[a1] := needle⎩697⎭kw needle < 10⎩698⎭[a2] := needle + 1⎩699⎭⎩700⎭⎝ ---- Test 123: Guard blocks when condition false with definition | expected: {}⎠⎩701⎭: limit = 25⎩702⎭[a1] := 42⎩703⎭kw limit < 10⎩704⎭[a2] := limit⎩705⎭⎩706⎭⎝ ---- Test 124: Assignment waits for future FOR variable | expected: {'A1': 11}⎠⎩707⎭[a1] := total + 1⎩708⎭kw total kw kw = 10⎩709⎭⎩710⎭⎝ ---- Test 125: LET waits for future definition | expected: {'A1': 12}⎠⎩711⎭kw result = base + 5⎩712⎭kw base kw kw = 7⎩713⎭[a1] := result⎩714⎭⎩715⎭⎝ ---- Test 126: IF THEN ELSE simple | expected: {'A1': 'single', 'B1': 'ok'}⎠⎩716⎭: v = 1⎩717⎭[a1] := "single"⎩718⎭kw v < 10 kw [b1] := "ok"⎩719⎭⎩720⎭⎝ ---- Test 127: FOR range block assignment | expected: {'A1': 1, 'A2': 2, 'A3': 3}⎠⎩721⎭kw i kw 1 kw 3 kw⎩722⎭  [a{i}] := i⎩723⎭kw⎩724⎭⎩725⎭⎝ ---- Test 128: Guard prevents runtime errors in body | expected: {}⎠⎩726⎭kw 1 = 0⎩727⎭[a1] := 1 / 0⎩728⎭⎩729⎭⎝ ---- Test 129: Global FOR declaration executes before main | expected: {'A1': 6}⎠⎩730⎭kw length kw kw = 6⎩731⎭[a1] := length⎩732⎭⎩733⎭⎝ ---- Test 130: Doc LET chain dependencies | expected: {'A1': 8.0}⎠⎩734⎭kw x = 2 kw y = x * 5 kw z = y - x⎩735⎭[a1] := z⎩736⎭⎩737⎭⎝ ---- Test 131: Doc LET with late declaration | expected: {'A1': 6.0}⎠⎩738⎭kw x = y \ 2⎩739⎭kw x kw kw⎩740⎭kw y kw kw = 13⎩741⎭[a1] := x⎩742⎭⎩743⎭⎝ ---- Test 132: Doc guard sum condition | expected: {'B1': 400, 'B2': 500, 'A1': 9}⎠⎩744⎭[b1] := 400⎩745⎭[b2] := 500⎩746⎭[a1] := 9⎩747⎭kw sum[b1:b2] < 1000⎩748⎭⎩749⎭⎝ ---- Test 133: Doc guard with input allows execution | inputs: ['500'], expected: {'A1': 9}⎠⎩750⎭kw x kw kw⎩751⎭[a1] := 9⎩752⎭kw x < 1000⎩753⎭⎩754⎭⎝ ---- Test 134: Guard allows execution when true with input | inputs: ['5'], expected: {'A1': 5.0, 'A2': 6.0}⎠⎩755⎭kw needle kw kw⎩756⎭[a1] := needle⎩757⎭kw needle < 10⎩758⎭[a2] := needle + 1⎩759⎭⎩760⎭⎝ ---- Test 135: Guard blocks when condition false with input | inputs: ['25'], expected: {}⎠⎩761⎭kw limit kw kw⎩762⎭[a1] := 42⎩763⎭kw limit < 10⎩764⎭[a2] := limit⎩765⎭⎩766⎭⎝ ---- Test 136: Doc global FOR sequence | expected: {'A2': 2, 'A3': 3, 'A4': 4}⎠⎩767⎭kw n kw 2 kw 4 kw⎩768⎭  [a{n}] := n⎩769⎭kw⎩770⎭⎩771⎭⎝ ---- Test 137: Tyre size lookup TOYO YARI | inputs: ['TOYO', 'YARI'], expected: {'A1': 195, 'B1': 55, 'C1': 16}⎠⎩772⎭kw make kw kw⎩773⎭kw model kw kw⎩774⎭⎩775⎭⎩776⎭⎩777⎭[a1]: width kw kw⎩778⎭[b1]: ratio kw kw⎩779⎭[c1]: diameter kw kw⎩780⎭⎩781⎭kw make = "TOYO" kw⎩782⎭  kw model = "YARI" kw⎩783⎭    kw width = 195⎩784⎭    kw ratio = 55⎩785⎭    kw diameter = 16⎩786⎭  kw model = "AURI" kw⎩787⎭    kw width = 205⎩788⎭    kw ratio = 55⎩789⎭    kw diameter = 16⎩790⎭  kw model = "CH-R" kw⎩791⎭    kw width = 215⎩792⎭    kw ratio = 60⎩793⎭    kw diameter = 17⎩794⎭  kw⎩795⎭kw⎩796⎭kw make = "MERC" kw⎩797⎭  kw model = "A205" kw⎩798⎭    kw width = 205⎩799⎭    kw ratio = 55⎩800⎭    kw diameter = 17⎩801⎭  kw model = "C200" kw⎩802⎭    kw width = 225⎩803⎭    kw ratio = 45⎩804⎭    kw diameter = 18⎩805⎭  kw⎩806⎭kw⎩807⎭⎩808⎭kw len(make) = 4⎩809⎭⎩810⎭⎝ ---- Test 138: Tyre size lookup MERC C200 | inputs: ['MERC', 'C200'], expected: {'A1': 225, 'B1': 45, 'C1': 18}⎠⎩811⎭kw make kw kw⎩812⎭kw model kw kw⎩813⎭⎩814⎭⎩815⎭⎩816⎭[a1]: width kw kw⎩817⎭[b1]: ratio kw kw⎩818⎭[c1]: diameter kw kw⎩819⎭⎩820⎭kw make = "TOYO" kw⎩821⎭  kw model = "YARI" kw⎩822⎭    kw width = 195⎩823⎭    kw ratio = 55⎩824⎭    kw diameter = 16⎩825⎭  kw model = "AURI" kw⎩826⎭    kw width = 205⎩827⎭    kw ratio = 55⎩828⎭    kw diameter = 16⎩829⎭  kw model = "CH-R" kw⎩830⎭    kw width = 215⎩831⎭    kw ratio = 60⎩832⎭    kw diameter = 17⎩833⎭  kw⎩834⎭kw⎩835⎭kw make = "MERC" kw⎩836⎭  kw model = "A205" kw⎩837⎭    kw width = 205⎩838⎭    kw ratio = 55⎩839⎭    kw diameter = 17⎩840⎭  kw model = "C200" kw⎩841⎭    kw width = 225⎩842⎭    kw ratio = 45⎩843⎭    kw diameter = 18⎩844⎭  kw⎩845⎭kw⎩846⎭⎩847⎭kw len(make) = 4⎩848⎭⎩849⎭⎝ ---- Test 139: Default input value | expected: {'A1': 5.0}⎠⎩850⎭kw x kw kw kw = 5⎩851⎭[a1] := x⎩852⎭⎩853⎭⎝ ---- Test 140: INIT allows later updates | expected: {'A1': 7, 'A2': 7}⎠⎩854⎭: x kw kw kw 3⎩855⎭[a1] := x⎩856⎭kw x = 7⎩857⎭[a2] := x⎩858⎭⎩859⎭⎝ ---- Test 141: Function reverse example | expected: {'A1': 'DENIS'}⎠⎩860⎭kw reverse kw kw⎩861⎭ kw word kw kw⎩862⎭ kw rev kw kw kw ""⎩863⎭ kw i kw 1 kw len(word) kw⎩864⎭  kw c = mid(word, i, 1)⎩865⎭  kw rev = c & rev⎩866⎭ kw⎩867⎭ kw rev⎩868⎭kw reverse⎩869⎭[a1] := reverse("SINED")⎩870⎭⎩871⎭⎝ ---- Test 142: Function square with output | expected: {'A1': 25.0}⎠⎩872⎭kw square kw kw⎩873⎭ kw n kw kw⎩874⎭ kw sq kw kw⎩875⎭ kw sq = n ^ 2⎩876⎭kw square⎩877⎭[a1] := square(5)⎩878⎭⎩879⎭⎝ ---- Test 143: Function spellreverse multi-output | expected: {}⎠⎩880⎭kw spellreverse kw kw⎩881⎭ kw word kw kw⎩882⎭ kw i kw len(word) kw 1 kw -1 kw⎩883⎭  kw mid(word, i, 1)⎩884⎭ kw⎩885⎭kw spellreverse⎩886⎭kw spellreverse("DIRG")⎩887⎭⎩888⎭⎝ ---- Test 144: Subprocess pushes to caller binding | expected: {'A1': 6}⎠⎩889⎭kw doublepush kw kw⎩890⎭ kw n kw kw⎩891⎭ kw res kw kw⎩892⎭ kw res = n⎩893⎭ kw res = n * 2⎩894⎭kw doublepush⎩895⎭⎩896⎭doublepush(3, [^a1])⎩897⎭⎩898⎭⎝ ---- Test 145: Subprocess grid spill through result | expected: {'C1': 'G', 'D1': 'R', 'E1': 'I', 'F1': 'D'}⎠⎩899⎭kw spellreversesub kw kw⎩900⎭ kw word kw kw⎩901⎭ [^a1] := {mid(word, len(word), 1), mid(word, len(word)-1, 1), mid(word, len(word)-2, 1), mid(word, len(word)-3, 1)}⎩902⎭kw spellreversesub⎩903⎭⎩904⎭[^c1] := spellreversesub("DIRG").grid⎩905⎭⎩906⎭⎝ ---- Test 146: Subprocess split name push to binding | expected: {'A1': 'Jane Doe', 'B1': 'Jane', 'C1': 'Doe'}⎠⎩907⎭kw splitname kw kw⎩908⎭ kw name kw kw⎩909⎭ kw result kw kw⎩910⎭ kw parts kw kw = textsplit(name, " ")⎩911⎭  kw result = parts⎩912⎭ kw splitname⎩913⎭⎩914⎭[a1] := "Jane Doe"⎩915⎭splitname([a1], [^b1])⎩916⎭⎩917⎭⎝ ---- Test 147: Subprocess grid builder reverse word | expected: {'A1': 'G', 'B1': 'R', 'C1': 'I', 'D1': 'D'}⎠⎩918⎭kw spellreversesub kw kw⎩919⎭ kw word kw kw⎩920⎭ kw i kw len(word) kw 1 kw -1 kw c kw⎩921⎭  kw grid{1, c} = mid(word, i, 1)⎩922⎭ kw⎩923⎭kw spellreversesub⎩924⎭kw myword = spellreversesub("DIRG")⎩925⎭[^a1] := myword.grid⎩926⎭⎩927⎭⎝ ---- Test 148: Type constructor with inputs and mutable peer | expected: {'A1': 3.0, 'B1': -2.0, 'A3': 1.2, 'B3': 1001.0}⎠⎩928⎭kw point1 kw kw⎩929⎭ kw in_x kw kw⎩930⎭ kw in_y kw kw⎩931⎭ : x = in_x⎩932⎭ : y = in_y⎩933⎭kw point1⎩934⎭kw point2 kw kw⎩935⎭ : x kw kw⎩936⎭ : y kw kw⎩937⎭kw point2⎩938⎭⎩939⎭: p1 = kw point1(3.0, -2.0)⎩940⎭: p2 = kw point2(1.2, 0.7)⎩941⎭kw p2.y = 1001.0⎩942⎭[^a1] := p1⎩943⎭[^a3] := p2⎩944⎭⎩945⎭⎝ ---- Test 149: Type constructor immutability conflict | expected: error⎠⎩946⎭kw point1 kw kw⎩947⎭ kw in_x kw kw⎩948⎭ kw in_y kw kw⎩949⎭ : x = in_x⎩950⎭ : y = in_y⎩951⎭kw point1⎩952⎭: p1 = kw point1(3.0, -2.0)⎩953⎭kw p1.y = 1001.0⎩954⎭[a1] := p1.y⎩955⎭⎩956⎭⎝ ---- Test 150: Member function DistanceToOrigin | expected: {'A1': 5.0}⎠⎩957⎭kw point1 kw kw⎩958⎭: x kw kw⎩959⎭: y kw kw⎩960⎭kw point1⎩961⎭kw point1.distancetoorigin kw kw⎩962⎭kw p kw point1⎩963⎭kw sqrt(p.x ^ 2 + p.y ^ 2)⎩964⎭kw point1.distancetoorigin⎩965⎭: p1 = kw point1(3, 4)⎩966⎭[a1] := p1.distancetoorigin⎩967⎭⎩968⎭⎝ ---- Test 151: INIT copies object, equality shares reference | expected: {'A1': -1.0, 'B1': 2.0, 'A3': -1.0, 'B3': 0.0}⎠⎩969⎭kw point kw kw⎩970⎭: x kw kw⎩971⎭: y kw kw⎩972⎭kw point⎩973⎭: f = kw point(-1.0, 0.0)⎩974⎭: p kw f⎩975⎭kw f.y = 2.0⎩976⎭[^a1] := f⎩977⎭[^a3] := p⎩978⎭⎩979⎭⎝ ---- Test 152: Equality constraint tracks updates | expected: {'A1': -1.0, 'B1': 2.0}⎠⎩980⎭kw point kw kw⎩981⎭: x kw kw⎩982⎭: y kw kw⎩983⎭kw point⎩984⎭: f = kw point(-1.0, 0.0)⎩985⎭: p = f⎩986⎭kw f.y = 2.0⎩987⎭[^a1] := p⎩988⎭⎩989⎭⎝ ---- Test 153: Input default via equality constraint | expected: {'A1': 25.0}⎠⎩990⎭kw square kw kw⎩991⎭ kw x kw kw kw = 5⎩992⎭ kw x ^ 2⎩993⎭kw⎩994⎭: y = square()⎩995⎭: z = square("circle")⎩996⎭[^a1] := y⎩997⎭⎩998⎭⎝ ---- Test 154: Output INIT vs equality on output | expected: {'A1': 9.0, 'A2': 16.0}⎠⎩999⎭kw square_init kw kw⎩1000⎭ kw x kw kw⎩1001⎭ kw r kw kw kw x ^ 2⎩1002⎭kw⎩1003⎭kw square_eq_c kw kw⎩1004⎭ kw x kw kw⎩1005⎭ kw r kw kw = x ^ 2⎩1006⎭kw⎩1007⎭[a1] := square_init(3)⎩1008⎭[a2] := square_eq_c(4)⎩1009⎭⎩1010⎭⎝ ---- Test 155: FOR INIT generator without IN | expected: {'A1': 'GRID', 'A2': 'D', 'A3': 'D'}⎠⎩1011⎭kw spellreverse kw kw⎩1012⎭ kw word kw kw⎩1013⎭ kw i kw len(word) kw 1 kw -1 kw⎩1014⎭  kw mid(word, i, 1)⎩1015⎭ kw⎩1016⎭kw spellreverse⎩1017⎭: acc kw kw kw ""⎩1018⎭kw letter kw kw kw spellreverse("DIRG") kw⎩1019⎭ kw acc = acc & letter⎩1020⎭kw⎩1021⎭[^a1] := acc⎩1022⎭⎩1023⎭kw letter2 kw kw kw spellreverse("DIRG")⎩1024⎭[a2] := letter2⎩1025⎭⎩1026⎭kw letter3 kw kw⎩1027⎭ kw letter3 = spellreverse("DIRG")⎩1028⎭[a3] := letter3⎩1029⎭⎩1030⎭⎝ ---- Test 156: Subprocess INIT materializes grid result | expected: {'A1': 'G', 'B1': 'R', 'C1': 'I', 'D1': 'D'}⎠⎩1031⎭kw spellreversesub kw kw⎩1032⎭ kw word kw kw⎩1033⎭ kw i kw len(word) kw 1 kw -1 kw c kw⎩1034⎭  kw grid{1, c} = mid(word, i, 1)⎩1035⎭ kw⎩1036⎭kw spellreversesub⎩1037⎭kw myword kw spellreversesub("DIRG")⎩1038⎭[^a1] := myword.grid⎩1039⎭⎩1040⎭⎝ ---- Test 157: Friendly member function call via For assignment | expected: {'A1': 3.605551275463989}⎠⎩1041⎭kw point1 kw kw⎩1042⎭ kw in_x kw kw⎩1043⎭ kw in_y kw kw⎩1044⎭ : x = in_x⎩1045⎭ : y = in_y⎩1046⎭kw point1⎩1047⎭⎩1048⎭kw p1 = kw point1(3.0, -2.0)⎩1049⎭⎩1050⎭kw point1.distancetoorigin kw kw⎩1051⎭ kw p kw point1⎩1052⎭ kw sqrt(p.x ^ 2 + p.y ^ 2)⎩1053⎭kw point1.distancetoorigin⎩1054⎭⎩1055⎭kw d = p1.distancetoorigin()⎩1056⎭[^a1] := d⎩1057⎭⎩1058⎭⎝ ---- Test 158: Nested generator zipping in Push | expected: {}⎠⎩1059⎭kw spellreverse kw kw⎩1060⎭ kw word kw kw⎩1061⎭ kw i kw len(word) kw 1 kw -1 kw⎩1062⎭  kw mid(word, i, 1)⎩1063⎭ kw⎩1064⎭kw spellreverse⎩1065⎭⎩1066⎭kw combine kw kw⎩1067⎭ kw a, b kw kw⎩1068⎭ kw a & "-" & b⎩1069⎭kw combine⎩1070⎭⎩1071⎭kw combine(spellreverse("DIRG"), spellreverse("ecin"))⎩1072⎭⎩1073⎭⎝ ---- Test 159: FOR text without dim allows any size | expected: {}⎠⎩1074⎭kw a kw kw = {"hello", "world", "!"}⎩1075⎭⎩1076⎭⎝ ---- Test 160: FOR text with dim size mismatch | expected: error⎠⎩1077⎭kw a kw kw kw 2 = {"hello", "world", "!"}⎩1078⎭⎩1079⎭⎝ ---- Test 161: FOR nested init with push and cell write | expected: {'A1': 'ox'}⎠⎩1080⎭kw acc kw kw kw "" kw⎩1081⎭  kw letter kw kw kw "o" kw⎩1082⎭    kw acc = letter & "x"⎩1083⎭    [a1] := acc⎩1084⎭  kw⎩1085⎭kw⎩1086⎭⎩1087⎭⎝ ---- Test 162: Milestone 4 constraints | expected: {'A1': 3, 'A2': 'Alice', 'B2': 'Bob', 'C2': 'Carla', 'D2': 'Dylan', 'E2': 'Edith'}⎠⎩1088⎭kw vmax = 5⎩1089⎭kw v <= vmax⎩1090⎭kw v = 3⎩1091⎭kw names kw 0 kw 4⎩1092⎭kw names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}⎩1093⎭[a1] := v⎩1094⎭[^a2] := names⎩1095⎭⎩1096⎭⎝ ---- Test 163: Combined constraints literal values | expected: {'A2': 2, 'A3': 7, 'A4': 'hi', 'B4': 'yo'}⎠⎩1097⎭: choice kw kw kw {1, 2, 3} = 2⎩1098⎭: span kw kw kw 1 kw 10 = 7⎩1099⎭: words kw kw kw 2 = {"hi", "yo"}⎩1100⎭⎩1101⎭[a2] := choice⎩1102⎭[a3] := span⎩1103⎭[^a4] := words⎩1104⎭⎩1105⎭⎝ ---- Test 164: Subprocess writes into dimmed parts | expected: {'A1': 'Jane Doe', 'B1': 'Jane', 'C1': 'Doe'}⎠⎩1106⎭: parts kw kw kw 2⎩1107⎭⎩1108⎭kw splitname kw kw⎩1109⎭ kw name kw kw⎩1110⎭ kw parts = textsplit(name, " ")⎩1111⎭kw splitname⎩1112⎭⎩1113⎭[a1] := "Jane Doe"⎩1114⎭[^b1] := parts⎩1115⎭splitname([a1])⎩1116⎭[^b1] := parts⎩1117⎭⎩1118⎭⎝ ---- Test 165: Column interpolation | expected: {'D5': 11, 'CE5': 22}⎠⎩1119⎭: i = 4⎩1120⎭[{i :a}5] := 11⎩1121⎭: j = 4⎩1122⎭[{j :cb}5] := 22⎩1123⎭⎩1124⎭⎝ ---- Test 166: Hidden field skipped on spill | expected: {'A1': 7.0}⎠⎩1125⎭kw secretpoint kw kw⎩1126⎭: x kw kw⎩1127⎭: $secret kw kw kw 99⎩1128⎭kw secretpoint⎩1129⎭: p = kw secretpoint kw (x = 7)⎩1130⎭[^a1] := p⎩1131⎭⎩1132⎭⎝ ---- Test 167: Hidden field access outside type errors | expected: error⎠⎩1133⎭kw secretpoint kw kw⎩1134⎭: x kw kw⎩1135⎭: $secret kw kw kw 99⎩1136⎭kw secretpoint⎩1137⎭: p = kw secretpoint kw (x = 7)⎩1138⎭[a1] := p.secret⎩1139⎭⎩1140⎭⎝ ---- Test 168: Private helper in constructor | expected: {'A1': 3.0, 'B1': 2.0}⎠⎩1141⎭kw point kw kw⎩1142⎭kw in_x, in_y kw kw⎩1143⎭: x kw kw kw in_x⎩1144⎭: y kw kw kw in_y⎩1145⎭shiftright(2.0)⎩1146⎭kw point⎩1147⎭kw point.shiftright kw kw⎩1148⎭kw dx kw kw⎩1149⎭kw x = x + dx⎩1150⎭kw point.shiftright⎩1151⎭: p = kw point(1.0, 2.0)⎩1152⎭[^a1] := p⎩1153⎭⎩1154⎭⎝ ---- Test 169: Private helper called from member function | expected: {'A1': 1.5, 'B1': 2.0}⎠⎩1155⎭kw point kw kw⎩1156⎭kw in_x, in_y kw kw⎩1157⎭: x kw kw kw in_x⎩1158⎭: y kw kw kw in_y⎩1159⎭kw point⎩1160⎭kw point.shiftright kw kw⎩1161⎭kw dx kw kw⎩1162⎭kw x = x + dx⎩1163⎭kw point.shiftright⎩1164⎭kw point.goslightlyright kw kw⎩1165⎭kw p kw point⎩1166⎭kw shifted kw point⎩1167⎭kw shifted = p.shiftright(0.5)⎩1168⎭kw point.goslightlyright⎩1169⎭: p = kw point(1.0, 2.0)⎩1170⎭kw s kw point⎩1171⎭kw s = point.goslightlyright(p)⎩1172⎭[^a1] := s⎩1173⎭⎩1174⎭⎝ ---- Test 170: Hidden member function call outside type errors | expected: error⎠⎩1175⎭kw point kw kw⎩1176⎭: x kw kw⎩1177⎭: y kw kw⎩1178⎭kw point⎩1179⎭kw $point.ontheright kw kw⎩1180⎭kw p1, p2 kw point⎩1181⎭kw p1.x > p2.x?⎩1182⎭kw $point.ontheright⎩1183⎭: p1 = kw point(1.0, 0.0)⎩1184⎭: p2 = kw point(2.0, 0.0)⎩1185⎭[a1] := p1.ontheright(p2)⎩1186⎭⎩1187⎭⎝ ---- Test 171: Type instantiation from array without constructor inputs | expected: {'A1': 1.0, 'B1': -5.0}⎠⎩1188⎭kw simple kw kw⎩1189⎭: x kw kw⎩1190⎭: y kw kw⎩1191⎭kw simple⎩1192⎭kw p kw simple = {1.0, -5.0}⎩1193⎭[^a1] := p⎩1194⎭⎩1195⎭⎝ ---- Test 172: New with WITH and shorthand variables | expected: {'A1': 1.0, 'B1': -5.0}⎠⎩1196⎭kw point kw kw⎩1197⎭: x kw kw⎩1198⎭: y kw kw⎩1199⎭kw point⎩1200⎭: x = 1.0⎩1201⎭: y = -5.0⎩1202⎭: p = kw point kw (x, y)⎩1203⎭[^a1] := p⎩1204⎭⎩1205⎭⎝ ---- Test 173: Type extension with Super and new field | expected: {'A1': 2.0, 'B1': 3.0, 'C1': 0.5}⎠⎩1206⎭kw point kw kw⎩1207⎭kw in_x, in_y kw kw kw = 0.0⎩1208⎭: x kw kw kw in_x⎩1209⎭: y kw kw kw in_y⎩1210⎭kw point⎩1211⎭kw rounddot kw kw(point)⎩1212⎭kw in_x, in_y kw kw kw = 0.0⎩1213⎭kw(in_x, in_y)⎩1214⎭: radius kw kw kw = 0.1⎩1215⎭kw rounddot⎩1216⎭: r = kw rounddot(2.0, 3.0) kw (radius = 0.5)⎩1217⎭[^a1] := r⎩1218⎭⎩1219⎭⎝ ---- Test 174: Type constraints on numeric subtype | expected: {'A1': 0.25}⎠⎩1220⎭kw ratevalue kw kw(kw) >= 0.0 <= 1.0⎩1221⎭kw ratevalue⎩1222⎭kw r kw ratevalue = 0.25⎩1223⎭[a1] := r⎩1224⎭⎩1225⎭⎝ ---- Test 175: Type constraint violation errors | expected: error⎠⎩1226⎭kw ratevalue kw kw(kw) >= 0.0 <= 1.0⎩1227⎭kw ratevalue⎩1228⎭kw r kw ratevalue = 1.5⎩1229⎭[a1] := r⎩1230⎭⎩1231⎭⎝ ---- Test 176: Member function override polymorphism | expected: {'A1': 0}⎠⎩1232⎭kw point kw kw⎩1233⎭: x kw kw⎩1234⎭: y kw kw⎩1235⎭kw point⎩1236⎭kw point.ontheleft kw kw⎩1237⎭kw p1, p2 kw point⎩1238⎭kw p1.x < p2.x?⎩1239⎭kw point.ontheleft⎩1240⎭kw rounddot kw kw(point)⎩1241⎭kw in_x, in_y kw kw kw = 0.0⎩1242⎭kw(in_x, in_y)⎩1243⎭: radius kw kw kw = 0.1⎩1244⎭kw rounddot⎩1245⎭kw rounddot.ontheleft kw kw⎩1246⎭kw d1, d2 kw rounddot⎩1247⎭kw d1.x + d1.radius + d2.radius < d2.x?⎩1248⎭kw rounddot.ontheleft⎩1249⎭: r = kw rounddot(9.0, 0.0) kw (radius = 0.5)⎩1250⎭: s = kw rounddot(9.5, 4.0) kw (radius = 0.5)⎩1251⎭[a1] := r.ontheleft(s)⎩1252⎭⎩1253⎭⎝ ---- Test 177: Member function override uses RoundDot | expected: {'A1': 1}⎠⎩1254⎭kw point kw kw⎩1255⎭kw in_x, in_y kw kw kw = 0.0⎩1256⎭: x kw kw kw in_x⎩1257⎭: y kw kw kw in_y⎩1258⎭kw point⎩1259⎭kw point.ontheleft kw kw⎩1260⎭kw p1, p2 kw point⎩1261⎭kw p1.x < p2.x?⎩1262⎭kw point.ontheleft⎩1263⎭kw rounddot kw kw(point)⎩1264⎭kw in_x, in_y kw kw kw = 0.0⎩1265⎭kw(in_x, in_y)⎩1266⎭: radius kw kw kw = 0.1⎩1267⎭kw rounddot⎩1268⎭kw rounddot.ontheleft kw kw⎩1269⎭kw d1, d2 kw rounddot⎩1270⎭kw d1.x + d1.radius + d2.radius < d2.x?⎩1271⎭kw rounddot.ontheleft⎩1272⎭: r = kw rounddot(9.0, 0.0) kw (radius = 0.5)⎩1273⎭: p = kw rounddot(900.0, 0.0) kw (radius = 0.5)⎩1274⎭[a1] := r.ontheleft(p)⎩1275⎭⎩1276⎭⎝ ---- Test 178: Array init fixed dim via LET | expected: {'A1': 12, 'B1': 5, 'C1': 0.3}⎠⎩1277⎭kw a kw kw kw 3⎩1278⎭kw a(1) = 12⎩1279⎭kw a(2) = 5⎩1280⎭kw a(3) = 0.3⎩1281⎭[^a1] := a⎩1282⎭⎩1283⎭⎝ ---- Test 179: Array dim * requires PUSH | expected: error⎠⎩1284⎭kw b kw kw kw *⎩1285⎭kw b(1) = 12⎩1286⎭⎩1287⎭⎝ ---- Test 180: Array dim * grows with PUSH | expected: {'A1': 12, 'B1': 5, 'C1': 0.3}⎠⎩1288⎭kw c kw kw kw *⎩1289⎭kw c(1) = 12⎩1290⎭kw c(2) = 5⎩1291⎭kw c(3) = 0.3⎩1292⎭[^a1] := c⎩1293⎭⎩1294⎭⎝ ---- Test 181: Push without dim errors | expected: error⎠⎩1295⎭kw d kw kw⎩1296⎭kw d(1) = 12⎩1297⎭⎩1298⎭
+⎝ ---- Test 1: Basic calculation | expected: {'A1': 51}⎠  ⎩1⎭
+[a1] : a = 51  ⎩2⎭
+  ⎩3⎭
+⎝ ---- Test 2: Arithmetic with reference | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}⎠  ⎩4⎭
+[a1] := 51  ⎩5⎭
+[a2] := ([a1] + 15) / 1.2e3  ⎩6⎭
+[a3] := sum[a1:a2]  ⎩7⎭
+  ⎩8⎭
+⎝ ---- Test 3: Variable in cell definition | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}⎠  ⎩9⎭
+[a1] : a = 51  ⎩10⎭
+[a2] : b = (a + 15) / 1.2e3  ⎩11⎭
+[a3] : c = sum([a1:a2])  ⎩12⎭
+  ⎩13⎭
+⎝ ---- Test 4: Global variables and sum{} | expected: {'A1': 51, 'A2': 0.055, 'A3': 51.055}⎠  ⎩14⎭
+: a = 51  ⎩15⎭
+: b = (a + 15) / 1.2e3  ⎩16⎭
+: c = sum{a, b}  ⎩17⎭
+[a1] := a  ⎩18⎭
+[a2] := b  ⎩19⎭
+[a3] := c  ⎩20⎭
+  ⎩21⎭
+⎝ ---- Test 5: Inline comment parsing | expected: {'AB2': 33}⎠  ⎩22⎭
+[ab2] := 33 ⎝28th column⎠  ⎩23⎭
+  ⎩24⎭
+⎝ ---- Test 6: Horizontal array assignment from inline var | expected: {'A1': 51, 'B2': 12, 'C2': 0.055, 'D2': 52, 'E2': 8}⎠  ⎩25⎭
+[a1] : a = 51  ⎩26⎭
+[^b2] := {12, (15 + a) / 1.2e3, 1+[a1], 8}  ⎩27⎭
+  ⎩28⎭
+⎝ ---- Test 7: Horizontal array from variable | expected: {'A1': 51, 'B2': 12, 'C2': 0.055, 'D2': 52, 'E2': 8}⎠  ⎩29⎭
+[a1] : a = 51  ⎩30⎭
+: b = {12, (15 + a) / 1.2e3, 1+[a1], 8}  ⎩31⎭
+[^b2] := b  ⎩32⎭
+  ⎩33⎭
+⎝ ---- Test 8: Math function - SQRT | expected: {'A1': 6.0}⎠  ⎩34⎭
+[a1] := 2*( sqrt(100) - 7 )  ⎩35⎭
+  ⎩36⎭
+⎝ ---- Test 9: Interpolation with cell reference | expected: {'A2': 33, 'A3': -4.9}⎠  ⎩37⎭
+: n = 2  ⎩38⎭
+[a{ n }] := 33  ⎩39⎭
+[a{n + 1}] := -4.9  ⎩40⎭
+  ⎩41⎭
+⎝ ---- Test 10: 2D range assign and slice | expected: {'A1': 1, 'A2': 10, 'A3': 1, 'B1': 2, 'B2': 11, 'B3': 2, 'C1': 3, 'C2': 12, 'C3': 3}⎠  ⎩42⎭
+[a1:c2] := {1, 2, 3; 10, 11, 12}  ⎩43⎭
+[^a3] := [a1:c1]  ⎩44⎭
+  ⎩45⎭
+⎝ ---- Test 11: Range read and vertical assignment | expected: {'A1': 1, 'A2': 2, 'A3': 3, 'B1': 2, 'B2': 3}⎠  ⎩46⎭
+[^a1] := {1; 2; 3}  ⎩47⎭
+[b1:b2] := [a2:a3]  ⎩48⎭
+  ⎩49⎭
+⎝ ---- Test 12: Text type assignment | expected: {'A1': 'Hello'}⎠  ⎩50⎭
+: t as text = "Hello"  ⎩51⎭
+[a1] := t  ⎩52⎭
+  ⎩53⎭
+⎝ ---- Test 13: Cell var definition | expected: {'A1': 3}⎠  ⎩54⎭
+[a1] : e = 3  ⎩55⎭
+  ⎩56⎭
+⎝ ---- Test 14: Number type declaration | expected: {'A1': 42}⎠  ⎩57⎭
+: x as number = 42  ⎩58⎭
+[a1] := x  ⎩59⎭
+  ⎩60⎭
+⎝ ---- Test 15: Number declaration with scientific notation | expected: {'A1': 0.0001234}⎠  ⎩61⎭
+: num as number = 12.34e-5  ⎩62⎭
+[a1] := num  ⎩63⎭
+  ⎩64⎭
+⎝ ---- Test 16: Number sequence with custom step | expected: {'B1': 1.0, 'C1': 2.5, 'D1': 4.0, 'E1': 5.5}⎠  ⎩65⎭
+: seq = 1 to 6 step 1.5  ⎩66⎭
+[^b1] := seq  ⎩67⎭
+  ⎩68⎭
+⎝ ---- Test 17: Interpolated text | expected: {'A1': 'Hello, world!'}⎠  ⎩69⎭
+: name as text = "world"  ⎩70⎭
+[a1] := $"Hello, {name}!"  ⎩71⎭
+  ⎩72⎭
+⎝ ---- Test 18: Self-referential assignment (should fail) | expected: error⎠  ⎩73⎭
+: x = x  ⎩74⎭
+  ⎩75⎭
+⎝ ---- Test 19: Variable before definition | expected: {'A1': 6}⎠  ⎩76⎭
+: y = x + 1  ⎩77⎭
+: x as number = 5  ⎩78⎭
+[a1] := y  ⎩79⎭
+  ⎩80⎭
+⎝ ---- Test 20: Integer division | expected: {'A1': 3}⎠  ⎩81⎭
+[a1] := 10 \ 3  ⎩82⎭
+  ⎩83⎭
+⎝ ---- Test 21: Exponentiation | expected: {'A1': 8}⎠  ⎩84⎭
+[a1] := 2 ^ 3  ⎩85⎭
+  ⎩86⎭
+⎝ ---- Test 22: Modulus | expected: {'A1': 1}⎠  ⎩87⎭
+[a1] := 10 mod 3  ⎩88⎭
+  ⎩89⎭
+⎝ ---- Test 23: Special value #INF | expected: {'A1': inf}⎠  ⎩90⎭
+[a1] := #inf  ⎩91⎭
+  ⎩92⎭
+⎝ ---- Test 24: Special value -#INF | expected: {'A1': -inf}⎠  ⎩93⎭
+[a1] := -#inf  ⎩94⎭
+  ⎩95⎭
+⎝ ---- Test 25: Special value #N/A | expected: {'A1': nan}⎠  ⎩96⎭
+[a1] := #n/a  ⎩97⎭
+  ⎩98⎭
+⎝ ---- Test 26: Text concatenation | expected: {'A1': 'Hello, world'}⎠  ⎩99⎭
+: t1 as text = "Hello"  ⎩100⎭
+: t2 as text = "world"  ⎩101⎭
+[a1] := t1 & ", " & t2  ⎩102⎭
+  ⎩103⎭
+⎝ ---- Test 27: Quote escaping | expected: {'A1': 'I say "Hello"'}⎠  ⎩104⎭
+: q as text = "I say "Hello""  ⎩105⎭
+[a1] := q  ⎩106⎭
+  ⎩107⎭
+⎝ ---- Test 28: Padding right | expected: {'A1': 'Number:    42'}⎠  ⎩108⎭
+: num = 42  ⎩109⎭
+[a1] := $"Number: {num, 5}"  ⎩110⎭
+  ⎩111⎭
+⎝ ---- Test 29: Padding left | expected: {'A1': 'Number: 42   '}⎠  ⎩112⎭
+: num = 42  ⎩113⎭
+[a1] := $"Number: {num, -5}"  ⎩114⎭
+  ⎩115⎭
+⎝ ---- Test 30: Multi-line interpolation | expected: {'A1': '{Loudly} I say:\n"Hello", world!'}⎠  ⎩116⎭
+: name = "world"  ⎩117⎭
+[a1] := $"{*Loudly} I say:  
+		"Hello", {name}!"  ⎩118⎭
+  ⎩119⎭
+⎝ ---- Test 31: Empty braces | expected: {'A1': 'Empty: {}'}⎠  ⎩120⎭
+[a1] := $"Empty: {}"  ⎩121⎭
+  ⎩122⎭
+⎝ ---- Test 32: Escaped brace | expected: {'A1': 'Escaped: {{{star'}⎠  ⎩123⎭
+[a1] := $"Escaped: {{{*star"  ⎩124⎭
+  ⎩125⎭
+⎝ ---- Test 33: Escaped brace with closing brace | expected: {'A1': 'Escaped: {{{star}'}⎠  ⎩126⎭
+[a1] := $"Escaped: {{{*star}"  ⎩127⎭
+  ⎩128⎭
+⎝ ---- Test 34: Number sequence default step | expected: {'A1': 1, 'B1': 2, 'C1': 3, 'D1': 4, 'E1': 5, 'F1': 6}⎠  ⎩129⎭
+: dice = 1 to 6  ⎩130⎭
+[^a1] := dice  ⎩131⎭
+  ⎩132⎭
+⎝ ---- Test 35: Point type spilling on grid | expected: {'A3': -4.3, 'B3': 2.1}⎠  ⎩133⎭
+define point as type  ⎩134⎭
+: x as number  ⎩135⎭
+: y as number  ⎩136⎭
+end point  ⎩137⎭
+: p = new point(-4.3, 2.1)  ⎩138⎭
+[^a3] := p  ⎩139⎭
+  ⎩140⎭
+⎝ ---- Test 36: Array of Points spilling on grid | expected: {'C3': 1, 'C4': 3, 'D3': 2, 'D4': 4}⎠  ⎩141⎭
+define dot as type  ⎩142⎭
+: x as number  ⎩143⎭
+: y as number  ⎩144⎭
+end dot  ⎩145⎭
+: p1 = new dot(1, 2)  ⎩146⎭
+: p2 = new dot(3, 4)  ⎩147⎭
+[^c3] := {p1, p2}  ⎩148⎭
+  ⎩149⎭
+⎝ ---- Test 37: Nested Rectangle type spilling on grid | expected: {'A1': 0, 'B1': 10, 'C1': 5, 'D1': 3}⎠  ⎩150⎭
+define point as type  ⎩151⎭
+: x as number  ⎩152⎭
+: y as number  ⎩153⎭
+end point  ⎩154⎭
+define rectangle as type  ⎩155⎭
+: top as point  ⎩156⎭
+: bottom as point  ⎩157⎭
+end rectangle  ⎩158⎭
+[^a1] := new rectangle(new point(0, 10), new point(5, 3))  ⎩159⎭
+  ⎩160⎭
+⎝ ---- Test 38: Point type assigned to single cell | expected: {'A1': {'x': -4.3, 'y': 2.1}}⎠  ⎩161⎭
+define point as type  ⎩162⎭
+	: x as number  ⎩163⎭
+	: y as number  ⎩164⎭
+end point  ⎩165⎭
+: p = new point(-4.3, 2.1)  ⎩166⎭
+[a1] := p  ⎩167⎭
+  ⎩168⎭
+⎝ ---- Test 39: Access field of point type | expected: {'A3': 2.1}⎠  ⎩169⎭
+define point as type  ⎩170⎭
+: x as number  ⎩171⎭
+: y as number  ⎩172⎭
+end point  ⎩173⎭
+: p = new point(-4.3, 2.1)  ⎩174⎭
+[a3] := p.y  ⎩175⎭
+  ⎩176⎭
+⎝ ---- Test 40: Concatenation with interpolation | expected: {'A1': 'I say- hello world!'}⎠  ⎩177⎭
+: m = "hello"  ⎩178⎭
+[a1] := "I say-" & $" {m} world!"  ⎩179⎭
+  ⎩180⎭
+⎝ ---- Test 41: Nested {* interpolation | expected: {'A1': '{{'}⎠  ⎩181⎭
+[a1] := $"{{*"  ⎩182⎭
+  ⎩183⎭
+⎝ ---- Test 42: Dimension constraint | expected: {'A1': 0}⎠  ⎩184⎭
+: weights as number dim {0 to 10, 0 to 10} = 0  ⎩185⎭
+[a1] := weights{0, 0}  ⎩186⎭
+  ⎩187⎭
+⎝ ---- Test 43: Multi-dimensional addition | expected: {'A1': [[1.0, 5.0], [13.0, 15.0]]}⎠  ⎩188⎭
+[a1] := {0, 3; 10, 11} + {1, 2; 3, 4}  ⎩189⎭
+  ⎩190⎭
+⎝ ---- Test 44: Multi-dimensional subtraction | expected: {'A1': [[-1.0, 1.0], [7.0, 7.0]]}⎠  ⎩191⎭
+[a1] := {0, 3; 10, 11} - {1, 2; 3, 4}  ⎩192⎭
+  ⎩193⎭
+⎝ ---- Test 45: Multi-dimensional multiplication | expected: {'A1': [[0.0, 6.0], [30.0, 44.0]]}⎠  ⎩194⎭
+[a1] := {0, 3; 10, 11} * {1, 2; 3, 4}  ⎩195⎭
+  ⎩196⎭
+⎝ ---- Test 46: Multi-dimensional division | expected: {'A1': [[0.0, 1.5], [3.3333333333333335, 2.75]]}⎠  ⎩197⎭
+[a1] := {0, 3; 10, 11} / {1, 2; 3, 4}  ⎩198⎭
+  ⎩199⎭
+⎝ ---- Test 47: Multi-dimensional exponentiation | expected: {'A1': [[0.0, 9.0], [1000.0, 14641.0]]}⎠  ⎩200⎭
+[a1] := {0, 3; 10, 11} ^ {1, 2; 3, 4}  ⎩201⎭
+  ⎩202⎭
+⎝ ---- Test 48: Multi-dimensional modulo | expected: {'A1': [[0.0, 1.0], [1.0, 3.0]]}⎠  ⎩203⎭
+[a1] := {0, 3; 10, 11} mod {1, 2; 3, 4}  ⎩204⎭
+  ⎩205⎭
+⎝ ---- Test 49: Multi-dimensional integer division | expected: {'A1': [[0.0, 1.0], [3.0, 2.0]]}⎠  ⎩206⎭
+[a1] := {0, 3; 10, 11} \ {1, 2; 3, 4}  ⎩207⎭
+  ⎩208⎭
+⎝ ---- Test 50: Pipe operator | expected: {'A1': 1.0, 'B1': 2.0, 'A2': 3.0, 'B2': 4.0, 'A3': -5.0, 'B3': -6.0}⎠  ⎩209⎭
+[^a1] := {1, 2} | {3, 4} | {-5, -6}  ⎩210⎭
+  ⎩211⎭
+⎝ ---- Test 51: Dim reshape | expected: {'A1': [[10], [11]]}⎠  ⎩212⎭
+[a1] := {10, 11} dim {*, 1}  ⎩213⎭
+  ⎩214⎭
+⎝ ---- Test 52: Range with 1D vertical | expected: {'B2': 9, 'B3': 8, 'B4': 7}⎠  ⎩215⎭
+[b2:b4] := {9, 8, 7}  ⎩216⎭
+  ⎩217⎭
+⎝ ---- Test 53: Range with 1D repeated | expected: {'A2': 1, 'A3': 1, 'A4': 1, 'B2': 2, 'B3': 2, 'B4': 2}⎠  ⎩218⎭
+[a2:b4] := {1, 2}  ⎩219⎭
+  ⎩220⎭
+⎝ ---- Test 54: Named dimensions | expected: {'A1': 4}⎠  ⎩221⎭
+: results as number dim {dept: *, quarter: 4} = {9, 4, 5, 1}  ⎩222⎭
+results!quarter.label{"Q1", "Q2", "Q3", "Q4"}  ⎩223⎭
+[a1] := results!quarter("Q2")  ⎩224⎭
+  ⎩225⎭
+⎝ ---- Test 55: Assign and access dimensioned array | expected: {'A1': 10, 'B1': 20, 'B2': 20, 'C1': 30, 'D1': 40}⎠  ⎩226⎭
+[a1:d1] := {10, 20, 30, 40}  ⎩227⎭
+: results as number dim {dept: *, quarter: 4} = [a1:d1]  ⎩228⎭
+results!quarter.label{"Q1", "Q2", "Q3", "Q4"}  ⎩229⎭
+[b2] := results!quarter("Q2")  ⎩230⎭
+  ⎩231⎭
+⎝ ---- Test 56: Multi-dimensional addressing | expected: {'A1': 20, 'A2': 10, 'B2': 20, 'C2': 30, 'D2': 40}⎠  ⎩232⎭
+[a2:d2] := {10, 20, 30, 40}  ⎩233⎭
+: results as number dim {dept: *, quarter: 4} = [a2:d2]  ⎩234⎭
+[a1] := results[b1]  ⎩235⎭
+  ⎩236⎭
+⎝ ---- Test 57: FOR with already defined variable | expected: error⎠  ⎩237⎭
+: x = 34  ⎩238⎭
+for x as number  ⎩239⎭
+  ⎩240⎭
+⎝ ---- Test 58: FOR with LET defining local variable | expected: {'A1': 34}⎠  ⎩241⎭
+for x = 34  ⎩242⎭
+let x as number  ⎩243⎭
+[a1] := x  ⎩244⎭
+  ⎩245⎭
+⎝ ---- Test 59: FOR block with LET defining local variable | expected: {'A1': 34}⎠  ⎩246⎭
+for x = 34 do  ⎩247⎭
+    let x as number then  ⎩248⎭
+        [a1] := x  ⎩249⎭
+    end  ⎩250⎭
+end  ⎩251⎭
+  ⎩252⎭
+⎝ ---- Test 60: LET block with FOR using already declared variable | expected: error⎠  ⎩253⎭
+let x as number then  ⎩254⎭
+    for x = 34 do  ⎩255⎭
+        [a1] := x  ⎩256⎭
+    end  ⎩257⎭
+end  ⎩258⎭
+  ⎩259⎭
+⎝ ---- Test 61: LET followed by FOR with local variable | expected: {'A1': 34}⎠  ⎩260⎭
+let x as number  ⎩261⎭
+[a1] := x  ⎩262⎭
+for x = 34  ⎩263⎭
+  ⎩264⎭
+⎝ ---- Test 62: LET followed by global variable declaration | expected: {'A1': 34}⎠  ⎩265⎭
+let x as number  ⎩266⎭
+[a1] := x  ⎩267⎭
+: x = 34  ⎩268⎭
+  ⎩269⎭
+⎝ ---- Test 63: LET with constraint x > 10 | expected: {'A1': 34}⎠  ⎩270⎭
+: x = 34  ⎩271⎭
+let x > 10 then  ⎩272⎭
+    [a1] := x  ⎩273⎭
+end  ⎩274⎭
+  ⎩275⎭
+⎝ ---- Test 64: LET with constraint x < 10 | expected: {}⎠  ⎩276⎭
+: x = 34  ⎩277⎭
+let x < 10 then  ⎩278⎭
+    [a1] := x  ⎩279⎭
+end  ⎩280⎭
+  ⎩281⎭
+⎝ ---- Test 65: LET with constraint x < 10 halting execution | expected: {}⎠  ⎩282⎭
+: x = 34  ⎩283⎭
+let x < 10  ⎩284⎭
+[a1] := x  ⎩285⎭
+  ⎩286⎭
+⎝ ---- Test 66: LET chain with dependencies X -> Y -> Z | expected: {'A1': 8}⎠  ⎩287⎭
+let x = 2 and y = x * 5 and z = y - x  ⎩288⎭
+[a1] := z  ⎩289⎭
+  ⎩290⎭
+⎝ ---- Test 67: LET chain with wrong order (Y uses X before defined) | expected: error⎠  ⎩291⎭
+let y = x * 5 and x = 2  ⎩292⎭
+[a1] := y  ⎩293⎭
+  ⎩294⎭
+⎝ ---- Test 68: LET with array and named dimension | expected: {'A1': 'Alice', 'B1': 'Bob', 'C1': 'Carla', 'D1': 'Dylan', 'E1': 'Edith'}⎠  ⎩295⎭
+for names dim 0 to 4  ⎩296⎭
+let names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}  ⎩297⎭
+[^a1] := names  ⎩298⎭
+  ⎩299⎭
+⎝ ---- Test 69: Global assignment used in FOR | expected: {'A1': 4.2}⎠  ⎩300⎭
+: n = (m + 10) / 10  ⎩301⎭
+[a1] := n  ⎩302⎭
+for m = 32  ⎩303⎭
+  ⎩304⎭
+⎝ ---- Test 70: LET with array access (index and label) | expected: {'A1': 'Alice', 'B1': 'Carla'}⎠  ⎩305⎭
+for names dim 0 to 4  ⎩306⎭
+let names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}  ⎩307⎭
+[a1] := names(0)  ⎩308⎭
+[b1] := names[3]  ⎩309⎭
+  ⎩310⎭
+⎝ ---- Test 71: Define custom type and array of objects | expected: {'A1': 1.0, 'B1': 'V'}⎠  ⎩311⎭
+define tensor as type  ⎩312⎭
+    : name as text  ⎩313⎭
+end tensor  ⎩314⎭
+  ⎩315⎭
+for v as tensor with (name = "V", grid dim {4, 4, 2} = 1.0)   ⎩316⎭
+[a1] := v.grid{4, 4, 1}  ⎩317⎭
+[b1] := v.name  ⎩318⎭
+  ⎩319⎭
+⎝ ---- Test 72: Define custom type and array with no constraint for {4, 4, 2} | expected: {'A1': 4.0, 'B1': 7.0, 'C1': 'V'}⎠  ⎩320⎭
+define tensor as type  ⎩321⎭
+    : name as text  ⎩322⎭
+end tensor  ⎩323⎭
+  ⎩324⎭
+for v as tensor with (name = "V", grid dim {4, 4, 2} = {1,1,1,1;2,2,2,2;3,3,3,3;4,4,4,4} | {1,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7})  ⎩325⎭
+[a1] := v.grid{4, 4, 1}  ⎩326⎭
+[b1] := v.grid{4, 4, 2}  ⎩327⎭
+[c1] := v.name  ⎩328⎭
+  ⎩329⎭
+⎝ ---- Test 73: Define custom type and array with variable assignment for {4, 4, 3} | expected: {'A1': 3.0, 'B1': 7.0, 'C1': 'V', 'D1': 11.0}⎠  ⎩330⎭
+define tensor as type  ⎩331⎭
+    : name as text  ⎩332⎭
+end tensor  ⎩333⎭
+  ⎩334⎭
+for var = {1,1,1,1;2,2,2,2;3,3,3,3;4,4,4,4} | {1,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7} | {11,2,3,4;2,3,4,5;3,4,5,6;4,5,6,7}  ⎩335⎭
+for v as tensor with (name = "V", grid dim {4, 4, 3} = var)  ⎩336⎭
+[a1] := v.grid{3, 1, 2}  ⎩337⎭
+[b1] := v.grid{4, 4, 2}  ⎩338⎭
+[c1] := v.name  ⎩339⎭
+[d1] := v.grid{1, 1, 3}  ⎩340⎭
+  ⎩341⎭
+⎝ ---- Test 74: If condition is false, whole block | expected: {}⎠  ⎩342⎭
+let v = 33  ⎩343⎭
+[a1] := "single digit"  ⎩344⎭
+if v < 10  ⎩345⎭
+  ⎩346⎭
+⎝ ---- Test 75: If condition is true, whole block | expected: {'A1': 'single digit'}⎠  ⎩347⎭
+let v = 1  ⎩348⎭
+[a1] := "single digit"  ⎩349⎭
+if v < 10  ⎩350⎭
+  ⎩351⎭
+⎝ ---- Test 76: If condition is true, whole block with division | expected: {'A1': 5.0}⎠  ⎩352⎭
+for a = 20 and b = 4  ⎩353⎭
+[a1] := a / b  ⎩354⎭
+if b not = 5  ⎩355⎭
+  ⎩356⎭
+⎝ ---- Test 77: If then block with else | expected: {'A1': 1}⎠  ⎩357⎭
+: name = "Jane"  ⎩358⎭
+for friend as number  ⎩359⎭
+if name in {"Oscar", "Jane"} then  ⎩360⎭
+	let friend = 1  ⎩361⎭
+else  ⎩362⎭
+	let friend = 99  ⎩363⎭
+end  ⎩364⎭
+[a1] := friend  ⎩365⎭
+  ⎩366⎭
+⎝ ---- Test 78: Single line if then else | expected: {'A1': 99}⎠  ⎩367⎭
+: name = "Liz"  ⎩368⎭
+for friend as number  ⎩369⎭
+if name in {"Oscar", "Jane"} then let friend = 1 else let friend = 99  ⎩370⎭
+[a1] := friend  ⎩371⎭
+  ⎩372⎭
+⎝ ---- Test 79: Elseif statement | expected: {'A1': 2}⎠  ⎩373⎭
+: name = "Jane"  ⎩374⎭
+for friend as number  ⎩375⎭
+if name = "Oscar" then  ⎩376⎭
+  let friend = 1  ⎩377⎭
+elseif name = "Jane" then  ⎩378⎭
+  let friend = 2  ⎩379⎭
+else  ⎩380⎭
+  let friend = 99  ⎩381⎭
+end  ⎩382⎭
+[a1] := friend  ⎩383⎭
+  ⎩384⎭
+⎝ ---- Test 80: Undefined variable, condition is false | expected: {'A1': 'small'}⎠  ⎩385⎭
+if v > 10 then  ⎩386⎭
+  [a1] := "big"  ⎩387⎭
+else  ⎩388⎭
+  [a1] := "small"  ⎩389⎭
+end  ⎩390⎭
+  ⎩391⎭
+⎝ ---- Test 81: Multiple conditions | expected: {'A1': 'true', 'B1': 'true'}⎠  ⎩392⎭
+for a = 3 and b = 7  ⎩393⎭
+if b > a and a <= 3 and b not = 16 then  ⎩394⎭
+  [a1] := "true"  ⎩395⎭
+end  ⎩396⎭
+if b = 5 or a = 3 then  ⎩397⎭
+  [b1] := "true"  ⎩398⎭
+end  ⎩399⎭
+  ⎩400⎭
+⎝ ---- Test 82: If constraint on Expression | expected: {'A1': 'true'}⎠  ⎩401⎭
+if 1 + 1 = 2 then  ⎩402⎭
+  [a1] := "true"  ⎩403⎭
+end  ⎩404⎭
+  ⎩405⎭
+⎝ ---- Test 83: If constraint on Expression with variable | expected: {'A1': 'true'}⎠  ⎩406⎭
+for a = 3  ⎩407⎭
+if a * 3 = 9 then [a1] := "true"  ⎩408⎭
+  ⎩409⎭
+⎝ ---- Test 84: If constraint on Expression with comparison | expected: {'A1': 'true'}⎠  ⎩410⎭
+for a = 3  ⎩411⎭
+if 10 > a * 3 then [a1] := "true"  ⎩412⎭
+  ⎩413⎭
+⎝ ---- Test 85: For loop with range | expected: {'A1': 'hello', 'A2': 'hello', 'A3': 'hello'}⎠  ⎩414⎭
+for i in 1 to 3  ⎩415⎭
+[a{i}] := "hello"  ⎩416⎭
+  ⎩417⎭
+⎝ ---- Test 86: Combining loops | expected: {'A1': 8, 'A2': 9}⎠  ⎩418⎭
+for a in 1 to 1000  ⎩419⎭
+for b in 8 to 9  ⎩420⎭
+push [a{a}] = b  ⎩421⎭
+  ⎩422⎭
+⎝ ---- Test 87: Combining loops with different ranges | expected: {'A1': 8, 'A2': 9}⎠  ⎩423⎭
+for a in 1 to 2  ⎩424⎭
+for b in 8 to 90  ⎩425⎭
+push [a{a}] = b  ⎩426⎭
+  ⎩427⎭
+⎝ ---- Test 88: For loop block | expected: {'A1': 4, 'A2': 5, 'A3': 6}⎠  ⎩428⎭
+for i in 1 to 3 do  ⎩429⎭
+	[a{i}] := i + 3  ⎩430⎭
+end  ⎩431⎭
+  ⎩432⎭
+⎝ ---- Test 89: For loop block with set | expected: {'A1': 4, 'A2': 5, 'A3': 6}⎠  ⎩433⎭
+for i in {1, 2, 3} do  ⎩434⎭
+	[a{i}] := i + 3  ⎩435⎭
+end  ⎩436⎭
+  ⎩437⎭
+⎝ ---- Test 90: Nested loop with AND | expected: {'A1': 9, 'A2': 10, 'A3': 18, 'A4': 20}⎠  ⎩438⎭
+for a in {1, 2} and b in {9, 10} do  ⎩439⎭
+  [a{2 * a + b - 10}] := a * b  ⎩440⎭
+end  ⎩441⎭
+  ⎩442⎭
+⎝ ---- Test 91: Loop with index | expected: {'A1': 9, 'A2': 10}⎠  ⎩443⎭
+for b in {9, 10} index i do  ⎩444⎭
+	[a{i}] := b  ⎩445⎭
+end  ⎩446⎭
+  ⎩447⎭
+⎝ ---- Test 92: Loop with step and index | expected: {'A1': 9, 'A2': 12, 'A3': 15}⎠  ⎩448⎭
+for b in 9 to 15 step 3 index i do  ⎩449⎭
+	[a{i}] := b  ⎩450⎭
+end  ⎩451⎭
+  ⎩452⎭
+⎝ ---- Test 93: Nested loop with step and index | expected: {'A4': 9, 'A5': 12, 'A6': 15, 'A7': 18, 'A8': 24, 'A9': 30}⎠  ⎩453⎭
+for a in {1, 2} index i and b in 9 to 15 step 3 index j do  ⎩454⎭
+  [a{3 * i + j}] := a * b  ⎩455⎭
+end  ⎩456⎭
+  ⎩457⎭
+⎝ ---- Test 94: If condition Dimension constraint - single element | expected: {'A1': 'true'}⎠  ⎩458⎭
+for x = {3}  ⎩459⎭
+if x dim 1 then  ⎩460⎭
+  [a1] := "true"  ⎩461⎭
+else  ⎩462⎭
+  [a1] := "false"  ⎩463⎭
+end  ⎩464⎭
+  ⎩465⎭
+⎝ ---- Test 95: If condition Dimension constraint - array | expected: {'A1': 'false'}⎠  ⎩466⎭
+for x = {3, 8}  ⎩467⎭
+if x dim 1 then  ⎩468⎭
+  [a1] := "true"  ⎩469⎭
+else  ⎩470⎭
+  [a1] := "false"  ⎩471⎭
+end  ⎩472⎭
+  ⎩473⎭
+⎝ ---- Test 96: If condition Dimension constraint - 2D | expected: {'A1': 'true'}⎠  ⎩474⎭
+for x = {3, 8}  ⎩475⎭
+if x dim 2 then  ⎩476⎭
+  [a1] := "true"  ⎩477⎭
+else  ⎩478⎭
+  [a1] := "false"  ⎩479⎭
+end  ⎩480⎭
+  ⎩481⎭
+⎝ ---- Test 97: Dimension condition two-dim | expected: {'A1': 'true'}⎠  ⎩482⎭
+for x = {3, 8; 1, 0}  ⎩483⎭
+if x dim {2, 2} then  ⎩484⎭
+  [a1] := "true"  ⎩485⎭
+else  ⎩486⎭
+  [a1] := "false"  ⎩487⎭
+end  ⎩488⎭
+  ⎩489⎭
+⎝ ---- Test 98: Dimension condition zero-dim | expected: {'A1': 'false'}⎠  ⎩490⎭
+for x = 3  ⎩491⎭
+if x dim 1 then  ⎩492⎭
+  [a1] := "true"  ⎩493⎭
+else  ⎩494⎭
+  [a1] := "false"  ⎩495⎭
+end  ⎩496⎭
+  ⎩497⎭
+⎝ ---- Test 99: Dimension condition zero-dim with * | expected: {'A1': 'false'}⎠  ⎩498⎭
+for x = 3  ⎩499⎭
+if x dim * then  ⎩500⎭
+  [a1] := "true"  ⎩501⎭
+else  ⎩502⎭
+  [a1] := "false"  ⎩503⎭
+end  ⎩504⎭
+  ⎩505⎭
+⎝ ---- Test 100: Dimension condition zero-dim with {} | expected: {'A1': 'true'}⎠  ⎩506⎭
+for x = 3  ⎩507⎭
+if x dim {} then  ⎩508⎭
+  [a1] := "true"  ⎩509⎭
+else  ⎩510⎭
+  [a1] := "false"  ⎩511⎭
+end  ⎩512⎭
+  ⎩513⎭
+⎝ ---- Test 101: If condition Type constraint - uninitialized | expected: {'A1': 'true'}⎠  ⎩514⎭
+for z as text  ⎩515⎭
+if z as text then  ⎩516⎭
+  [a1] := "true"  ⎩517⎭
+else  ⎩518⎭
+  [a1] := "false"  ⎩519⎭
+end  ⎩520⎭
+  ⎩521⎭
+⎝ ---- Test 102: If condition Type constraint - string value | expected: {'A1': 'true'}⎠  ⎩522⎭
+for z = "Grid"  ⎩523⎭
+if z as text then  ⎩524⎭
+  [a1] := "true"  ⎩525⎭
+else  ⎩526⎭
+  [a1] := "false"  ⎩527⎭
+end  ⎩528⎭
+  ⎩529⎭
+⎝ ---- Test 103: If condition Type constraint - number value | expected: {'A1': 'false'}⎠  ⎩530⎭
+for z = 99  ⎩531⎭
+if z as text then  ⎩532⎭
+  [a1] := "true"  ⎩533⎭
+else  ⎩534⎭
+  [a1] := "false"  ⎩535⎭
+end  ⎩536⎭
+  ⎩537⎭
+⎝ ---- Test 104: If condition Type and Dimension constraint | expected: {'A1': 'true'}⎠  ⎩538⎭
+for z = "Grid"  ⎩539⎭
+if z as text dim {} then  ⎩540⎭
+  [a1] := "true"  ⎩541⎭
+else  ⎩542⎭
+  [a1] := "false"  ⎩543⎭
+end  ⎩544⎭
+  ⎩545⎭
+⎝ ---- Test 105: If condition Type and Dimension constraint - array | expected: {'A1': 'true'}⎠  ⎩546⎭
+for z = {"Grid", "lang"}  ⎩547⎭
+if z as text dim * then  ⎩548⎭
+  [a1] := "true"  ⎩549⎭
+else  ⎩550⎭
+  [a1] := "false"  ⎩551⎭
+end  ⎩552⎭
+  ⎩553⎭
+⎝ ---- Test 106: If condition Type and Dimension constraint - scalar | expected: {'A1': 'false'}⎠  ⎩554⎭
+for z = "Grid"  ⎩555⎭
+if z as text dim * then  ⎩556⎭
+  [a1] := "true"  ⎩557⎭
+else  ⎩558⎭
+  [a1] := "false"  ⎩559⎭
+end  ⎩560⎭
+  ⎩561⎭
+⎝ ---- Test 107: If condition Possible Values constraint - in set | expected: {'A1': 'true'}⎠  ⎩562⎭
+for z = "Grid"  ⎩563⎭
+if z in {"Grid", "lang", "2025"} then  ⎩564⎭
+  [a1] := "true"  ⎩565⎭
+else  ⎩566⎭
+  [a1] := "false"  ⎩567⎭
+end  ⎩568⎭
+  ⎩569⎭
+⎝ ---- Test 108: If condition Possible Values constraint - not in set | expected: {'A1': 'false'}⎠  ⎩570⎭
+for z = "hello"  ⎩571⎭
+if z in {"Grid", "lang", "2025"} then  ⎩572⎭
+  [a1] := "true"  ⎩573⎭
+else  ⎩574⎭
+  [a1] := "false"  ⎩575⎭
+end  ⎩576⎭
+  ⎩577⎭
+⎝ ---- Test 109: If condition Possible Values constraint - in range | expected: {'A1': 'true'}⎠  ⎩578⎭
+for z = 99  ⎩579⎭
+if z in 50 to 100 then  ⎩580⎭
+  [a1] := "true"  ⎩581⎭
+else  ⎩582⎭
+  [a1] := "false"  ⎩583⎭
+end  ⎩584⎭
+  ⎩585⎭
+⎝ ---- Test 110: If condition Unit constraint - with value | expected: {'A1': 'true'}⎠  ⎩586⎭
+for z of dollar = 4  ⎩587⎭
+if z of dollar then  ⎩588⎭
+  [a1] := "true"  ⎩589⎭
+else  ⎩590⎭
+  [a1] := "false"  ⎩591⎭
+end  ⎩592⎭
+  ⎩593⎭
+⎝ ---- Test 111: If condition Unit constraint - without value | expected: {'A1': 'true'}⎠  ⎩594⎭
+for z of dollar  ⎩595⎭
+if z of dollar then  ⎩596⎭
+  [a1] := "true"  ⎩597⎭
+else  ⎩598⎭
+  [a1] := "false"  ⎩599⎭
+end  ⎩600⎭
+  ⎩601⎭
+⎝ ---- Test 112: If condition Unit constraint - different unit | expected: {'A1': 'false'}⎠  ⎩602⎭
+for z of peso  ⎩603⎭
+if z of dollar then  ⎩604⎭
+  [a1] := "true"  ⎩605⎭
+else  ⎩606⎭
+  [a1] := "false"  ⎩607⎭
+end  ⎩608⎭
+  ⎩609⎭
+⎝ ---- Test 113: Full Fibonacci Sequence (30 elements) | expected: {'A1': 1, 'B1': 1, 'A2': 1, 'B2': 2, 'A3': 2, 'B3': 3, 'A4': 3, 'B4': 5, 'A5': 5, 'B5': 8, 'A6': 8, 'B6': 13, 'A7': 13, 'B7': 21, 'A8': 21, 'B8': 34, 'A9': 34, 'B9': 55, 'A10': 55, 'B10': 89, 'A11': 89, 'B11': 144, 'A12': 144, 'B12': 233, 'A13': 233, 'B13': 377, 'A14': 377, 'B14': 610, 'A15': 610, 'B15': 987, 'A16': 987, 'B16': 1597, 'A17': 1597, 'B17': 2584, 'A18': 2584, 'B18': 4181, 'A19': 4181, 'B19': 6765, 'A20': 6765, 'B20': 10946, 'A21': 10946, 'B21': 17711, 'A22': 17711, 'B22': 28657, 'A23': 28657, 'B23': 46368, 'A24': 46368, 'B24': 75025, 'A25': 75025, 'B25': 121393, 'A26': 121393, 'B26': 196418, 'A27': 196418, 'B27': 317811, 'A28': 317811, 'B28': 514229, 'A29': 514229, 'B29': 832040, 'A30': 832040, 'B30': 1346269}⎠  ⎩610⎭
+for d as number dim {30, 2}  ⎩611⎭
+let d[a1] = 1  ⎩612⎭
+let d[b1] = 1  ⎩613⎭
+for i in 1 to 29 do  ⎩614⎭
+  let d{i+1, 1} = d{i, 2}  ⎩615⎭
+  let d{i+1, 2} = d{i, 1} + d{i, 2}  ⎩616⎭
+end  ⎩617⎭
+[^a1] := d  ⎩618⎭
+  ⎩619⎭
+⎝ ---- Test 114: Pascal Triangle Sequence | expected: {'A1': 1, 'A2': 4, 'A3': 9, 'A4': 16, 'A5': 25, 'A6': 36, 'A7': 49, 'A8': 64, 'A9': 81, 'A10': 100, 'A11': 121, 'A12': 144, 'A13': 169, 'A14': 196, 'A15': 225}⎠  ⎩620⎭
+for d as number dim {15, 1}  ⎩621⎭
+let d[a1] = 1  ⎩622⎭
+for i in 3 to 30 step 2 index k do  ⎩623⎭
+   let d{k+1, 1} = d{k, 1} + i  ⎩624⎭
+end  ⎩625⎭
+[^a1] := d  ⎩626⎭
+  ⎩627⎭
+⎝ ---- Test 115: Fibonacci Sequence with Cell References | expected: {'A1': 1, 'B1': 1, 'A2': 1, 'B2': 2, 'A3': 2, 'B3': 3, 'A4': 3, 'B4': 5, 'A5': 5, 'B5': 8, 'A6': 8, 'B6': 13, 'A7': 13, 'B7': 21, 'A8': 21, 'B8': 34, 'A9': 34, 'B9': 55, 'A10': 55, 'B10': 89, 'A11': 89, 'B11': 144, 'A12': 144, 'B12': 233, 'A13': 233, 'B13': 377, 'A14': 377, 'B14': 610, 'A15': 610, 'B15': 987, 'A16': 987, 'B16': 1597, 'A17': 1597, 'B17': 2584, 'A18': 2584, 'B18': 4181, 'A19': 4181, 'B19': 6765, 'A20': 6765, 'B20': 10946, 'A21': 10946, 'B21': 17711, 'A22': 17711, 'B22': 28657, 'A23': 28657, 'B23': 46368, 'A24': 46368, 'B24': 75025, 'A25': 75025, 'B25': 121393, 'A26': 121393, 'B26': 196418, 'A27': 196418, 'B27': 317811, 'A28': 317811, 'B28': 514229, 'A29': 514229, 'B29': 832040, 'A30': 832040, 'B30': 1346269}⎠  ⎩628⎭
+[a1:b1] := 1  ⎩629⎭
+for i in 1 to 29 do  ⎩630⎭
+  [a{i+1}] := [b{i}]  ⎩631⎭
+  [b{i+1}] := [a{i}] + [b{i}]  ⎩632⎭
+end  ⎩633⎭
+  ⎩634⎭
+⎝ ---- Test 116: Array with step and index in FOR loop | expected: {'A1': 1.0, 'B1': 4.0, 'C1': 9.0, 'D1': 16.0, 'E1': 25.0, 'F1': 36.0, 'G1': 49.0, 'H1': 64.0, 'I1': 81.0, 'J1': 100.0, 'K1': 121.0, 'L1': 144.0, 'M1': 169.0, 'N1': 196.0, 'O1': 225.0}⎠  ⎩635⎭
+for d as number dim 15  ⎩636⎭
+let d[1] = 1  ⎩637⎭
+for i in 3 to 30 step 2 index k do  ⎩638⎭
+let d(k+1) = d(k) + i  ⎩639⎭
+end  ⎩640⎭
+[^a1] := d  ⎩641⎭
+  ⎩642⎭
+⎝ ---- Test 117: Nested FOR loop with dynamic range building grid pattern | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 0.0, 'E1': 0.0, 'F1': 0.0, 'G1': 0.0, 'H1': 0.0, 'I1': 0.0, 'J1': 0.0, 'K1': 0.0, 'L1': 0.0, 'A2': 0.0, 'B2': 1.0, 'C2': 1.0, 'D2': 0.0, 'E2': 0.0, 'F2': 0.0, 'G2': 0.0, 'H2': 0.0, 'I2': 0.0, 'J2': 0.0, 'K2': 0.0, 'L2': 0.0, 'A3': 0.0, 'B3': 1.0, 'C3': 2.0, 'D3': 1.0, 'E3': 0.0, 'F3': 0.0, 'G3': 0.0, 'H3': 0.0, 'I3': 0.0, 'J3': 0.0, 'K3': 0.0, 'L3': 0.0, 'A4': 0.0, 'B4': 1.0, 'C4': 3.0, 'D4': 3.0, 'E4': 1.0, 'F4': 0.0, 'G4': 0.0, 'H4': 0.0, 'I4': 0.0, 'J4': 0.0, 'K4': 0.0, 'L4': 0.0, 'A5': 0.0, 'B5': 1.0, 'C5': 4.0, 'D5': 6.0, 'E5': 4.0, 'F5': 1.0, 'G5': 0.0, 'H5': 0.0, 'I5': 0.0, 'J5': 0.0, 'K5': 0.0, 'L5': 0.0, 'A6': 0.0, 'B6': 1.0, 'C6': 5.0, 'D6': 10.0, 'E6': 10.0, 'F6': 5.0, 'G6': 1.0, 'H6': 0.0, 'I6': 0.0, 'J6': 0.0, 'K6': 0.0, 'L6': 0.0, 'A7': 0.0, 'B7': 1.0, 'C7': 6.0, 'D7': 15.0, 'E7': 20.0, 'F7': 15.0, 'G7': 6.0, 'H7': 1.0, 'I7': 0.0, 'J7': 0.0, 'K7': 0.0, 'L7': 0.0, 'A8': 0.0, 'B8': 1.0, 'C8': 7.0, 'D8': 21.0, 'E8': 35.0, 'F8': 35.0, 'G8': 21.0, 'H8': 7.0, 'I8': 1.0, 'J8': 0.0, 'K8': 0.0, 'L8': 0.0, 'A9': 0.0, 'B9': 1.0, 'C9': 8.0, 'D9': 28.0, 'E9': 56.0, 'F9': 70.0, 'G9': 56.0, 'H9': 28.0, 'I9': 8.0, 'J9': 1.0, 'K9': 0.0, 'L9': 0.0, 'A10': 0.0, 'B10': 1.0, 'C10': 9.0, 'D10': 36.0, 'E10': 84.0, 'F10': 126.0, 'G10': 126.0, 'H10': 84.0, 'I10': 36.0, 'J10': 9.0, 'K10': 1.0, 'L10': 0.0}⎠  ⎩643⎭
+for d as number dim {10, 12}  ⎩644⎭
+  ⎩645⎭
+let d[b1] = 1  ⎩646⎭
+for a in 2 to 10 and b in 1 to a do  ⎩647⎭
+  let d{a, b+1} = d{a-1, b} + d{a-1, b+1}  ⎩648⎭
+end  ⎩649⎭
+  ⎩650⎭
+[^a1] := d  ⎩651⎭
+  ⎩652⎭
+⎝ ---- Test 118: Complex nested FOR loops with IF conditions and set iteration | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 1.0, 'E1': 1.0, 'F1': 0.0, 'G1': 1.0, 'H1': 2.0, 'I1': 1.0, 'J1': 0.0, 'K1': 1.0, 'L1': 3.0, 'M1': 3.0, 'N1': 1.0, 'O1': 0.0, 'P1': 1.0, 'Q1': 4.0, 'R1': 6.0, 'S1': 4.0, 'T1': 1.0, 'U1': 0.0, 'V1': 1.0, 'W1': 5.0, 'X1': 10.0, 'Y1': 10.0, 'Z1': 5.0, 'AA1': 1.0, 'AB1': 0.0, 'AC1': 1.0, 'AD1': 6.0, 'AE1': 15.0, 'AF1': 20.0, 'AG1': 15.0, 'AH1': 6.0, 'AI1': 1.0, 'AJ1': 0.0, 'AK1': 1.0, 'AL1': 7.0, 'AM1': 21.0, 'AN1': 35.0, 'AO1': 35.0, 'AP1': 21.0, 'AQ1': 7.0, 'AR1': 1.0, 'AS1': 0.0, 'AT1': 1.0, 'AU1': 8.0, 'AV1': 28.0, 'AW1': 56.0, 'AX1': 70.0, 'AY1': 56.0, 'AZ1': 28.0, 'BA1': 8.0, 'BB1': 1.0, 'BC1': 0.0, 'BD1': 1.0, 'BE1': 9.0, 'BF1': 36.0, 'BG1': 84.0, 'BH1': 126.0, 'BI1': 126.0, 'BJ1': 84.0, 'BK1': 36.0, 'BL1': 9.0, 'BM1': 1.0}⎠  ⎩653⎭
+for d as number dim 65  ⎩654⎭
+let d(2) = 1  ⎩655⎭
+for i in 1 to 9 do  ⎩656⎭
+  for a = (i + 3) * i \ 2 + 1  ⎩657⎭
+  for b = (i + 1) * i \ 2  ⎩658⎭
+  for j in 1 to i+1 do  ⎩659⎭
+    let d(a+j) = d(b+j-1) + d(b+j)  ⎩660⎭
+  end  ⎩661⎭
+end  ⎩662⎭
+[^a1] := d  ⎩663⎭
+  ⎩664⎭
+⎝ ---- Test 119: Binomial coefficient calculation with nested loops | expected: {'A1': 0.0, 'B1': 1.0, 'C1': 0.0, 'D1': 1.0, 'E1': 1.0, 'F1': 0.0, 'G1': 1.0, 'H1': 2.0, 'I1': 1.0, 'J1': 0.0, 'K1': 1.0, 'L1': 3.0, 'M1': 3.0, 'N1': 1.0, 'O1': 0.0}⎠  ⎩665⎭
+for d as number dim 15  ⎩666⎭
+let d(2) = 1  ⎩667⎭
+for i in 1 to 3 do  ⎩668⎭
+  let a = (i + 3) * i \ 2 + 1  ⎩669⎭
+  let b = (i + 1) * i \ 2  ⎩670⎭
+  for j in {1, 2, 3, 4} do  ⎩671⎭
+    if j <= i+1 then  ⎩672⎭
+      let d(a+j) = d(b+j-1) + d(b+j)  ⎩673⎭
+    end  ⎩674⎭
+  end  ⎩675⎭
+end  ⎩676⎭
+[^a1] := d  ⎩677⎭
+  ⎩678⎭
+⎝ ---- Test 120: Binomial type with grid spilling (Pascal's Triangle) | expected: {'A1': 0, 'B1': 1, 'B2': 1, 'C2': 1, 'B3': 1, 'C3': 2, 'D3': 1, 'B4': 1, 'C4': 3, 'D4': 3, 'E4': 1, 'B5': 1, 'C5': 4, 'D5': 6, 'E5': 4, 'F5': 1, 'B6': 1, 'C6': 5, 'D6': 10, 'E6': 10, 'F6': 5, 'G6': 1, 'B7': 1, 'C7': 6, 'D7': 15, 'E7': 20, 'F7': 15, 'G7': 6, 'H7': 1, 'B8': 1, 'C8': 7, 'D8': 21, 'E8': 35, 'F8': 35, 'G8': 21, 'H8': 7, 'I8': 1, 'B9': 1, 'C9': 8, 'D9': 28, 'E9': 56, 'F9': 70, 'G9': 56, 'H9': 28, 'I9': 8, 'J9': 1, 'B10': 1, 'C10': 9, 'D10': 36, 'E10': 84, 'F10': 126, 'G10': 126, 'H10': 84, 'I10': 36, 'J10': 9, 'K10': 1}⎠  ⎩679⎭
+define binomial as type  ⎩680⎭
+  [b1] := 1  ⎩681⎭
+  for a in 2 to 10 and b in 2 to a+1 do  ⎩682⎭
+    let grid{a, b} = grid{a-1, b-1} + grid{a-1, b}  ⎩683⎭
+  end  ⎩684⎭
+end binomial  ⎩685⎭
+  ⎩686⎭
+: bin = new binomial()  ⎩687⎭
+[^a1] := bin.grid  ⎩688⎭
+  ⎩689⎭
+⎝ ---- Test 121: Guard prevents earlier statements | expected: {}⎠  ⎩690⎭
+[a1] := 9  ⎩691⎭
+if 2 < 1  ⎩692⎭
+[a2] := 7  ⎩693⎭
+  ⎩694⎭
+⎝ ---- Test 122: Guard allows execution when true | expected: {'A1': 5, 'A2': 6}⎠  ⎩695⎭
+: needle = 5  ⎩696⎭
+[a1] := needle  ⎩697⎭
+if needle < 10  ⎩698⎭
+[a2] := needle + 1  ⎩699⎭
+  ⎩700⎭
+⎝ ---- Test 123: Guard blocks when condition false with definition | expected: {}⎠  ⎩701⎭
+: limit = 25  ⎩702⎭
+[a1] := 42  ⎩703⎭
+if limit < 10  ⎩704⎭
+[a2] := limit  ⎩705⎭
+  ⎩706⎭
+⎝ ---- Test 124: Assignment waits for future FOR variable | expected: {'A1': 11}⎠  ⎩707⎭
+[a1] := total + 1  ⎩708⎭
+for total as number = 10  ⎩709⎭
+  ⎩710⎭
+⎝ ---- Test 125: LET waits for future definition | expected: {'A1': 12}⎠  ⎩711⎭
+let result = base + 5  ⎩712⎭
+for base as number = 7  ⎩713⎭
+[a1] := result  ⎩714⎭
+  ⎩715⎭
+⎝ ---- Test 126: IF THEN ELSE simple | expected: {'A1': 'single', 'B1': 'ok'}⎠  ⎩716⎭
+: v = 1  ⎩717⎭
+[a1] := "single"  ⎩718⎭
+if v < 10 then [b1] := "ok"  ⎩719⎭
+  ⎩720⎭
+⎝ ---- Test 127: FOR range block assignment | expected: {'A1': 1, 'A2': 2, 'A3': 3}⎠  ⎩721⎭
+for i in 1 to 3 do  ⎩722⎭
+  [a{i}] := i  ⎩723⎭
+end  ⎩724⎭
+  ⎩725⎭
+⎝ ---- Test 128: Guard prevents runtime errors in body | expected: {}⎠  ⎩726⎭
+if 1 = 0  ⎩727⎭
+[a1] := 1 / 0  ⎩728⎭
+  ⎩729⎭
+⎝ ---- Test 129: Global FOR declaration executes before main | expected: {'A1': 6}⎠  ⎩730⎭
+for length as number = 6  ⎩731⎭
+[a1] := length  ⎩732⎭
+  ⎩733⎭
+⎝ ---- Test 130: Doc LET chain dependencies | expected: {'A1': 8.0}⎠  ⎩734⎭
+let x = 2 and y = x * 5 and z = y - x  ⎩735⎭
+[a1] := z  ⎩736⎭
+  ⎩737⎭
+⎝ ---- Test 131: Doc LET with late declaration | expected: {'A1': 6.0}⎠  ⎩738⎭
+let x = y \ 2  ⎩739⎭
+for x as number  ⎩740⎭
+for y as number = 13  ⎩741⎭
+[a1] := x  ⎩742⎭
+  ⎩743⎭
+⎝ ---- Test 132: Doc guard sum condition | expected: {'B1': 400, 'B2': 500, 'A1': 9}⎠  ⎩744⎭
+[b1] := 400  ⎩745⎭
+[b2] := 500  ⎩746⎭
+[a1] := 9  ⎩747⎭
+if sum[b1:b2] < 1000  ⎩748⎭
+  ⎩749⎭
+⎝ ---- Test 133: Doc guard with input allows execution | inputs: ['500'], expected: {'A1': 9}⎠  ⎩750⎭
+input x as number  ⎩751⎭
+[a1] := 9  ⎩752⎭
+if x < 1000  ⎩753⎭
+  ⎩754⎭
+⎝ ---- Test 134: Guard allows execution when true with input | inputs: ['5'], expected: {'A1': 5.0, 'A2': 6.0}⎠  ⎩755⎭
+input needle as number  ⎩756⎭
+[a1] := needle  ⎩757⎭
+if needle < 10  ⎩758⎭
+[a2] := needle + 1  ⎩759⎭
+  ⎩760⎭
+⎝ ---- Test 135: Guard blocks when condition false with input | inputs: ['25'], expected: {}⎠  ⎩761⎭
+input limit as number  ⎩762⎭
+[a1] := 42  ⎩763⎭
+if limit < 10  ⎩764⎭
+[a2] := limit  ⎩765⎭
+  ⎩766⎭
+⎝ ---- Test 136: Doc global FOR sequence | expected: {'A2': 2, 'A3': 3, 'A4': 4}⎠  ⎩767⎭
+for n in 2 to 4 do  ⎩768⎭
+  [a{n}] := n  ⎩769⎭
+end  ⎩770⎭
+  ⎩771⎭
+⎝ ---- Test 137: Tyre size lookup TOYO YARI | inputs: ['TOYO', 'YARI'], expected: {'A1': 195, 'B1': 55, 'C1': 16}⎠  ⎩772⎭
+input make as text  ⎩773⎭
+input model as text  ⎩774⎭
+  ⎩775⎭
+  ⎩776⎭
+  ⎩777⎭
+[a1]: width as number  ⎩778⎭
+[b1]: ratio as number  ⎩779⎭
+[c1]: diameter as number  ⎩780⎭
+  ⎩781⎭
+if make = "TOYO" then  ⎩782⎭
+  if model = "YARI" then  ⎩783⎭
+    let width = 195  ⎩784⎭
+    let ratio = 55  ⎩785⎭
+    let diameter = 16  ⎩786⎭
+  elseif model = "AURI" then  ⎩787⎭
+    let width = 205  ⎩788⎭
+    let ratio = 55  ⎩789⎭
+    let diameter = 16  ⎩790⎭
+  elseif model = "CH-R" then  ⎩791⎭
+    let width = 215  ⎩792⎭
+    let ratio = 60  ⎩793⎭
+    let diameter = 17  ⎩794⎭
+  end  ⎩795⎭
+end  ⎩796⎭
+if make = "MERC" then  ⎩797⎭
+  if model = "A205" then  ⎩798⎭
+    let width = 205  ⎩799⎭
+    let ratio = 55  ⎩800⎭
+    let diameter = 17  ⎩801⎭
+  elseif model = "C200" then  ⎩802⎭
+    let width = 225  ⎩803⎭
+    let ratio = 45  ⎩804⎭
+    let diameter = 18  ⎩805⎭
+  end  ⎩806⎭
+end  ⎩807⎭
+  ⎩808⎭
+if len(make) = 4  ⎩809⎭
+  ⎩810⎭
+⎝ ---- Test 138: Tyre size lookup MERC C200 | inputs: ['MERC', 'C200'], expected: {'A1': 225, 'B1': 45, 'C1': 18}⎠  ⎩811⎭
+input make as text  ⎩812⎭
+input model as text  ⎩813⎭
+  ⎩814⎭
+  ⎩815⎭
+  ⎩816⎭
+[a1]: width as number  ⎩817⎭
+[b1]: ratio as number  ⎩818⎭
+[c1]: diameter as number  ⎩819⎭
+  ⎩820⎭
+if make = "TOYO" then  ⎩821⎭
+  if model = "YARI" then  ⎩822⎭
+    let width = 195  ⎩823⎭
+    let ratio = 55  ⎩824⎭
+    let diameter = 16  ⎩825⎭
+  elseif model = "AURI" then  ⎩826⎭
+    let width = 205  ⎩827⎭
+    let ratio = 55  ⎩828⎭
+    let diameter = 16  ⎩829⎭
+  elseif model = "CH-R" then  ⎩830⎭
+    let width = 215  ⎩831⎭
+    let ratio = 60  ⎩832⎭
+    let diameter = 17  ⎩833⎭
+  end  ⎩834⎭
+end  ⎩835⎭
+if make = "MERC" then  ⎩836⎭
+  if model = "A205" then  ⎩837⎭
+    let width = 205  ⎩838⎭
+    let ratio = 55  ⎩839⎭
+    let diameter = 17  ⎩840⎭
+  elseif model = "C200" then  ⎩841⎭
+    let width = 225  ⎩842⎭
+    let ratio = 45  ⎩843⎭
+    let diameter = 18  ⎩844⎭
+  end  ⎩845⎭
+end  ⎩846⎭
+  ⎩847⎭
+if len(make) = 4  ⎩848⎭
+  ⎩849⎭
+⎝ ---- Test 139: Default input value | expected: {'A1': 5.0}⎠  ⎩850⎭
+input x as number or = 5  ⎩851⎭
+[a1] := x  ⎩852⎭
+  ⎩853⎭
+⎝ ---- Test 140: INIT allows later updates | expected: {'A1': 7, 'A2': 7}⎠  ⎩854⎭
+: x as number init 3  ⎩855⎭
+[a1] := x  ⎩856⎭
+push x = 7  ⎩857⎭
+[a2] := x  ⎩858⎭
+  ⎩859⎭
+⎝ ---- Test 141: Function reverse example | expected: {'A1': 'DENIS'}⎠  ⎩860⎭
+define reverse as function  ⎩861⎭
+ input word as text  ⎩862⎭
+ for rev as text init ""  ⎩863⎭
+ for i in 1 to len(word) do  ⎩864⎭
+  let c = mid(word, i, 1)  ⎩865⎭
+  push rev = c & rev  ⎩866⎭
+ end  ⎩867⎭
+ return rev  ⎩868⎭
+end reverse  ⎩869⎭
+[a1] := reverse("SINED")  ⎩870⎭
+  ⎩871⎭
+⎝ ---- Test 142: Function square with output | expected: {'A1': 25.0}⎠  ⎩872⎭
+define square as function  ⎩873⎭
+ input n as number  ⎩874⎭
+ output sq as number  ⎩875⎭
+ push sq = n ^ 2  ⎩876⎭
+end square  ⎩877⎭
+[a1] := square(5)  ⎩878⎭
+  ⎩879⎭
+⎝ ---- Test 143: Function spellreverse multi-output | expected: {}⎠  ⎩880⎭
+define spellreverse as function  ⎩881⎭
+ input word as text  ⎩882⎭
+ for i in len(word) to 1 step -1 do  ⎩883⎭
+  return mid(word, i, 1)  ⎩884⎭
+ end  ⎩885⎭
+end spellreverse  ⎩886⎭
+return spellreverse("DIRG")  ⎩887⎭
+  ⎩888⎭
+⎝ ---- Test 144: Subprocess pushes to caller binding | expected: {'A1': 6}⎠  ⎩889⎭
+define doublepush as subprocess  ⎩890⎭
+ input n as number  ⎩891⎭
+ output res as number  ⎩892⎭
+ push res = n  ⎩893⎭
+ push res = n * 2  ⎩894⎭
+end doublepush  ⎩895⎭
+  ⎩896⎭
+doublepush(3, [^a1])  ⎩897⎭
+  ⎩898⎭
+⎝ ---- Test 145: Subprocess grid spill through result | expected: {'C1': 'G', 'D1': 'R', 'E1': 'I', 'F1': 'D'}⎠  ⎩899⎭
+define spellreversesub as subprocess  ⎩900⎭
+ input word as text  ⎩901⎭
+ [^a1] := {mid(word, len(word), 1), mid(word, len(word)-1, 1), mid(word, len(word)-2, 1), mid(word, len(word)-3, 1)}  ⎩902⎭
+end spellreversesub  ⎩903⎭
+  ⎩904⎭
+[^c1] := spellreversesub("DIRG").grid  ⎩905⎭
+  ⎩906⎭
+⎝ ---- Test 146: Subprocess split name push to binding | expected: {'A1': 'Jane Doe', 'B1': 'Jane', 'C1': 'Doe'}⎠  ⎩907⎭
+define splitname as subprocess  ⎩908⎭
+ input name as text  ⎩909⎭
+ output result as text  ⎩910⎭
+ for parts as text = textsplit(name, " ")  ⎩911⎭
+  push result = parts  ⎩912⎭
+ end splitname  ⎩913⎭
+  ⎩914⎭
+[a1] := "Jane Doe"  ⎩915⎭
+splitname([a1], [^b1])  ⎩916⎭
+  ⎩917⎭
+⎝ ---- Test 147: Subprocess grid builder reverse word | expected: {'A1': 'G', 'B1': 'R', 'C1': 'I', 'D1': 'D'}⎠  ⎩918⎭
+define spellreversesub as subprocess  ⎩919⎭
+ input word as text  ⎩920⎭
+ for i in len(word) to 1 step -1 index c do  ⎩921⎭
+  let grid{1, c} = mid(word, i, 1)  ⎩922⎭
+ end  ⎩923⎭
+end spellreversesub  ⎩924⎭
+for myword = spellreversesub("DIRG")  ⎩925⎭
+[^a1] := myword.grid  ⎩926⎭
+  ⎩927⎭
+⎝ ---- Test 148: Type constructor with inputs and mutable peer | expected: {'A1': 3.0, 'B1': -2.0, 'A3': 1.2, 'B3': 1001.0}⎠  ⎩928⎭
+define point1 as type  ⎩929⎭
+ input in_x as number  ⎩930⎭
+ input in_y as number  ⎩931⎭
+ : x = in_x  ⎩932⎭
+ : y = in_y  ⎩933⎭
+end point1  ⎩934⎭
+define point2 as type  ⎩935⎭
+ : x as number  ⎩936⎭
+ : y as number  ⎩937⎭
+end point2  ⎩938⎭
+  ⎩939⎭
+: p1 = new point1(3.0, -2.0)  ⎩940⎭
+: p2 = new point2(1.2, 0.7)  ⎩941⎭
+push p2.y = 1001.0  ⎩942⎭
+[^a1] := p1  ⎩943⎭
+[^a3] := p2  ⎩944⎭
+  ⎩945⎭
+⎝ ---- Test 149: Type constructor immutability conflict | expected: error⎠  ⎩946⎭
+define point1 as type  ⎩947⎭
+ input in_x as number  ⎩948⎭
+ input in_y as number  ⎩949⎭
+ : x = in_x  ⎩950⎭
+ : y = in_y  ⎩951⎭
+end point1  ⎩952⎭
+: p1 = new point1(3.0, -2.0)  ⎩953⎭
+push p1.y = 1001.0  ⎩954⎭
+[a1] := p1.y  ⎩955⎭
+  ⎩956⎭
+⎝ ---- Test 150: Member function DistanceToOrigin | expected: {'A1': 5.0}⎠  ⎩957⎭
+define point1 as type  ⎩958⎭
+: x as number  ⎩959⎭
+: y as number  ⎩960⎭
+end point1  ⎩961⎭
+define point1.distancetoorigin as function  ⎩962⎭
+input p as point1  ⎩963⎭
+return sqrt(p.x ^ 2 + p.y ^ 2)  ⎩964⎭
+end point1.distancetoorigin  ⎩965⎭
+: p1 = new point1(3, 4)  ⎩966⎭
+[a1] := p1.distancetoorigin  ⎩967⎭
+  ⎩968⎭
+⎝ ---- Test 151: INIT copies object, equality shares reference | expected: {'A1': -1.0, 'B1': 2.0, 'A3': -1.0, 'B3': 0.0}⎠  ⎩969⎭
+define point as type  ⎩970⎭
+: x as number  ⎩971⎭
+: y as number  ⎩972⎭
+end point  ⎩973⎭
+: f = new point(-1.0, 0.0)  ⎩974⎭
+: p init f  ⎩975⎭
+push f.y = 2.0  ⎩976⎭
+[^a1] := f  ⎩977⎭
+[^a3] := p  ⎩978⎭
+  ⎩979⎭
+⎝ ---- Test 152: Equality constraint tracks updates | expected: {'A1': -1.0, 'B1': 2.0}⎠  ⎩980⎭
+define point as type  ⎩981⎭
+: x as number  ⎩982⎭
+: y as number  ⎩983⎭
+end point  ⎩984⎭
+: f = new point(-1.0, 0.0)  ⎩985⎭
+: p = f  ⎩986⎭
+push f.y = 2.0  ⎩987⎭
+[^a1] := p  ⎩988⎭
+  ⎩989⎭
+⎝ ---- Test 153: Input default via equality constraint | expected: {'A1': 25.0}⎠  ⎩990⎭
+define square as function  ⎩991⎭
+ input x as number or = 5  ⎩992⎭
+ return x ^ 2  ⎩993⎭
+end  ⎩994⎭
+: y = square()  ⎩995⎭
+: z = square("circle")  ⎩996⎭
+[^a1] := y  ⎩997⎭
+  ⎩998⎭
+⎝ ---- Test 154: Output INIT vs equality on output | expected: {'A1': 9.0, 'A2': 16.0}⎠  ⎩999⎭
+define square_init as function  ⎩1000⎭
+ input x as number  ⎩1001⎭
+ output r as number init x ^ 2  ⎩1002⎭
+end  ⎩1003⎭
+define square_eq_c as function  ⎩1004⎭
+ input x as number  ⎩1005⎭
+ output r as number = x ^ 2  ⎩1006⎭
+end  ⎩1007⎭
+[a1] := square_init(3)  ⎩1008⎭
+[a2] := square_eq_c(4)  ⎩1009⎭
+  ⎩1010⎭
+⎝ ---- Test 155: FOR INIT generator without IN | expected: {'A1': 'GRID', 'A2': 'D', 'A3': 'D'}⎠  ⎩1011⎭
+define spellreverse as function  ⎩1012⎭
+ input word as text  ⎩1013⎭
+ for i in len(word) to 1 step -1 do  ⎩1014⎭
+  return mid(word, i, 1)  ⎩1015⎭
+ end  ⎩1016⎭
+end spellreverse  ⎩1017⎭
+: acc as text init ""  ⎩1018⎭
+for letter as text init spellreverse("DIRG") do  ⎩1019⎭
+ push acc = acc & letter  ⎩1020⎭
+end  ⎩1021⎭
+[^a1] := acc  ⎩1022⎭
+  ⎩1023⎭
+for letter2 as text init spellreverse("DIRG")  ⎩1024⎭
+[a2] := letter2  ⎩1025⎭
+  ⎩1026⎭
+for letter3 as text  ⎩1027⎭
+ push letter3 = spellreverse("DIRG")  ⎩1028⎭
+[a3] := letter3  ⎩1029⎭
+  ⎩1030⎭
+⎝ ---- Test 156: Subprocess INIT materializes grid result | expected: {'A1': 'G', 'B1': 'R', 'C1': 'I', 'D1': 'D'}⎠  ⎩1031⎭
+define spellreversesub as subprocess  ⎩1032⎭
+ input word as text  ⎩1033⎭
+ for i in len(word) to 1 step -1 index c do  ⎩1034⎭
+  let grid{1, c} = mid(word, i, 1)  ⎩1035⎭
+ end  ⎩1036⎭
+end spellreversesub  ⎩1037⎭
+for myword init spellreversesub("DIRG")  ⎩1038⎭
+[^a1] := myword.grid  ⎩1039⎭
+  ⎩1040⎭
+⎝ ---- Test 157: Friendly member function call via For assignment | expected: {'A1': 3.605551275463989}⎠  ⎩1041⎭
+define point1 as type  ⎩1042⎭
+ input in_x as number  ⎩1043⎭
+ input in_y as number  ⎩1044⎭
+ : x = in_x  ⎩1045⎭
+ : y = in_y  ⎩1046⎭
+end point1  ⎩1047⎭
+  ⎩1048⎭
+for p1 = new point1(3.0, -2.0)  ⎩1049⎭
+  ⎩1050⎭
+define point1.distancetoorigin as function  ⎩1051⎭
+ input p as point1  ⎩1052⎭
+ return sqrt(p.x ^ 2 + p.y ^ 2)  ⎩1053⎭
+end point1.distancetoorigin  ⎩1054⎭
+  ⎩1055⎭
+for d = p1.distancetoorigin()  ⎩1056⎭
+[^a1] := d  ⎩1057⎭
+  ⎩1058⎭
+⎝ ---- Test 158: Nested generator zipping in Push | expected: {}⎠  ⎩1059⎭
+define spellreverse as function  ⎩1060⎭
+ input word as text  ⎩1061⎭
+ for i in len(word) to 1 step -1 do  ⎩1062⎭
+  return mid(word, i, 1)  ⎩1063⎭
+ end  ⎩1064⎭
+end spellreverse  ⎩1065⎭
+  ⎩1066⎭
+define combine as function  ⎩1067⎭
+ input a, b as text  ⎩1068⎭
+ return a & "-" & b  ⎩1069⎭
+end combine  ⎩1070⎭
+  ⎩1071⎭
+return combine(spellreverse("DIRG"), spellreverse("ecin"))  ⎩1072⎭
+  ⎩1073⎭
+⎝ ---- Test 159: FOR text without dim allows any size | expected: {}⎠  ⎩1074⎭
+for a as text = {"hello", "world", "!"}  ⎩1075⎭
+  ⎩1076⎭
+⎝ ---- Test 160: FOR text with dim size mismatch | expected: error⎠  ⎩1077⎭
+for a as text dim 2 = {"hello", "world", "!"}  ⎩1078⎭
+  ⎩1079⎭
+⎝ ---- Test 161: FOR nested init with push and cell write | expected: {'A1': 'ox'}⎠  ⎩1080⎭
+for acc as text init "" do  ⎩1081⎭
+  for letter as text init "o" do  ⎩1082⎭
+    push acc = letter & "x"  ⎩1083⎭
+    [a1] := acc  ⎩1084⎭
+  end  ⎩1085⎭
+end  ⎩1086⎭
+  ⎩1087⎭
+⎝ ---- Test 162: Milestone 4 constraints | expected: {'A1': 3, 'A2': 'Alice', 'B2': 'Bob', 'C2': 'Carla', 'D2': 'Dylan', 'E2': 'Edith'}⎠  ⎩1088⎭
+for vmax = 5  ⎩1089⎭
+for v <= vmax  ⎩1090⎭
+let v = 3  ⎩1091⎭
+for names dim 0 to 4  ⎩1092⎭
+let names = {"Alice", "Bob", "Carla", "Dylan", "Edith"}  ⎩1093⎭
+[a1] := v  ⎩1094⎭
+[^a2] := names  ⎩1095⎭
+  ⎩1096⎭
+⎝ ---- Test 163: Combined constraints literal values | expected: {'A2': 2, 'A3': 7, 'A4': 'hi', 'B4': 'yo'}⎠  ⎩1097⎭
+: choice as number in {1, 2, 3} = 2  ⎩1098⎭
+: span as number in 1 to 10 = 7  ⎩1099⎭
+: words as text dim 2 = {"hi", "yo"}  ⎩1100⎭
+  ⎩1101⎭
+[a2] := choice  ⎩1102⎭
+[a3] := span  ⎩1103⎭
+[^a4] := words  ⎩1104⎭
+  ⎩1105⎭
+⎝ ---- Test 164: Subprocess writes into dimmed parts | expected: {'A1': 'Jane Doe', 'B1': 'Jane', 'C1': 'Doe'}⎠  ⎩1106⎭
+: parts as text dim 2  ⎩1107⎭
+  ⎩1108⎭
+define splitname as subprocess  ⎩1109⎭
+ input name as text  ⎩1110⎭
+ push parts = textsplit(name, " ")  ⎩1111⎭
+end splitname  ⎩1112⎭
+  ⎩1113⎭
+[a1] := "Jane Doe"  ⎩1114⎭
+[^b1] := parts  ⎩1115⎭
+splitname([a1])  ⎩1116⎭
+[^b1] := parts  ⎩1117⎭
+  ⎩1118⎭
+⎝ ---- Test 165: Column interpolation | expected: {'D5': 11, 'CE5': 22}⎠  ⎩1119⎭
+: i = 4  ⎩1120⎭
+[{i :a}5] := 11  ⎩1121⎭
+: j = 4  ⎩1122⎭
+[{j :cb}5] := 22  ⎩1123⎭
+  ⎩1124⎭
+⎝ ---- Test 166: Hidden field skipped on spill | expected: {'A1': 7.0}⎠  ⎩1125⎭
+define secretpoint as type  ⎩1126⎭
+: x as number  ⎩1127⎭
+: $secret as number init 99  ⎩1128⎭
+end secretpoint  ⎩1129⎭
+: p = new secretpoint with (x = 7)  ⎩1130⎭
+[^a1] := p  ⎩1131⎭
+  ⎩1132⎭
+⎝ ---- Test 167: Hidden field access outside type errors | expected: error⎠  ⎩1133⎭
+define secretpoint as type  ⎩1134⎭
+: x as number  ⎩1135⎭
+: $secret as number init 99  ⎩1136⎭
+end secretpoint  ⎩1137⎭
+: p = new secretpoint with (x = 7)  ⎩1138⎭
+[a1] := p.secret  ⎩1139⎭
+  ⎩1140⎭
+⎝ ---- Test 168: Private helper in constructor | expected: {'A1': 3.0, 'B1': 2.0}⎠  ⎩1141⎭
+define point as type  ⎩1142⎭
+input in_x, in_y as number  ⎩1143⎭
+: x as number init in_x  ⎩1144⎭
+: y as number init in_y  ⎩1145⎭
+shiftright(2.0)  ⎩1146⎭
+end point  ⎩1147⎭
+define point.shiftright as privatehelper  ⎩1148⎭
+input dx as number  ⎩1149⎭
+push x = x + dx  ⎩1150⎭
+end point.shiftright  ⎩1151⎭
+: p = new point(1.0, 2.0)  ⎩1152⎭
+[^a1] := p  ⎩1153⎭
+  ⎩1154⎭
+⎝ ---- Test 169: Private helper called from member function | expected: {'A1': 1.5, 'B1': 2.0}⎠  ⎩1155⎭
+define point as type  ⎩1156⎭
+input in_x, in_y as number  ⎩1157⎭
+: x as number init in_x  ⎩1158⎭
+: y as number init in_y  ⎩1159⎭
+end point  ⎩1160⎭
+define point.shiftright as privatehelper  ⎩1161⎭
+input dx as number  ⎩1162⎭
+push x = x + dx  ⎩1163⎭
+end point.shiftright  ⎩1164⎭
+define point.goslightlyright as function  ⎩1165⎭
+input p as point  ⎩1166⎭
+output shifted as point  ⎩1167⎭
+push shifted = p.shiftright(0.5)  ⎩1168⎭
+end point.goslightlyright  ⎩1169⎭
+: p = new point(1.0, 2.0)  ⎩1170⎭
+for s as point  ⎩1171⎭
+push s = point.goslightlyright(p)  ⎩1172⎭
+[^a1] := s  ⎩1173⎭
+  ⎩1174⎭
+⎝ ---- Test 170: Hidden member function call outside type errors | expected: error⎠  ⎩1175⎭
+define point as type  ⎩1176⎭
+: x as number  ⎩1177⎭
+: y as number  ⎩1178⎭
+end point  ⎩1179⎭
+define $point.ontheright as function  ⎩1180⎭
+input p1, p2 as point  ⎩1181⎭
+return p1.x > p2.x?  ⎩1182⎭
+end $point.ontheright  ⎩1183⎭
+: p1 = new point(1.0, 0.0)  ⎩1184⎭
+: p2 = new point(2.0, 0.0)  ⎩1185⎭
+[a1] := p1.ontheright(p2)  ⎩1186⎭
+  ⎩1187⎭
+⎝ ---- Test 171: Type instantiation from array without constructor inputs | expected: {'A1': 1.0, 'B1': -5.0}⎠  ⎩1188⎭
+define simple as type  ⎩1189⎭
+: x as number  ⎩1190⎭
+: y as number  ⎩1191⎭
+end simple  ⎩1192⎭
+for p as simple = {1.0, -5.0}  ⎩1193⎭
+[^a1] := p  ⎩1194⎭
+  ⎩1195⎭
+⎝ ---- Test 172: New with WITH and shorthand variables | expected: {'A1': 1.0, 'B1': -5.0}⎠  ⎩1196⎭
+define point as type  ⎩1197⎭
+: x as number  ⎩1198⎭
+: y as number  ⎩1199⎭
+end point  ⎩1200⎭
+: x = 1.0  ⎩1201⎭
+: y = -5.0  ⎩1202⎭
+: p = new point with (x, y)  ⎩1203⎭
+[^a1] := p  ⎩1204⎭
+  ⎩1205⎭
+⎝ ---- Test 173: Type extension with Super and new field | expected: {'A1': 2.0, 'B1': 3.0, 'C1': 0.5}⎠  ⎩1206⎭
+define point as type  ⎩1207⎭
+input in_x, in_y as number or = 0.0  ⎩1208⎭
+: x as number init in_x  ⎩1209⎭
+: y as number init in_y  ⎩1210⎭
+end point  ⎩1211⎭
+define rounddot as type(point)  ⎩1212⎭
+input in_x, in_y as number or = 0.0  ⎩1213⎭
+super(in_x, in_y)  ⎩1214⎭
+: radius as number or = 0.1  ⎩1215⎭
+end rounddot  ⎩1216⎭
+: r = new rounddot(2.0, 3.0) with (radius = 0.5)  ⎩1217⎭
+[^a1] := r  ⎩1218⎭
+  ⎩1219⎭
+⎝ ---- Test 174: Type constraints on numeric subtype | expected: {'A1': 0.25}⎠  ⎩1220⎭
+define ratevalue as type(number) >= 0.0 <= 1.0  ⎩1221⎭
+end ratevalue  ⎩1222⎭
+for r as ratevalue = 0.25  ⎩1223⎭
+[a1] := r  ⎩1224⎭
+  ⎩1225⎭
+⎝ ---- Test 175: Type constraint violation errors | expected: error⎠  ⎩1226⎭
+define ratevalue as type(number) >= 0.0 <= 1.0  ⎩1227⎭
+end ratevalue  ⎩1228⎭
+for r as ratevalue = 1.5  ⎩1229⎭
+[a1] := r  ⎩1230⎭
+  ⎩1231⎭
+⎝ ---- Test 176: Member function override polymorphism | expected: {'A1': 0}⎠  ⎩1232⎭
+define point as type  ⎩1233⎭
+: x as number  ⎩1234⎭
+: y as number  ⎩1235⎭
+end point  ⎩1236⎭
+define point.ontheleft as function  ⎩1237⎭
+input p1, p2 as point  ⎩1238⎭
+return p1.x < p2.x?  ⎩1239⎭
+end point.ontheleft  ⎩1240⎭
+define rounddot as type(point)  ⎩1241⎭
+input in_x, in_y as number or = 0.0  ⎩1242⎭
+super(in_x, in_y)  ⎩1243⎭
+: radius as number or = 0.1  ⎩1244⎭
+end rounddot  ⎩1245⎭
+define rounddot.ontheleft as function  ⎩1246⎭
+input d1, d2 as rounddot  ⎩1247⎭
+return d1.x + d1.radius + d2.radius < d2.x?  ⎩1248⎭
+end rounddot.ontheleft  ⎩1249⎭
+: r = new rounddot(9.0, 0.0) with (radius = 0.5)  ⎩1250⎭
+: s = new rounddot(9.5, 4.0) with (radius = 0.5)  ⎩1251⎭
+[a1] := r.ontheleft(s)  ⎩1252⎭
+  ⎩1253⎭
+⎝ ---- Test 177: Member function override uses RoundDot | expected: {'A1': 1}⎠  ⎩1254⎭
+define point as type  ⎩1255⎭
+input in_x, in_y as number or = 0.0  ⎩1256⎭
+: x as number init in_x  ⎩1257⎭
+: y as number init in_y  ⎩1258⎭
+end point  ⎩1259⎭
+define point.ontheleft as function  ⎩1260⎭
+input p1, p2 as point  ⎩1261⎭
+return p1.x < p2.x?  ⎩1262⎭
+end point.ontheleft  ⎩1263⎭
+define rounddot as type(point)  ⎩1264⎭
+input in_x, in_y as number or = 0.0  ⎩1265⎭
+super(in_x, in_y)  ⎩1266⎭
+: radius as number or = 0.1  ⎩1267⎭
+end rounddot  ⎩1268⎭
+define rounddot.ontheleft as function  ⎩1269⎭
+input d1, d2 as rounddot  ⎩1270⎭
+return d1.x + d1.radius + d2.radius < d2.x?  ⎩1271⎭
+end rounddot.ontheleft  ⎩1272⎭
+: r = new rounddot(9.0, 0.0) with (radius = 0.5)  ⎩1273⎭
+: p = new rounddot(900.0, 0.0) with (radius = 0.5)  ⎩1274⎭
+[a1] := r.ontheleft(p)  ⎩1275⎭
+  ⎩1276⎭
+⎝ ---- Test 178: Array init fixed dim via LET | expected: {'A1': 12, 'B1': 5, 'C1': 0.3}⎠  ⎩1277⎭
+for a as number dim 3  ⎩1278⎭
+let a(1) = 12  ⎩1279⎭
+let a(2) = 5  ⎩1280⎭
+let a(3) = 0.3  ⎩1281⎭
+[^a1] := a  ⎩1282⎭
+  ⎩1283⎭
+⎝ ---- Test 179: Array dim * requires PUSH | expected: error⎠  ⎩1284⎭
+for b as number dim *  ⎩1285⎭
+let b(1) = 12  ⎩1286⎭
+  ⎩1287⎭
+⎝ ---- Test 180: Array dim * grows with PUSH | expected: {'A1': 12, 'B1': 5, 'C1': 0.3}⎠  ⎩1288⎭
+for c as number dim *  ⎩1289⎭
+push c(1) = 12  ⎩1290⎭
+push c(2) = 5  ⎩1291⎭
+push c(3) = 0.3  ⎩1292⎭
+[^a1] := c  ⎩1293⎭
+  ⎩1294⎭
+⎝ ---- Test 181: Push without dim errors | expected: error⎠  ⎩1295⎭
+for d as number  ⎩1296⎭
+push d(1) = 12  ⎩1297⎭
+  ⎩1298⎭
+

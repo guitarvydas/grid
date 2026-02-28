@@ -1,0 +1,3 @@
+#!/bin/bash
+cp ./pbp/package.json .
+npm install

@@ -1,7 +1,7 @@
 % rewrite gridprepass {
   main [stuff+] = ‛«stuff»’
   stuff [x] = ‛«x»’
-  keyword [kw] = ‛⎨downcase ‛kw’⎬’
+  keyword [kw] = ‛⎨downcase ‛«kw»’⎬’
 
   string [dqL cs* dqR] = ‛"«cs»"’
   strchar_escapedquote [dq1 dq2] = ‛\"’
@@ -9,6 +9,6 @@
     
   ident [c tailcs*] = ‛⎨downcase ‛«c»«tailcs»’⎬’
   idtail [c] = ‛«c»’
-  comment [q cs* nl] = ‛⎝«cs»⎠⎨incnl⎬’
-  nl [c] = ‛⎨incnl⎬’
+  comment [q cs* nl] = ‛⎝«cs»⎠  ⎨incnl⎬\n’
+  nl [c] = ‛  ⎨incnl⎬\n’
 }
