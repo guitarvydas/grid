@@ -3,7 +3,7 @@
 ######### commands specific to this project #############
 
 mkdir -p intermediate
-cat test1.grid | ${PBP}/t2t prepass | tee ./intermediate/pre.grid #|\
+cat tests.grid | ${PBP}/t2t prepass | tee ./intermediate/pre.grid #|\
 
 ############################
 
