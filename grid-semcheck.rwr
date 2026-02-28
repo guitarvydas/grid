@@ -6,7 +6,11 @@
   TopLevelStatement_assignment [a] = ‛«a»’
 
   FunctionDefinition [_def idbegin _as _func eol funcinnards+ _end idend] =
-    ‛«_def»«idbegin»«_as»«_func»«eol»«funcinnards»«_end»«idend»’
+    ⎡ functionid =‛«idbegin»’
+      ⎡ ⎨semcheckideq ‛«idbegin»’ ‛«idend»’⎬
+        ‛«_def»«idbegin»«_as»«_func»«eol»«funcinnards»«_end»«idend»’
+      ⎦
+    ⎦
 
   FuncInnard_input [s eol] = ‛«s»«eol»’
   FuncInnard_output [s eol] = ‛«s»«eol»’

@@ -1,1 +1,1 @@
-⎝ ---- Test 142: Function square with output | expected: {'A1': 25.0}⎠⎩1⎭Define❲square❳asFunction⎩2⎭Input❲n❳asnumber⎩3⎭Output❲sq❳asnumber⎩4⎭push❲sq❳=❲n❳^2⎩5⎭End❲square❳⎩6⎭[❲a1❳]:=❲square❳(5)⎩7⎭
+⎝ ---- Test 142: Function square with output | expected: {'A1': 25.0}⎠⎩1⎭Define❲square❳asFunction⎩2⎭Input❲n❳asnumber⎩3⎭Output❲sq❳asnumber⎩4⎭push❲sq❳=❲n❳^2⎩5⎭End❲square❳⎩6⎭[❲a1❳]:=❲square❳(5)⎩7⎭⎩8⎭Define❲abcsquare❳asFunction⎩9⎭Input❲n❳asnumber⎩10⎭Output❲sq❳asnumber⎩11⎭push❲sq❳=❲n❳^2⎩12⎭End❲abc❳⎩13⎭

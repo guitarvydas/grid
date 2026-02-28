@@ -5,4 +5,10 @@ Define ❲square❳ as Function  ⎩2⎭
  push ❲sq❳ = ❲n❳ ^ 2  ⎩5⎭
 End ❲square❳  ⎩6⎭
 [❲a1❳] := ❲square❳(5)  ⎩7⎭
+  ⎩8⎭
+Define ❲abcsquare❳ as Function  ⎩9⎭
+ Input ❲n❳ as number  ⎩10⎭
+ Output ❲sq❳ as number  ⎩11⎭
+ push ❲sq❳ = ❲n❳ ^ 2  ⎩12⎭
+End ❲abc❳  ⎩13⎭
 
