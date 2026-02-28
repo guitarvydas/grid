@@ -3,5 +3,7 @@
   char_opencomment [c] = ‛# ’
   char_closecomment [c] = ‛’
   char_line [lb ds+ rb] = ‛ #«ds»\n’
+  char_openid [c] = ‛’
+  char_closeid [c] = ‛’
   char_other [c] = ‛«c»’
 }

@@ -1,24 +1,24 @@
-% rewrite grid {
-  Program [Statement+] = ‛\nimport rtlib\nsubject = rt.libFresh ()«Statement»’
-  TopLevelStatement_empty [eol] = ‛\n«eol»’
-  TopLevelStatement_return [_ e eol] = ‛\nprint («e»)«eol»’
-  TopLevelStatement_function [f] = ‛\n«f»’
-  TopLevelStatement_assignment [a] = ‛\n«a»’
+% rewrite gridsemcheck {
+  Program [Statement+] = ‛«Statement»’
+  TopLevelStatement_empty [eol] = ‛«eol»’
+  TopLevelStatement_return [_ e eol] = ‛«_»«e»«eol»’
+  TopLevelStatement_function [f] = ‛«f»’
+  TopLevelStatement_assignment [a] = ‛«a»’
 
   FunctionDefinition [_def idbegin _as _func eol funcinnards+ _end idend] =
-      ‛def «idbegin» (self):«eol»⤷\n«funcinnards»\n#end «idend»⤶’
+    ‛«_def»«idbegin»«_as»«_func»«eol»«funcinnards»«_end»«idend»’
 
   FuncInnard_input [s eol] = ‛«s»«eol»’
   FuncInnard_output [s eol] = ‛«s»«eol»’
   FuncInnard_push [s eol] = ‛«s»«eol»’
 
-  InputStatement [_input id tyc?] = ‛rtlib.input (subject, «id», «tyc»)’
-  OutputStatement [_output id tyc?] = ‛rtlib.output (subject, «id», «tyc»)’
-  PushStatement [_push id _eq e] = ‛rtlib.push (subect, «id», «e»)’
+  InputStatement [_input id tyc?] = ‛«_input»«id»«tyc»’
+  OutputStatement [_output id tyc?] = ‛«_output»«id»«tyc»’
+  PushStatement [_push id _eq e] = ‛«_push»«id»«_eq»«e»’
 
-  Assignment [cell _ceq e] = ‛\nrtlib.cellAssign («cell», «e»)’
+  Assignment [cell _ceq e] = ‛«cell»«_ceq»«e»’
 
-  TypeConstraint [_as ty] = ‛ "«ty»"’
+  TypeConstraint [_as ty] = ‛«_as»«ty»’
   Type_number [_] = ‛«_»’
   
   Expr_parenthesized [lp e rp] = ‛«lp»«e»«rp»’

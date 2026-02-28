@@ -4,5 +4,7 @@ postpass {
     | "⎝" -- opencomment
     | "⎠" -- closecomment
     | "⎩" digit+ "⎭" -- line
+    | "❲" -- openid
+    | "❳" -- closeid
     | any -- other
 }
