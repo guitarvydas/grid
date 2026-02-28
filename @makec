@@ -10,14 +10,14 @@ mkdir -p intermediate
 ## test0
 echo "--------- test 0 ------------"
 export test=test0
-./identity | ./emit-python >test.py
-./run-python test.py
+./identity | ./emit-python >test0.py
+./run-python test0.py
 
 echo
 echo "--------- test 01 ------------"
 export test=test01
-./identity | ./semantics | ./emit-python >test.py
-cat test.py
+./identity | ./semantics | ./emit-python >test01.py
+cat test01.py
 
 echo
 echo "--------- test 02 (should fail on error) ------------"

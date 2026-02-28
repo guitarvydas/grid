@@ -1,0 +1,10 @@
+
+
+import rtlib
+subject = rtlib.fresh ()
+#  ---- Test 0: Hello World #1
+
+print ("Hello, World!") #2
+
+
+
