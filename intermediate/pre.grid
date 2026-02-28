@@ -1297,4 +1297,8 @@ push c(3) = 0.3  ⎩1292⎭
 for d as number  ⎩1296⎭
 push d(1) = 12  ⎩1297⎭
   ⎩1298⎭
+⎝ ---- Test 182: test if longest match matters⎠  ⎩1299⎭
+for forabc as number  ⎩1300⎭
+push forabc(1) = 12  ⎩1301⎭
+  ⎩1302⎭
 

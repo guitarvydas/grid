@@ -1297,3 +1297,7 @@ push C(3) = 0.3
 For D as Number
 push D(1) = 12
 
+' ---- Test 182: test if longest match matters
+For Forabc as Number
+push Forabc(1) = 12
+
