@@ -1,3 +1,8 @@
-⎝ ---- Test 0: Hello World⎠  ⎩1⎭
-Return "Hello, World!"  ⎩2⎭
+⎝ ---- Test 142: Function square with output | expected: {'A1': 25.0}⎠  ⎩1⎭
+Define ❲square❳ as Function  ⎩2⎭
+ Input ❲n❳ as number  ⎩3⎭
+ Output ❲sq❳ as number  ⎩4⎭
+ push ❲sq❳ = ❲n❳ ^ 2  ⎩5⎭
+End ❲square❳  ⎩6⎭
+[❲a1❳] := ❲square❳(5)  ⎩7⎭
 

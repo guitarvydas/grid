@@ -314,3 +314,109 @@ Interpolated strings can also **span multiple lines** — a literal newline insi
 ---
 
 concatenate all test cases into one long test case in markdown that I can copy
+
+---
+
+explain the following grid program
+```
+Define SQUARE as Function
+ Input n as number
+ Output sq as number
+ push Sq = n ^ 2
+End SQUARE
+[A1] := square(5)
+```
+
+---
+
+This defines a function called `SQUARE` and then calls it.
+
+**The definition**
+
+```
+Define SQUARE as Function
+```
+Declares a named function. GridLang is case-insensitive so `SQUARE`, `Square`, and `square` all refer to the same thing.
+
+```
+Input n as number
+```
+Declares one input parameter `n`, typed as a number.
+
+```
+Output sq as number
+```
+Declares the return value. Rather than a bare `return expr` statement, GridLang lets you name your output. `sq` is the variable that will hold the result when the function exits.
+
+```
+push Sq = n ^ 2
+```
+Assigns the square of `n` to `sq`. `push` is used here because `sq` was declared as an `Output` — it's a mutable binding that the function writes into. `^` is exponentiation, so this computes `n²`.
+
+```
+End SQUARE
+```
+Closes the function definition. The name is repeated as a readability convention.
+
+**The call**
+
+```
+[A1] := square(5)
+```
+Calls `square` with the argument `5` and assigns the result to cell A1. The expected output from the test suite confirms A1 gets `25.0`.
+
+**The interesting design point**
+
+The `Output sq` declaration is essentially a named return slot. The function doesn't say `return sq` anywhere — the runtime knows that when `End SQUARE` is reached, the current value of `sq` is what gets returned to the caller. This is closer to how hardware description languages or old Fortran functions work (where the function name itself is the return variable) than to how most modern languages handle return values. It also sets up naturally for multiple outputs, where a function could declare several `Output` variables and return them all.
+
+
+---
+
+can you have multiple 'output' calls?
+
+---
+
+Based on the test suite, the answer is **yes, but indirectly** — through `push` on the output variable rather than multiple `Output` declarations.
+
+Look at Test 144:
+
+```
+define DoublePush as subprocess
+ Input n as number
+ Output res as number
+ push res = n
+ push res = n * 2
+end DoublePush
+
+DoublePush(3, [^A1])
+```
+
+Expected: `{'A1': 6}`
+
+There's only one `Output res` declaration, but `push` is called on it twice. The second `push` overwrites the first, so the caller sees `6` (not `3`).
+
+And Test 146 shows something more interesting — `push` onto an output that accumulates:
+
+```
+Define SplitName as Subprocess
+ Input Name as text
+ Output Result as text
+ For Parts as text = TextSplit(Name, " ")
+  push Result = Parts
+ End SplitName
+
+SplitName([A1], [^B1])
+```
+
+Here `push Result = Parts` is called once per element of `Parts`, and the caller receives multiple values spilled horizontally starting at `[^B1]`. So `push` on an output is more like *appending to a stream* than overwriting — the `^` spill sigil on the call site `[^B1]` is what tells the runtime to lay them out across cells.
+
+**What isn't shown in the tests** is whether you can have two *separate* `Output` declarations in a single function — e.g.:
+
+```
+Output x as number
+Output y as number
+```
+
+There's no test case that does this explicitly, so it's genuinely unknown from the test suite alone. The closest analogue is the `Subprocess` `.grid` result pattern, but that uses an implicit `grid` output rather than named ones.
+
+So the honest answer is: one `Output` declaration per function is the documented pattern; multiple values come from multiple `push` calls onto that one output, combined with the spill sigil at the call site.

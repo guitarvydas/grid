@@ -1,16 +1,67 @@
 grid {
-  Program = Statement+
-  Statement=
+  Program = TopLevelStatement+
+  TopLevelStatement=
     | EOL -- empty
     | "Return" Expr EOL -- return
+    | FunctionDefinition -- function
+    | Assignment -- assignment
+
+  FunctionDefinition =
+    "Define" id "as" "Function" EOL
+      FuncInnard+
+    "End" id
+
+  FuncInnard =
+    | InputStatement EOL -- input
+    | OutputStatement EOL -- output
+    | PushStatement EOL -- push
+
+  InputStatement = "Input" id TypeConstraint?
+  OutputStatement = "Output" id TypeConstraint?
+  PushStatement = "push" id "=" Expr
+
+  Assignment = Cell ":=" Expr
+  
+
+  TypeConstraint = "as" Type
+  Type =
+    | "number" -- number
 
   Expr =
-    | plainstring -- plainstring
+    | "(" Expr ")" -- parenthesized
+    | PlusExpr -- plus
 
+  PlusExpr =
+    | MulExpr "+" Expr -- infix
+    | MulExpr -- plain
+
+  MulExpr =
+    | ExponentiationExpr "*" Expr -- infix
+    | ExponentiationExpr -- plain
+
+  ExponentiationExpr =
+    | Primary "^" Expr -- infix
+    | Primary -- plain
+
+  Primary =
+    | FunctionCall -- funcall
+    | id -- id
+    | plainstring -- plainstring
+    | number -- number
+
+
+
+  FunctionCall = id "(" Arg+ ")"
+  Arg = Expr ","?
+  Cell = "[" cellid "]"
   plainstring = "\"" (~"\"" any)* "\""
 
   EOL = comment? nl
 
   nl = "⎩" digit+ "⎭"
   comment = "⎝" (~"⎠" any)* "⎠"
+
+  number = digit+
+  id = "❲" (~"❳" any)+ "❳"
+  cellid = "❲" letter+ digit+ "❳"
 }

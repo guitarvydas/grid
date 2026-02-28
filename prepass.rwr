@@ -11,7 +11,7 @@
   keyword_subprocess [s] = ‛Subprocess’
   keyword_step [s] = ‛step’
   keyword_return [s] = ‛Return’
-  keyword_push [s] = ‛Push’
+  keyword_push [s] = ‛push’
   keyword_privatehelper [s] = ‛PrivateHelper’
   keyword_output [s] = ‛Output’
   keyword_oreq [s] = ‛or=’
