@@ -11,7 +11,7 @@ function incnl () {
 // semantic checks
 function semcheckideq (id1, id2) {
     if (id1 != id2) {
-	throw new Error (`function name ${id1} does not match ending name ${id2}`);
+	throw new Error (`ending name ${id2} does not match function name ${id1}`);
     }
     return "";
 }
