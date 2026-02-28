@@ -1,0 +1,5 @@
+#!/bin/bash
+## expository - delete later
+echo
+echo '*** Run ***'
+python "$1"

@@ -1,0 +1,10 @@
+postpass {
+  characters = char+
+  char =
+    | "⎝" -- opencomment
+    | "⎠" -- closecomment
+    | "⎩" digit+ "⎭" -- line
+    | "❲" -- openid
+    | "❳" -- closeid
+    | any -- other
+}

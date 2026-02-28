@@ -1,0 +1,54 @@
+% rewrite grid {
+  Program [Statement+] = ‛«Statement»’
+  TopLevelStatement_empty [eol] = ‛«eol»’
+  TopLevelStatement_return [_ e eol] = ‛«_»«e»«eol»’
+  TopLevelStatement_function [f] = ‛«f»’
+  TopLevelStatement_assignment [a] = ‛«a»’
+
+  FunctionDefinition [_def idbegin _as _func eol funcinnards+ _end idend] =
+    ‛«_def»«idbegin»«_as»«_func»«eol»«funcinnards»«_end»«idend»’
+
+  FuncInnard_input [s eol] = ‛«s»«eol»’
+  FuncInnard_output [s eol] = ‛«s»«eol»’
+  FuncInnard_push [s eol] = ‛«s»«eol»’
+
+  InputStatement [_input id tyc?] = ‛«_input»«id»«tyc»’
+  OutputStatement [_output id tyc?] = ‛«_output»«id»«tyc»’
+  PushStatement [_push id _eq e] = ‛«_push»«id»«_eq»«e»’
+
+  Assignment [cell _ceq e] = ‛«cell»«_ceq»«e»’
+
+  TypeConstraint [_as ty] = ‛«_as»«ty»’
+  Type_number [_] = ‛«_»’
+  
+  Expr_parenthesized [lp e rp] = ‛«lp»«e»«rp»’
+  Expr_plus [e] = ‛«e»’
+
+  PlusExpr_infix [e1 _plus e2] = ‛«e1»«_plus»«e2»’
+  PlusExpr_plain [e1] = ‛«e1»’
+
+  MulExpr_infix [e1 _op e2] = ‛«e1»«_op»«e2»’
+  MulExpr_plain [e1] = ‛«e1»’
+
+  ExponentiationExpr_infix [e1 _op e2] = ‛«e1»«_op»«e2»’
+  ExponentiationExpr_plain [e1] = ‛«e1»’
+
+  Primary_id [id] = ‛«id»’
+  Primary_plainstring [x] = ‛«x»’
+  Primary_number [x] = ‛«x»’
+  Primary_funcall [x] = ‛«x»’
+
+  FunctionCall [id lp Arg+ rp] = ‛«id»«lp»«Arg»«rp»’
+  Arg [e _c?] = ‛«e»«_c»’
+  Cell [lb id rb] = ‛«lb»«id»«rb»’
+  plainstring [lq cs* rq] = ‛«lq»«cs»«rq»’
+
+  EOL [comment? nl] = ‛«comment»«nl»’
+
+  nl [lb digit+ rb] = ‛«lb»«digit»«rb»’
+  comment [lb cs* rb] = ‛«lb»«cs»«rb»’
+
+  number [digit+] = ‛«digit»’
+  id [lb cs* rb] = ‛«lb»«cs»«rb»’
+  cellid [lb letters+ digits+ rb] = ‛«lb»«letters»«digits»«rb»’
+}

@@ -1,0 +1,7 @@
+' ---- Test 142: Function square with output | expected: {'A1': 25.0}
+Define SQUARE as Function
+ Input n as number
+ Output sq as number
+ push Sq = n ^ 2
+End SQUARE
+[A1] := square(5)

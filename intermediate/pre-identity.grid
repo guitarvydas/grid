@@ -1,0 +1,7 @@
+⎝ This should fail on a semantic error (end name does not match function name)⎠  ⎩1⎭
+Define ❲abcsquare❳ as Function  ⎩2⎭
+ Input ❲n❳ as number  ⎩3⎭
+ Output ❲sq❳ as number  ⎩4⎭
+ push ❲sq❳ = "hello" ^ 2  ⎩5⎭
+End ❲abc❳  ⎩6⎭
+

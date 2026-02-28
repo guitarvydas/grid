@@ -1,0 +1,20 @@
+% parameter FunctionID
+% rewrite grid {
+  Program [Statement+] = ‛«Statement»’
+  TopLevelStatement_empty [eol] = ‛«eol»’
+  TopLevelStatement_return [_ e eol] = ‛print («e»)«eol»’
+  TopLevelStatement_function [f] = ‛«f»’
+  TopLevelStatement_assignment [a] = ‛«a»’
+
+  FunctionDefinition [_def idbegin _as _func eol funcinnard+ _end idend] =
+    ‛«_def»«»«»«»«»«»«»«»’
+
+  Expr_plainstring [s] = ‛«s»’
+
+  plainstring [lq cs* rq] = ‛«lq»«cs»«rq»’
+
+  EOL [comment? nl] = ‛«comment»«nl»’
+
+  nl [lb digit+ rb] = ‛«lb»«digit»«rb»’
+  comment [lb cs* rb] = ‛«lb»«cs»«rb»’
+}

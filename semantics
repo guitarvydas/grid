@@ -1,0 +1,3 @@
+#!/bin/bash
+# '*** semantic checking (identity if OK) ***'
+${PBP}/t2t grid grid-semcheck | tee ./intermediate/${test}-semcheck.grid

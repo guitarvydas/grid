@@ -1,610 +1,67 @@
-GridLang {
-
-  //----------------------------------------------------------------
-  // Top-level
-  //----------------------------------------------------------------
-
-  Program = (Statement | BlankLine)*
-
-  BlankLine = comment? ("\r\n" | "\n") spaces
-
-  Statement
-    = TypeDef
-    | NumericSubtypeDef
-    | FuncDef
-    | SubprocessDef
-    | PrivateHelperDef
-    | InputDecl
-    | OutputDecl
-    | ForStmt
-    | LetStmt
-    | IfStmt
-    | PushStmt
-    | ReturnStmt
-    | SubprocessCall
-    | CellAssign
-    | GlobalVarDecl
-    | DimLabel
-
-
-  //----------------------------------------------------------------
-  // Type definitions
-  //----------------------------------------------------------------
-
-  TypeDef
-    = caseInsensitive<"Define"> identifier caseInsensitive<"as"> caseInsensitive<"Type"> TypeParent? eol
-      TypeMember*
-      caseInsensitive<"End"> identifier eol
-
-  TypeParent = "(" identifier ")"
-
-  TypeMember
-    = FuncDef
-    | SubprocessDef
-    | PrivateHelperDef
-    | InputDecl
-    | OutputDecl
-    | CellAssign
-    | ForStmt
-    | LetStmt
-    | PushStmt
-    | SuperCall
-    | GlobalVarDecl
-
-
-  SuperCall = caseInsensitive<"Super"> "(" ArgList ")" eol
-
-  ArgList = ListOf<Expr, listSep>
-
-  //----------------------------------------------------------------
-  // Numeric subtype  e.g. Define RateValue as Type(Number) >= 0.0 <= 1.0
-  //----------------------------------------------------------------
-
-  NumericSubtypeDef
-    = caseInsensitive<"Define"> identifier caseInsensitive<"as">
-      caseInsensitive<"Type"> "(" identifier ")" NumericConstraint* eol
-      caseInsensitive<"End"> identifier eol
-
-  NumericConstraint = compOp Expr
-
-  //----------------------------------------------------------------
-  // Function / Subprocess / PrivateHelper definitions
-  //----------------------------------------------------------------
-
-  FuncDef
-    = caseInsensitive<"Define"> QualifiedName caseInsensitive<"as"> caseInsensitive<"Function"> eol
-      FuncMember*
-      caseInsensitive<"End"> QualifiedName eol
-
-  SubprocessDef
-    = caseInsensitive<"Define"> QualifiedName caseInsensitive<"as"> caseInsensitive<"Subprocess"> eol
-      FuncMember*
-      caseInsensitive<"End"> QualifiedName eol
-
-  PrivateHelperDef
-    = caseInsensitive<"Define"> "$"? QualifiedName caseInsensitive<"as"> caseInsensitive<"PrivateHelper"> eol
-      FuncMember*
-      caseInsensitive<"End"> "$"? QualifiedName eol
-
-  FuncMember
-    = InputDecl
-    | OutputDecl
-    | ForStmt
-    | LetStmt
-    | IfStmt
-    | PushStmt
-    | ReturnStmt
-    | SubprocessCall
-    | CellAssign
-    | GlobalVarDecl
-
-
-  QualifiedName = identifier ("." identifier)*
-
-  //----------------------------------------------------------------
-  // Input / Output declarations
-  //----------------------------------------------------------------
-
-  InputDecl  = caseInsensitive<"Input"> InputVarList eol
-  OutputDecl = caseInsensitive<"Output"> identifier caseInsensitive<"as"> TypeExpr InitOrEqClause? eol
-
-  InputVarList = NonemptyListOf<InputVar, listSep>
-
-  InputVar
-    = identifier caseInsensitive<"as"> TypeExpr DefaultClause?  -- typed
-    | identifier DefaultClause?                                   -- plain
-
-  DefaultClause = caseInsensitive<"or"> "=" Expr
-
-  InitOrEqClause
-    = caseInsensitive<"init"> Expr  -- init
-    | "=" Expr                       -- eq
-
-  //----------------------------------------------------------------
-  // FOR statement  (ordered most-specific first)
-  //----------------------------------------------------------------
-
-  ForStmt
-    = ForLoopBlock
-    | ForLoopInline
-    | ForTypedWith
-    | ForTypeInit
-    | ForConstraint
-    | ForDecl
-
-  // For i in 1 to 3 do ... End
-  // Also: For letter as text init expr do ... End
-  ForLoopBlock
-    = ForLoopInitBlock
-    | ForLoopIterBlock
-
-  ForLoopInitBlock
-    = caseInsensitive<"For"> identifier caseInsensitive<"as"> TypeExpr ForTypeInitOp Expr caseInsensitive<"do"> eol
-      Statement*
-      caseInsensitive<"End"> eol
-
-  ForLoopIterBlock
-    = caseInsensitive<"For"> ForLoopBindings caseInsensitive<"do"> eol
-      Statement*
-      caseInsensitive<"End"> eol
-
-  // For i in 1 to 3   (standalone / guard-style)
-  ForLoopInline
-    = caseInsensitive<"For"> ForLoopBindings eol
-
-  ForLoopBindings = NonemptyListOf<ForLoopBinding, andSep>
-
-  ForLoopBinding
-    = identifier caseInsensitive<"in"> RangeOrSet caseInsensitive<"step"> Expr caseInsensitive<"index"> identifier  -- withStepIndex
-    | identifier caseInsensitive<"in"> RangeOrSet caseInsensitive<"index"> identifier                               -- withIndex
-    | identifier caseInsensitive<"in"> RangeOrSet caseInsensitive<"step"> Expr                                      -- withStep
-    | identifier caseInsensitive<"in"> RangeOrSet                                                                   -- plain
-
-  RangeOrSet
-    = ArrayLit   -- set
-    | RangeExpr  -- range
-
-  // For V as tensor with (name = "V", grid DIM {4,4,2} = expr)
-  ForTypedWith
-    = caseInsensitive<"For"> identifier caseInsensitive<"as"> identifier
-      caseInsensitive<"with"> "(" ForFieldList ")" eol
-
-  ForFieldList = NonemptyListOf<ForField, listSep>
-
-  ForField
-    = identifier caseInsensitive<"dim"> DimSpec "=" Expr  -- dimField
-    | identifier "=" Expr                                  -- eqField
-    | identifier                                           -- bare
-
-  // For acc as text init ""
-  ForTypeInit
-    = caseInsensitive<"For"> identifier caseInsensitive<"as"> TypeExpr
-      DimClause? ForTypeInitOp Expr eol
-
-  ForTypeInitOp = caseInsensitive<"init"> | "="
-
-  // For v <= vmax  (constraint only)
-  ForConstraint
-    = caseInsensitive<"For"> identifier compOp Expr eol
-
-  // For x as number = 42  /  For x as number  /  For x = expr  /  For a = e1 AND b = e2
-  ForDecl
-    = caseInsensitive<"For"> ForDeclBody eol
-
-  ForDeclBody
-    = identifier caseInsensitive<"as"> TypeExpr DimClause? caseInsensitive<"of"> identifier "=" Expr  -- typedUnitInit
-    | identifier caseInsensitive<"as"> TypeExpr DimClause? ForTypeInitOp Expr                         -- typedInit
-    | identifier caseInsensitive<"as"> TypeExpr DimClause?                                             -- typedOnly
-    | identifier caseInsensitive<"of"> identifier "=" Expr                                            -- unitInit
-    | identifier caseInsensitive<"of"> identifier                                                      -- unitOnly
-    | NonemptyListOf<ForSingleEq, andSep>                                                              -- multiEq
-
-  ForSingleEq = identifier "=" Expr
-
-  //----------------------------------------------------------------
-  // DIM clause
-  //----------------------------------------------------------------
-
-  DimClause = caseInsensitive<"dim"> DimSpec
-
-  DimSpec
-    = "{" NonemptyListOf<DimDim, listSep> "}"  -- structured
-    | "{" "}"                                   -- empty
-    | "*"                                       -- star
-    | Expr                                      -- scalar
-
-  DimDim
-    = identifier ":" DimSize  -- named
-    | DimSize                 -- anon
-
-  DimSize
-    = "*"       -- star
-    | RangeExpr -- range
-    | Expr      -- expr
-
-  //----------------------------------------------------------------
-  // LET statement
-  //----------------------------------------------------------------
-
-  LetStmt
-    = LetBlock
-    | LetInline
-
-  LetBlock
-    = caseInsensitive<"Let"> LetBindings caseInsensitive<"Then"> eol
-      Statement*
-      caseInsensitive<"End"> eol
-
-  LetInline
-    = caseInsensitive<"Let"> LetBindings eol
-
-  LetBindings = NonemptyListOf<LetBinding, andSep>
-
-  LetBinding
-    = identifier caseInsensitive<"as"> TypeExpr DimClause?  -- typedDecl
-    | ArrayIndexExpr "=" Expr                                -- arrayIndex
-    | identifier compOp Expr                                 -- constrained
-    | identifier "=" Expr                                    -- eq
-
-  //----------------------------------------------------------------
-  // IF statement
-  //----------------------------------------------------------------
-
-  IfStmt
-    = IfBlock
-    | IfInline
-    | IfGuard
-
-  IfBlock
-    = caseInsensitive<"If"> CondExpr caseInsensitive<"Then"> eol
-      Statement*
-      ElseIfClause*
-      ElseClause?
-      caseInsensitive<"End"> eol
-
-  ElseIfClause
-    = caseInsensitive<"ElseIf"> CondExpr caseInsensitive<"Then"> eol
-      Statement*
-
-  ElseClause
-    = caseInsensitive<"Else"> eol
-      Statement*
-
-  // single-line: If cond then stmt [else stmt]
-  IfInline
-    = caseInsensitive<"If"> CondExpr caseInsensitive<"Then"> Statement
-      (caseInsensitive<"else"> Statement)?
-
-  // guard: If cond   (controls the block above it)
-  IfGuard = caseInsensitive<"If"> CondExpr eol
-
-  //----------------------------------------------------------------
-  // PUSH statement
-  //----------------------------------------------------------------
-
-  PushStmt = caseInsensitive<"Push"> LValue "=" Expr eol
-
-  LValue
-    = CellRef                      -- cell
-    | identifier ArrayIndexSuffix+ -- indexed
-    | QualifiedName                -- var
-
-  ArrayIndexSuffix
-    = "{" NonemptyListOf<Expr, listSep> "}"  -- curly
-    | "(" NonemptyListOf<Expr, listSep> ")"  -- paren
-    | "[" NonemptyListOf<Expr, listSep> "]"  -- square
-
-  //----------------------------------------------------------------
-  // RETURN statement
-  //----------------------------------------------------------------
-
-  ReturnStmt = caseInsensitive<"Return"> Expr eol
-
-  //----------------------------------------------------------------
-  // Subprocess call (standalone)
-  //   SplitName([A1], [^B1])
-  //----------------------------------------------------------------
-
-  SubprocessCall = QualifiedName "(" SubprocessArgList ")" eol
-
-  SubprocessArgList = ListOf<SubprocessArg, listSep>
-
-  SubprocessArg
-    = CellRef  -- cell
-    | Expr     -- expr
-
-  //----------------------------------------------------------------
-  // Cell assignment
-  //----------------------------------------------------------------
-
-  CellAssign
-    = CellRef ":" identifier caseInsensitive<"as"> TypeExpr eol  -- typedDecl
-    | CellRef ":" identifier "=" Expr eol                        -- varAssign
-    | CellRef ":=" Expr eol                                      -- directAssign
-
-  //----------------------------------------------------------------
-  // Global variable declaration
-  //----------------------------------------------------------------
-
-  GlobalVarDecl
-    = ":" "$"? identifier caseInsensitive<"as"> TypeExpr
-      DimClause? InConstraint? VarInitClause? eol  -- typed
-    | ":" identifier "=" RangeOrExpr eol            -- simple
-    | ":" identifier eol                             -- bareDecl
-
-  RangeOrExpr = RangeExpr | Expr
-
-  InitOrEqClauseRange
-    = caseInsensitive<"init"> RangeOrExpr  -- init
-    | "=" RangeOrExpr                      -- eq
-
-  // Accepts "= expr", "init expr", or "or = expr"
-  VarInitClause
-    = caseInsensitive<"or"> "=" RangeOrExpr  -- orEq
-    | caseInsensitive<"init"> RangeOrExpr    -- init
-    | "=" RangeOrExpr                        -- eq
-
-  InConstraint
-    = caseInsensitive<"in"> "{" NonemptyListOf<Expr, listSep> "}"  -- set
-    | caseInsensitive<"in"> RangeExpr                               -- range
-
-  //----------------------------------------------------------------
-  // Named dimension label assignment
-  //   Results!Quarter.Label{"Q1", "Q2", "Q3", "Q4"}
-  //----------------------------------------------------------------
-
-  DimLabel
-    = identifier "!" identifier "." caseInsensitive<"Label">
-      "{" NonemptyListOf<Expr, listSep> "}" eol
-
-  //----------------------------------------------------------------
-  // Condition expressions
-  //----------------------------------------------------------------
-
-  CondExpr
-    = CondExpr caseInsensitive<"AND"> CondTerm  -- and
-    | CondExpr caseInsensitive<"OR">  CondTerm  -- or
-    | CondTerm
-
-  CondTerm
-    = Expr caseInsensitive<"not"> "=" Expr              -- notEq
-    | Expr caseInsensitive<"in"> InRHS                  -- in
-    | Expr caseInsensitive<"as"> TypeExpr DimClause?    -- typeCheck
-    | Expr caseInsensitive<"of"> identifier             -- unitCheck
-    | Expr caseInsensitive<"dim"> DimSpec               -- dimCheck
-    | Expr compOp Expr                                  -- compare
-    | Expr                                              -- expr
-
-  InRHS
-    = "{" NonemptyListOf<Expr, listSep> "}"  -- set
-    | RangeExpr                               -- range
-
-  //----------------------------------------------------------------
-  // Expressions
-  //----------------------------------------------------------------
-
-  Expr = ConcatExpr
-
-  ConcatExpr
-    = ConcatExpr "&" AddExpr  -- concat
-    | AddExpr
-
-  AddExpr
-    = AddExpr "+" MulExpr  -- add
-    | AddExpr "-" MulExpr  -- sub
-    | MulExpr
-
-  MulExpr
-    = MulExpr "*"  ExpExpr                          -- mul
-    | MulExpr "/"  ExpExpr                          -- div
-    | MulExpr "\\" ExpExpr                          -- intDiv
-    | MulExpr caseInsensitive<"mod"> ExpExpr        -- mod
-    | ExpExpr
-
-  ExpExpr
-    = UnaryExpr "^" ExpExpr  -- exp
-    | UnaryExpr
-
-  UnaryExpr
-    = "-" UnaryExpr  -- neg
-    | "+" UnaryExpr  -- pos
-    | PipeExpr
-
-  PipeExpr
-    = PipeExpr "|" PostfixExpr  -- pipe
-    | PostfixExpr
-
-  PostfixExpr
-    = PostfixExpr "." identifier                              -- member
-    | PostfixExpr "!" identifier "(" Expr ")"                -- dimAccess
-    | PostfixExpr "{" NonemptyListOf<Expr, listSep> "}"      -- curlyIndex
-    | PostfixExpr "(" ListOf<Expr, listSep> ")"              -- call
-    | PostfixExpr "[" NonemptyListOf<Expr, listSep> "]"      -- squareIndex
-    | PostfixExpr caseInsensitive<"dim"> DimSpec             -- dim
-    | PrimaryExpr
-
-  PrimaryExpr
-    = SpecialValue        -- special
-    | InterpolatedString  -- interp
-    | PlainString         -- string
-    | number              -- number
-    | ArrayLit            -- array
-    | NewExpr             -- new
-    | CellRef             -- cell
-    | FuncCallExpr        -- func
-    | identifier          -- ident
-    | "(" Expr ")"        -- paren
-
-  // new Point(1.0, 2.0)  /  new Point with (x, y)  /  new Point(args) with (fields)
-  NewExpr
-    = caseInsensitive<"new"> identifier "(" ListOf<Expr, listSep> ")" caseInsensitive<"with"> "(" NewWithList ")"  -- withArgsAndFields
-    | caseInsensitive<"new"> identifier caseInsensitive<"with"> "(" NewWithList ")"                                -- withFields
-    | caseInsensitive<"new"> identifier "(" ListOf<Expr, listSep> ")"                                              -- withArgs
-    | caseInsensitive<"new"> identifier                                                                             -- bare
-
-  NewWithList = NonemptyListOf<NewWithField, listSep>
-
-  NewWithField
-    = identifier "=" Expr  -- namedField
-    | identifier           -- shorthand
-
-  // Function calls as expressions:  SQRT(100)  /  sum{a, b}  /  sum[A1:A2]
-  FuncCallExpr
-    = identifier "{" NonemptyListOf<Expr, listSep> "}"  -- curlyArgs
-    | identifier "[" CellRef "]"                         -- rangeArg
-    | identifier "(" ListOf<Expr, listSep> ")"           -- parenArgs
-
-  //----------------------------------------------------------------
-  // Range expression   1 to 6 step 1.5
-  //----------------------------------------------------------------
-
-  RangeExpr
-    = Expr caseInsensitive<"to"> Expr caseInsensitive<"step"> Expr  -- withStep
-    | Expr caseInsensitive<"to"> Expr                               -- plain
-
-  //----------------------------------------------------------------
-  // Array literal  {1, 2, 3}  /  {1, 2; 3, 4}
-  //----------------------------------------------------------------
-
-  ArrayLit = "{" NonemptyListOf<ArrayRow, rowSep> "}"
-
-  ArrayRow = NonemptyListOf<Expr, listSep>
-
-  //----------------------------------------------------------------
-  // Cell references
-  //
-  //   [A1]   [^B2]   [A{i}]   [A1:C2]   [{i :A}5]
-  //----------------------------------------------------------------
-
-  CellRef
-    = "[" "^"? CellRange "]"  -- range
-    | "[" "^"? CellAddr "]"   -- single
-
-  CellRange = CellAddr ":" CellAddr
-
-  CellAddr
-    = InterpColExpr InterpRowExpr  -- bothInterp
-    | ColName InterpRowExpr        -- interpRow
-    | InterpColExpr RowNum         -- interpCol
-    | ColName RowNum               -- plain
-
-  // {i :A}  — offset from base column A
-  InterpColExpr = "{" Expr ":" ColName "}"
-
-  // {n}  /  {n + 1}
-  InterpRowExpr = "{" Expr "}"
-
-  ColName = letter+
-
-  RowNum = digit+
-
-  //----------------------------------------------------------------
-  // Array index expression used in LetBinding LHS
-  //   D{i+1, 1}  /  D(k)  /  D[A1]
-  //----------------------------------------------------------------
-
-  ArrayIndexExpr
-    = identifier "{" NonemptyListOf<Expr, listSep> "}"  -- curly
-    | identifier "(" NonemptyListOf<Expr, listSep> ")"  -- paren
-    | identifier "[" CellAddr "]"                        -- cell
-
-  //----------------------------------------------------------------
-  // Type expressions
-  //----------------------------------------------------------------
-
-  TypeExpr
-    = caseInsensitive<"number">  -- number
-    | caseInsensitive<"text">    -- text
-    | identifier                 -- userDefined
-
-  //----------------------------------------------------------------
-  // Special values
-  //----------------------------------------------------------------
-
-  SpecialValue
-    = "-" "#INF"  -- negInf
-    | "#INF"      -- inf
-    | "#N/A"      -- na
-
-  //----------------------------------------------------------------
-  // String literals
-  //----------------------------------------------------------------
-
-  // "hello"  /  "I say ""Hello"""
-  PlainString = "\"" PlainStringChar* "\""
-
-  PlainStringChar
-    = "\"\""     -- escapedQuote
-    | ~"\"" any  -- other
-
-  // $"Hello, {name}!"
-  InterpolatedString = "$\"" InterpSegment* "\""
-
-  InterpSegment
-    = "{{{" ~"*"            -- tripleEscape
-    | "{{" ~"*"             -- doubleEscape
-    | "{*" (~"}" any)* "}"  -- starEscape
-    | "{}"                  -- emptyBraces
-    | "{" InterpContent "}" -- interpolate
-    | ~("\"" | "{") any     -- literal
-
-  InterpContent = Expr (spaces "," spaces Expr)?  // {var} or {var, width}
-
-  //----------------------------------------------------------------
-  // Numbers
-  //----------------------------------------------------------------
-
-  number = digit+ ("." digit+)? (("e" | "E") ("+" | "-")? digit+)?
-
-  //----------------------------------------------------------------
-  // Comparison operators
-  //----------------------------------------------------------------
-
-  compOp
-    = "<="  -- lte
-    | ">="  -- gte
-    | "<"   -- lt
-    | ">"   -- gt
-    | "="   -- eq
-
-  //----------------------------------------------------------------
-  // Separators (arity-1 rules, used inside both syntactic and lexical rules)
-  //----------------------------------------------------------------
-
-  listSep = spaces "," spaces
-
-  rowSep = spaces ";" spaces
-
-  andSep = spaces caseInsensitive<"AND"> spaces
-
-  //----------------------------------------------------------------
-  // Identifiers  (keywords are still valid identifiers in context)
-  //----------------------------------------------------------------
-
-  identifier = (letter | "_") (alnum | "_")*
-
-  //----------------------------------------------------------------
-  // Inline comment
-  //----------------------------------------------------------------
-
-  comment = spaces "'" (~"\n" any)*
-
-  //----------------------------------------------------------------
-  // End-of-line  (newlines are significant — statements end here)
-  // Horizontal whitespace only in "spaces"; newlines stay visible.
-  //----------------------------------------------------------------
-
-  eol
-    = comment? "\r\n" spaces  -- crlf
-    | comment? "\n" spaces    -- lf
-    | spaces &eof             -- atEof
-
-  eof = ~any
-
-  //----------------------------------------------------------------
-  // Override default "spaces" to horizontal whitespace only
-  //----------------------------------------------------------------
-
-  spaces := (" " | "\t")*
-
+grid {
+  Program = TopLevelStatement*
+  TopLevelStatement=
+    | EOL -- empty
+    | "Return" Expr EOL -- return
+    | FunctionDefinition -- function
+    | Assignment -- assignment
+
+  FunctionDefinition =
+    "Define" id "as" "Function" EOL
+      FuncInnard+
+    "End" id
+
+  FuncInnard =
+    | InputStatement EOL -- input
+    | OutputStatement EOL -- output
+    | PushStatement EOL -- push
+
+  InputStatement = "Input" id TypeConstraint?
+  OutputStatement = "Output" id TypeConstraint?
+  PushStatement = "push" id "=" Expr
+
+  Assignment = Cell ":=" Expr
+  
+
+  TypeConstraint = "as" Type
+  Type =
+    | "number" -- number
+
+  Expr =
+    | "(" Expr ")" -- parenthesized
+    | PlusExpr -- plus
+
+  PlusExpr =
+    | MulExpr "+" Expr -- infix
+    | MulExpr -- plain
+
+  MulExpr =
+    | ExponentiationExpr "*" Expr -- infix
+    | ExponentiationExpr -- plain
+
+  ExponentiationExpr =
+    | Primary "^" Expr -- infix
+    | Primary -- plain
+
+  Primary =
+    | FunctionCall -- funcall
+    | id -- id
+    | plainstring -- plainstring
+    | number -- number
+
+
+
+  FunctionCall = id "(" Arg+ ")"
+  Arg = Expr ","?
+  Cell = "[" cellid "]"
+  plainstring = "\"" (~"\"" any)* "\""
+
+  EOL = comment? nl
+
+  nl = "⎩" digit+ "⎭"
+  comment = "⎝" (~"⎠" any)* "⎠"
+
+  number = digit+
+  id = "❲" (~"❳" any)+ "❳"
+  cellid = "❲" letter+ digit+ "❳"
 }
