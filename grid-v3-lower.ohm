@@ -1,12 +1,13 @@
+
+
+
 GridLang {
 
   //----------------------------------------------------------------
   // Top-level
   //----------------------------------------------------------------
 
-  Program = (Statement | BlankLine)*
-
-  BlankLine = comment? ("\r\n" | "\n") spaces
+  Program = Statement+
 
   Statement
     = TypeDef
@@ -32,9 +33,9 @@ GridLang {
   //----------------------------------------------------------------
 
   TypeDef
-    = caseInsensitive<"Define"> identifier caseInsensitive<"as"> caseInsensitive<"Type"> TypeParent? eol
+    = caseInsensitive<"define"> identifier caseInsensitive<"as"> caseInsensitive<"type"> TypeParent? eol
       TypeMember*
-      caseInsensitive<"End"> identifier eol
+      caseInsensitive<"end"> identifier eol
 
   TypeParent = "(" identifier ")"
 
@@ -52,7 +53,7 @@ GridLang {
     | GlobalVarDecl
 
 
-  SuperCall = caseInsensitive<"Super"> "(" ArgList ")" eol
+  SuperCall = caseInsensitive<"super"> "(" ArgList ")" eol
 
   ArgList = ListOf<Expr, listSep>
 
@@ -61,9 +62,9 @@ GridLang {
   //----------------------------------------------------------------
 
   NumericSubtypeDef
-    = caseInsensitive<"Define"> identifier caseInsensitive<"as">
-      caseInsensitive<"Type"> "(" identifier ")" NumericConstraint* eol
-      caseInsensitive<"End"> identifier eol
+    = caseInsensitive<"define"> identifier caseInsensitive<"as">
+      caseInsensitive<"type"> "(" identifier ")" NumericConstraint* eol
+      caseInsensitive<"end"> identifier eol
 
   NumericConstraint = compOp Expr
 
@@ -72,19 +73,19 @@ GridLang {
   //----------------------------------------------------------------
 
   FuncDef
-    = caseInsensitive<"Define"> QualifiedName caseInsensitive<"as"> caseInsensitive<"Function"> eol
+    = caseInsensitive<"define"> QualifiedName caseInsensitive<"as"> caseInsensitive<"sunction"> eol
       FuncMember*
-      caseInsensitive<"End"> QualifiedName eol
+      caseInsensitive<"end"> QualifiedName eol
 
   SubprocessDef
-    = caseInsensitive<"Define"> QualifiedName caseInsensitive<"as"> caseInsensitive<"Subprocess"> eol
+    = caseInsensitive<"define"> QualifiedName caseInsensitive<"as"> caseInsensitive<"subprocess"> eol
       FuncMember*
-      caseInsensitive<"End"> QualifiedName eol
+      caseInsensitive<"end"> QualifiedName eol
 
   PrivateHelperDef
-    = caseInsensitive<"Define"> "$"? QualifiedName caseInsensitive<"as"> caseInsensitive<"PrivateHelper"> eol
+    = caseInsensitive<"define"> "$"? QualifiedName caseInsensitive<"as"> caseInsensitive<"privateHelper"> eol
       FuncMember*
-      caseInsensitive<"End"> "$"? QualifiedName eol
+      caseInsensitive<"end"> "$"? QualifiedName eol
 
   FuncMember
     = InputDecl
@@ -105,7 +106,7 @@ GridLang {
   // Input / Output declarations
   //----------------------------------------------------------------
 
-  InputDecl  = caseInsensitive<"Input"> InputVarList eol
+  InputDecl  = caseInsensitive<"input"> InputVarList eol
   OutputDecl = caseInsensitive<"Output"> identifier caseInsensitive<"as"> TypeExpr InitOrEqClause? eol
 
   InputVarList = NonemptyListOf<InputVar, listSep>
@@ -139,18 +140,18 @@ GridLang {
     | ForLoopIterBlock
 
   ForLoopInitBlock
-    = caseInsensitive<"For"> identifier caseInsensitive<"as"> TypeExpr ForTypeInitOp Expr caseInsensitive<"do"> eol
+    = caseInsensitive<"sor"> identifier caseInsensitive<"as"> TypeExpr ForTypeInitOp Expr caseInsensitive<"do"> eol
       Statement*
-      caseInsensitive<"End"> eol
+      caseInsensitive<"end"> eol
 
   ForLoopIterBlock
-    = caseInsensitive<"For"> ForLoopBindings caseInsensitive<"do"> eol
+    = caseInsensitive<"sor"> ForLoopBindings caseInsensitive<"do"> eol
       Statement*
-      caseInsensitive<"End"> eol
+      caseInsensitive<"end"> eol
 
   // For i in 1 to 3   (standalone / guard-style)
   ForLoopInline
-    = caseInsensitive<"For"> ForLoopBindings eol
+    = caseInsensitive<"sor"> ForLoopBindings eol
 
   ForLoopBindings = NonemptyListOf<ForLoopBinding, andSep>
 
@@ -166,7 +167,7 @@ GridLang {
 
   // For V as tensor with (name = "V", grid DIM {4,4,2} = expr)
   ForTypedWith
-    = caseInsensitive<"For"> identifier caseInsensitive<"as"> identifier
+    = caseInsensitive<"sor"> identifier caseInsensitive<"as"> identifier
       caseInsensitive<"with"> "(" ForFieldList ")" eol
 
   ForFieldList = NonemptyListOf<ForField, listSep>
@@ -178,18 +179,18 @@ GridLang {
 
   // For acc as text init ""
   ForTypeInit
-    = caseInsensitive<"For"> identifier caseInsensitive<"as"> TypeExpr
+    = caseInsensitive<"sor"> identifier caseInsensitive<"as"> TypeExpr
       DimClause? ForTypeInitOp Expr eol
 
   ForTypeInitOp = caseInsensitive<"init"> | "="
 
   // For v <= vmax  (constraint only)
   ForConstraint
-    = caseInsensitive<"For"> identifier compOp Expr eol
+    = caseInsensitive<"sor"> identifier compOp Expr eol
 
   // For x as number = 42  /  For x as number  /  For x = expr  /  For a = e1 AND b = e2
   ForDecl
-    = caseInsensitive<"For"> ForDeclBody eol
+    = caseInsensitive<"sor"> ForDeclBody eol
 
   ForDeclBody
     = identifier caseInsensitive<"as"> TypeExpr DimClause? caseInsensitive<"of"> identifier "=" Expr  -- typedUnitInit
@@ -231,12 +232,12 @@ GridLang {
     | LetInline
 
   LetBlock
-    = caseInsensitive<"Let"> LetBindings caseInsensitive<"Then"> eol
+    = caseInsensitive<"let"> LetBindings caseInsensitive<"then"> eol
       Statement*
-      caseInsensitive<"End"> eol
+      caseInsensitive<"end"> eol
 
   LetInline
-    = caseInsensitive<"Let"> LetBindings eol
+    = caseInsensitive<"let"> LetBindings eol
 
   LetBindings = NonemptyListOf<LetBinding, andSep>
 
@@ -256,33 +257,33 @@ GridLang {
     | IfGuard
 
   IfBlock
-    = caseInsensitive<"If"> CondExpr caseInsensitive<"Then"> eol
+    = caseInsensitive<"if"> CondExpr caseInsensitive<"then"> eol
       Statement*
       ElseIfClause*
       ElseClause?
-      caseInsensitive<"End"> eol
+      caseInsensitive<"end"> eol
 
   ElseIfClause
-    = caseInsensitive<"ElseIf"> CondExpr caseInsensitive<"Then"> eol
+    = caseInsensitive<"elseIf"> CondExpr caseInsensitive<"then"> eol
       Statement*
 
   ElseClause
-    = caseInsensitive<"Else"> eol
+    = caseInsensitive<"else"> eol
       Statement*
 
   // single-line: If cond then stmt [else stmt]
   IfInline
-    = caseInsensitive<"If"> CondExpr caseInsensitive<"Then"> Statement
+    = caseInsensitive<"if"> CondExpr caseInsensitive<"then"> Statement
       (caseInsensitive<"else"> Statement)?
 
   // guard: If cond   (controls the block above it)
-  IfGuard = caseInsensitive<"If"> CondExpr eol
+  IfGuard = caseInsensitive<"if"> CondExpr eol
 
   //----------------------------------------------------------------
   // PUSH statement
   //----------------------------------------------------------------
 
-  PushStmt = caseInsensitive<"Push"> LValue "=" Expr eol
+  PushStmt = caseInsensitive<"push"> LValue "=" Expr eol
 
   LValue
     = CellRef                      -- cell
@@ -354,7 +355,7 @@ GridLang {
   //----------------------------------------------------------------
 
   DimLabel
-    = identifier "!" identifier "." caseInsensitive<"Label">
+    = identifier "!" identifier "." caseInsensitive<"label">
       "{" NonemptyListOf<Expr, listSep> "}" eol
 
   //----------------------------------------------------------------
@@ -362,8 +363,8 @@ GridLang {
   //----------------------------------------------------------------
 
   CondExpr
-    = CondExpr caseInsensitive<"AND"> CondTerm  -- and
-    | CondExpr caseInsensitive<"OR">  CondTerm  -- or
+    = CondExpr caseInsensitive<"and"> CondTerm  -- and
+    | CondExpr caseInsensitive<"or">  CondTerm  -- or
     | CondTerm
 
   CondTerm
@@ -575,7 +576,7 @@ GridLang {
 
   rowSep = spaces ";" spaces
 
-  andSep = spaces caseInsensitive<"AND"> spaces
+  andSep = spaces caseInsensitive<"and"> spaces
 
   //----------------------------------------------------------------
   // Identifiers  (keywords are still valid identifiers in context)

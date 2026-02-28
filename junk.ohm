@@ -1,0 +1,5 @@
+junk {
+  main = (keyword | ident)
+  keyword = "abc"
+  ident = "abcdef"
+}

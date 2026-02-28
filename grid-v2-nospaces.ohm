@@ -1,3 +1,6 @@
+# GridLang OhmJS Grammar
+
+```
 GridLang {
 
   //----------------------------------------------------------------
@@ -272,7 +275,7 @@ GridLang {
 
   // single-line: If cond then stmt [else stmt]
   IfInline
-    = caseInsensitive<"If"> CondExpr caseInsensitive<"Then"> Statement
+    = caseInsensitive<"If"> CondExpr caseInsensitive<"then"> Statement
       (caseInsensitive<"else"> Statement)?
 
   // guard: If cond   (controls the block above it)
@@ -608,3 +611,4 @@ GridLang {
   spaces := (" " | "\t")*
 
 }
+```
