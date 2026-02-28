@@ -1,0 +1,14 @@
+% rewrite grid {
+  Program [Statement+] = ‛«Statement»’
+  Statement_empty [eol] = ‛«eol»’
+  Statement_return [_ e eol] = ‛«_»«e»«eol»’
+
+  Expr_plainstring [s] = ‛«s»’
+
+  plainstring [lq cs* rq] = ‛«lq»«cs»«rq»’
+
+  EOL [comment? nl] = ‛«comment»«nl»’
+
+  nl [lb digit+ rb] = ‛«lb»«digit»«rb»’
+  comment [lb cs* rb] = ‛«lb»«cs»«rb»’
+}

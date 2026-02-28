@@ -1,0 +1,7 @@
+% rewrite postpass {
+  characters [chars+] = ‛«chars»’
+  char_opencomment [c] = ‛# ’
+  char_closecomment [c] = ‛’
+  char_line [lb ds+ rb] = ‛ #«ds»\n’
+  char_other [c] = ‛«c»’
+}

@@ -2,9 +2,29 @@
 
 ######### commands specific to this project #############
 
-test=tests
+test=test0
 mkdir -p intermediate
-cat ${test}.grid | ${PBP}/t2t prepass | tee ./intermediate/pre.grid
+
+echo
+echo '*** identity (output == input) ***'
+## the next 3 lines are for expository purposes only - grid-identity.rwr shows how to do "nothing" (output == input)
+##  but, this checks for basic typos and that the scripts are OK
+cat ${test}.grid |\
+    ${PBP}/t2t prepass | tee ./intermediate/pre-identity.grid |\
+    ${PBP}/t2t grid grid-identity | tee ./intermediate/${test}-identity.grid
+
+echo
+echo '*** Python ***'
+cat ${test}.grid |\
+    ${PBP}/t2t prepass | tee ./intermediate/pre.grid |\
+    ${PBP}/t2t grid | tee ./intermediate/${test}.grid |\
+    ${PBP}/t2t postpass | tee ./intermediate/post.grid
+
+### ./intermediate contains the intermediate generated files - you might want to look at these while debugging the
+###  compiler, else, delete the "| tee ... |\" stuff above
+
+### temp.* files are created by t2t, comment out this line in case you want to debug the PBP tools
+rm temp.*
 
 ############################
 
